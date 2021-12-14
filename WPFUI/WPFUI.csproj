@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\JSONFileIOLibrary\JSONFileIOLibrary.csproj" />
+    <ProjectReference Include="..\RotationLibrary\RotationLibrary.csproj" />
+  </ItemGroup>
+
+</Project>
