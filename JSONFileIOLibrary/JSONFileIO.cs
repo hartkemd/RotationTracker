@@ -17,7 +17,7 @@ namespace JSONFileIOLibrary
             File.WriteAllText(fileName, jsonString);
         }
 
-        public static T Load<T>(string fileName) where T : new()
+        public static T Load<T>(this T model, string fileName) where T : new()
         {
             T output = new();
 
