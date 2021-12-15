@@ -30,12 +30,12 @@ namespace WPFUI
 
             _parent = parent;
 
-            employeeListBox.ItemsSource = _parent.employeeList.EmployeeList;
+            employeeListBox.ItemsSource = _parent.employees.EmployeeList;
         }
 
         private void SaveEmployeeList()
         {
-            _parent.employeeList.Save(_parent.employeeListFilePath);
+            _parent.employees.Save(_parent.employees.FilePath);
         }
 
         private void RefreshListBoxes()
@@ -43,14 +43,14 @@ namespace WPFUI
             employeeListBox.ItemsSource = null;
             _parent.employeeListBox.ItemsSource = null;
 
-            employeeListBox.ItemsSource = _parent.employeeList.EmployeeList;
-            _parent.employeeListBox.ItemsSource = _parent.employeeList.EmployeeList;
+            employeeListBox.ItemsSource = _parent.employees.EmployeeList;
+            _parent.employeeListBox.ItemsSource = _parent.employees.EmployeeList;
         }
 
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-            _parent.employeeList.EmployeeList.Add(employeeNameTextBox.Text);
-            _parent.employeeList.EmployeeList.Sort();
+            _parent.employees.EmployeeList.Add(employeeNameTextBox.Text);
+            _parent.employees.EmployeeList.Sort();
 
             SaveEmployeeList();
 
@@ -61,7 +61,7 @@ namespace WPFUI
 
         private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-            _parent.employeeList.EmployeeList.RemoveAt(employeeListBox.SelectedIndex);
+            _parent.employees.EmployeeList.RemoveAt(employeeListBox.SelectedIndex);
 
             SaveEmployeeList();
 

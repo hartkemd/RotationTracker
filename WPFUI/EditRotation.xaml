@@ -12,33 +12,33 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="rotationNameTextBlock" Grid.Row="0" Grid.Column="0" Margin="15 15 15 5" Text="Rotation 1:"></TextBlock>
-        <ListBox Grid.Row="1" Grid.Column="0" Name="employeeListBox" Margin="15 0 15 15">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button x:Name="advanceButton" Grid.Row="2" Grid.Column="0" Margin="5" Padding="5" Width="150" Click="AdvanceButton_Click">Advance Rotation</Button>
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center">
-            <Button x:Name="moveUpButton" Margin="5" Padding="5" Click="MoveUpButton_Click">Move Up</Button>
-            <Button x:Name="moveDownButton" Margin="5" Padding="5" Click="MoveDownButton_Click">Move Down</Button>
-        </StackPanel>
-        <Button x:Name="copyEmployeesToRotation" Grid.Column="0" Grid.Row="4" Margin="5" Padding="5" Width="225"
-                Click="CopyEmployeesToRotation_Click">Copy Employees to Rotation</Button>
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center">
-            <TextBox x:Name="rotationNameTextBox" MinWidth="125" Margin="5" Padding="5"></TextBox>
-            <TextBlock Margin="0 5" Padding="5">Rotation</TextBlock>
-            <Button x:Name="renameRotationButton" Margin="5" Padding="5" Click="RenameRotationButton_Click">Rename</Button>
-        </StackPanel>
+        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5">
+            <GroupBox.Header>
+                <Label Name="rotationNameLabel"></Label>
+            </GroupBox.Header>
+            <StackPanel>
+                <ListBox Name="employeeListBox" Margin="5 0 5 0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Name="moveUpButton" Margin="5" Padding="5" Click="MoveUpButton_Click">Move Up</Button>
+                    <Button Name="moveDownButton" Margin="5" Padding="5" Click="MoveDownButton_Click">Move Down</Button>
+                </StackPanel>
+                <Button Name="copyEmployeesToRotation" Margin="5" Padding="5" Width="215"
+                        Click="CopyEmployeesToRotation_Click">Copy Employees to Rotation</Button>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBox Name="rotationNameTextBox" MinWidth="125" Margin="5" Padding="5"></TextBox>
+                    <TextBlock Margin="0 5" Padding="5">Rotation</TextBlock>
+                    <Button Name="renameRotationButton" Margin="5" Padding="5" Click="RenameRotationButton_Click">Rename</Button>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
 
     </Grid>
 </Window>

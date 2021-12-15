@@ -6,30 +6,33 @@
         xmlns:local="clr-namespace:WPFUI"
         mc:Ignorable="d" FontSize="16"
         Title="RotationTracker - Edit Employees" Height="500" Width="500">
-    <Grid Margin="10">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="employeesTextBlock" Grid.Row="0" Grid.Column="0" Margin="5" Text="Employees:"></TextBlock>
-        <ListBox Grid.Row="1" Grid.Column="0" Name="employeeListBox" Margin="15 0 15 15">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <TextBox x:Name="employeeNameTextBox" Grid.Row="2" Grid.Column="0" Margin="5" Padding="5" />
-        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center">
-            <Button x:Name="addEmployeeButton" Margin="5" Padding="5" Click="AddEmployeeButton_Click">Add</Button>
-            <Button x:Name="removeEmployeeButton" Margin="5" Padding="5" Click="RemoveEmployeeButton_Click">Remove</Button>
-        </StackPanel>
+        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5">
+            <GroupBox.Header>
+                <Label>Employees:</Label>
+            </GroupBox.Header>
+            <StackPanel>
+                <ListBox Name="employeeListBox" Margin="5 0 5 0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBox Name="employeeNameTextBox" Margin="5" Padding="5" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Name="addEmployeeButton" Margin="5" Padding="5" Click="AddEmployeeButton_Click">Add</Button>
+                    <Button Name="removeEmployeeButton" Margin="5" Padding="5" Click="RemoveEmployeeButton_Click">Remove</Button>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
 
     </Grid>
 </Window>

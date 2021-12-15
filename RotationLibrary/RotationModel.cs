@@ -6,20 +6,10 @@ namespace RotationLibrary
     {
         public string RotationName { get; set; }
         public List<string> Rotation { get; set; } = new List<string>();
+        public string FilePath { get; set; }
+        public string NextUp => GetNextUp();
 
-        public bool IsEmpty()
-        {
-            bool isEmpty = false;
-
-            if (Rotation.Count == 0)
-            {
-                isEmpty = true;
-            }
-
-            return isEmpty;
-        }
-
-        public string GetNextUp()
+        private string GetNextUp()
         {
             if (Rotation.Count > 0)
             {

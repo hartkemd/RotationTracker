@@ -9,5 +9,6 @@ namespace RotationLibrary
     public class EmployeeListModel
     {
         public List<string> EmployeeList { get; set; } = new List<string>();
+        public string FilePath { get; set; }
     }
 }

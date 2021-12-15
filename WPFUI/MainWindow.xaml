@@ -8,34 +8,80 @@
         Title="RotationTracker" Height="500" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Column="0" Grid.Row="0" Margin="15 15 15 5" Text="Employees:"></TextBlock>
-        <ListBox Grid.Column="0" Grid.Row="1" Name="employeeListBox" Margin="15 0 15 15">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button x:Name="editEmployeesButton" Grid.Row="2" Grid.Column="0" Width="45" Padding="5" Click="EditEmployeesButton_Click">Edit</Button>
+        <!-- Employees -->
+        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5">
+            <GroupBox.Header>
+                <Label>Employees:</Label>
+            </GroupBox.Header>
+            <StackPanel>
+                <ListBox Name="employeeListBox" Margin="5 0 5 0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Button Name="editEmployeesButton" Width="45" Margin="0 5 0 0" Padding="5"
+                        Click="EditEmployeesButton_Click">Edit</Button>
+            </StackPanel>
+        </GroupBox>
 
-        <TextBlock x:Name="rotation1Name" Grid.Column="1" Grid.Row="0" Margin="15 15 15 5" Text="Rotation 1:"></TextBlock>
-        <ListBox Grid.Column="1" Grid.Row="1" Name="rotation1ListBox" Margin="15 0 15 15">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Button x:Name="editRotation1Button" Grid.Row="2" Grid.Column="1" Width="45" Padding="5" Click="EditRotation1Button_Click">Edit</Button>
+        <!-- Rotation 1 -->
+        <GroupBox Grid.Row="0" Grid.Column="1" Margin="5">
+            <GroupBox.Header>
+                <Label Name="rotation1Name" Content="First Rotation:"></Label>
+            </GroupBox.Header>
+            <StackPanel>
+                <ListBox Name="rotation1ListBox" Margin="5 0 5 0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
+                    <TextBlock Text="Next Up: "></TextBlock>
+                    <TextBlock Name="rotation1NextUpName" Text="{Binding rotation1.NextUp}"></TextBlock>
+                </StackPanel>
+                <Button Name="advanceRotation1Button" Margin="0 5 0 5" Padding="5" Width="80"
+                            Click="AdvanceRotation1Button_Click">Advance</Button>
+                <Button Name="editRotation1Button" Width="45" Margin="5" Padding="5"
+                    Click="EditRotation1Button_Click">Edit</Button>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Rotation 2 -->
+        <GroupBox Grid.Row="0" Grid.Column="2" Margin="5">
+            <GroupBox.Header>
+                <Label Name="rotation2Name" Content="Second Rotation:"></Label>
+            </GroupBox.Header>
+            <StackPanel>
+                <ListBox Name="rotation2ListBox" Margin="5 0 5 0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
+                    <TextBlock Text="Next Up: "></TextBlock>
+                    <TextBlock Name="rotation2NextUpName" Text="{Binding rotation2.NextUp}"></TextBlock>
+                </StackPanel>
+                <Button Name="advanceRotation2Button" Margin="0 5 0 5" Padding="5" Width="80"
+                            Click="AdvanceRotation2Button_Click">Advance</Button>
+                <Button Name="editRotation2Button" Width="45" Margin="5" Padding="5"
+                    Click="EditRotation2Button_Click">Edit</Button>
+            </StackPanel>
+        </GroupBox>
 
     </Grid>
 </Window>

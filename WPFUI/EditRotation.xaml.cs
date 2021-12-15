@@ -1,4 +1,5 @@
 ﻿using JSONFileIOLibrary;
+using RotationLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,41 +21,47 @@ namespace WPFUI
     /// </summary>
     public partial class EditRotation : Window
     {
-        MainWindow _parent;
+        private MainWindow _parent;
+        private RotationModel _rotation;
+        private ListBox _listBox;
+        private Label _label;
 
-        public EditRotation(MainWindow parent)
+        public EditRotation(MainWindow parentWindow, RotationModel rotation, ListBox listBox, Label label)
         {
             InitializeComponent();
 
-            _parent = parent;
+            _parent = parentWindow;
+            _rotation = rotation;
+            _listBox = listBox;
+            _label = label;
 
-            rotationNameTextBlock.Text = _parent.rotation1.RotationName;
-            employeeListBox.ItemsSource = _parent.rotation1.Rotation;
-            rotationNameTextBox.Text = _parent.rotation1.RotationName;
+            rotationNameLabel.Content = $"{rotation.RotationName} Rotation:";
+            employeeListBox.ItemsSource = rotation.Rotation;
+            rotationNameTextBox.Text = rotation.RotationName;
         }
 
         private void SaveRotation()
         {
-            _parent.rotation1.Save(_parent.rotation1FilePath);
+            _rotation.Save(_rotation.FilePath);
         }
 
         private void RefreshListBoxes()
         {
             employeeListBox.ItemsSource = null;
-            _parent.rotation1ListBox.ItemsSource = null;
+            _listBox.ItemsSource = null;
 
-            employeeListBox.ItemsSource = _parent.rotation1.Rotation;
-            _parent.rotation1ListBox.ItemsSource = _parent.rotation1.Rotation;
+            employeeListBox.ItemsSource = _rotation.Rotation;
+            _listBox.ItemsSource = _rotation.Rotation;
         }
 
         private void MoveUpButton_Click(object sender, RoutedEventArgs e)
         {
             int selectedIndex = employeeListBox.SelectedIndex;
-            
+
             if (selectedIndex > 0)
             {
-                _parent.rotation1.Rotation.Insert(selectedIndex - 1, employeeListBox.Items[selectedIndex].ToString());
-                _parent.rotation1.Rotation.RemoveAt(selectedIndex + 1);
+                _rotation.Rotation.Insert(selectedIndex - 1, employeeListBox.Items[selectedIndex].ToString());
+                _rotation.Rotation.RemoveAt(selectedIndex + 1);
 
                 RefreshListBoxes();
                 employeeListBox.SelectedIndex = selectedIndex - 1;
@@ -68,8 +75,8 @@ namespace WPFUI
 
             if (selectedIndex < employeeListBox.Items.Count - 1 && selectedIndex != -1)
             {
-                _parent.rotation1.Rotation.Insert(selectedIndex + 2, employeeListBox.Items[selectedIndex].ToString());
-                _parent.rotation1.Rotation.RemoveAt(selectedIndex);
+                _rotation.Rotation.Insert(selectedIndex + 2, employeeListBox.Items[selectedIndex].ToString());
+                _rotation.Rotation.RemoveAt(selectedIndex);
 
                 RefreshListBoxes();
                 employeeListBox.SelectedIndex = selectedIndex + 1;
@@ -79,7 +86,7 @@ namespace WPFUI
 
         private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
         {
-            _parent.rotation1.Rotation = _parent.employeeList.EmployeeList;
+            _rotation.Rotation = _parent.employees.EmployeeList;
 
             RefreshListBoxes();
             SaveRotation();
@@ -87,18 +94,10 @@ namespace WPFUI
 
         private void RenameRotationButton_Click(object sender, RoutedEventArgs e)
         {
-            _parent.rotation1.RotationName = rotationNameTextBox.Text;
-            rotationNameTextBlock.Text = $"{_parent.rotation1.RotationName} Rotation";
-            _parent.rotation1Name.Text = $"{_parent.rotation1.RotationName} Rotation";
+            _rotation.RotationName = rotationNameTextBox.Text;
+            rotationNameLabel.Content = $"{_rotation.RotationName} Rotation:";
+            _label.Content = $"{_rotation.RotationName} Rotation:";
 
-            SaveRotation();
-        }
-
-        private void AdvanceButton_Click(object sender, RoutedEventArgs e)
-        {
-            _parent.rotation1.AdvanceRotation();
-
-            RefreshListBoxes();
             SaveRotation();
         }
     }
