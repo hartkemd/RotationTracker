@@ -37,6 +37,8 @@ namespace WPFUI
 
             SetRotationNames();
             SetDataSourcesOfControls();
+
+            AdvanceRotationsIfDateTimeHasPassed();
         }
 
         private void SetObjectFilePaths()
@@ -59,7 +61,7 @@ namespace WPFUI
             SetRotationName(rotation2, "Second");
         }
 
-        private void SetRotationName(RotationModel rotation, string name)
+        private static void SetRotationName(RotationModel rotation, string name)
         {
             if (rotation.RotationName == null)
             {
@@ -80,6 +82,27 @@ namespace WPFUI
             rotation2NextUpName.Text = rotation2.NextUp;
         }
 
+        private void AdvanceRotationsIfDateTimeHasPassed()
+        {
+            AdvanceRotationIfDateTimeHasPassed(rotation1, rotation1NextUpName, rotation1ListBox);
+        }
+
+        private static void AdvanceRotationIfDateTimeHasPassed(RotationModel rotation, TextBlock textBlock, ListBox listBox)
+        {
+            // work on this
+
+            DateTime now = DateTime.Now;
+
+            if (now > rotation.DateTimeRotationAdvances)
+            {
+                rotation.AdvanceRotation();
+                rotation.DateTimeRotationAdvances = now.AddDays(7);
+                textBlock.Text = rotation.NextUp;
+                RefreshRotationListBox(listBox, rotation);
+                SaveRotation(rotation);
+            }
+        }
+
         private static void SaveRotation(RotationModel rotation)
         {
             rotation.Save(rotation.FilePath);
@@ -91,7 +114,7 @@ namespace WPFUI
             listBox.ItemsSource = rotation.Rotation;
         }
 
-        private void AdvanceRotation(RotationModel rotation, TextBlock textBlock, ListBox listBox)
+        private static void AdvanceRotation(RotationModel rotation, TextBlock textBlock, ListBox listBox)
         {
             rotation.AdvanceRotation();
             textBlock.Text = rotation.NextUp;

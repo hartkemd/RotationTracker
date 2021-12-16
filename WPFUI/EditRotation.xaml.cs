@@ -40,11 +40,6 @@ namespace WPFUI
             rotationNameTextBox.Text = rotation.RotationName;
         }
 
-        private void SaveRotation()
-        {
-            _rotation.Save(_rotation.FilePath);
-        }
-
         private void RefreshListBoxes()
         {
             employeeListBox.ItemsSource = null;
@@ -52,6 +47,55 @@ namespace WPFUI
 
             employeeListBox.ItemsSource = _rotation.Rotation;
             _listBox.ItemsSource = _rotation.Rotation;
+        }
+
+        private void SetRotationRecurrence()
+        {
+            if (weeklyRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrence = RecurrenceInterval.Weekly;
+                SetRecurrenceDayOfWeek();
+            }
+            else if (monthlyRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrence = RecurrenceInterval.Monthly;
+            }
+            else if (bimonthlyRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrence = RecurrenceInterval.Bimonthly;
+            }
+        }
+
+        private void SetRecurrenceDayOfWeek()
+        {
+            if (sundayRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Sunday;
+            }
+            else if (mondayRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Monday;
+            }
+            else if (tuesdayRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Tuesday;
+            }
+            else if (wednesdayRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Wednesday;
+            }
+            else if (thursdayRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Thursday;
+            }
+            else if (fridayRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Friday;
+            }
+            else if (saturdayRadioButton.IsChecked == true)
+            {
+                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Saturday;
+            }
         }
 
         private void MoveUpButton_Click(object sender, RoutedEventArgs e)
@@ -65,7 +109,6 @@ namespace WPFUI
 
                 RefreshListBoxes();
                 employeeListBox.SelectedIndex = selectedIndex - 1;
-                SaveRotation();
             }
         }
 
@@ -80,7 +123,6 @@ namespace WPFUI
 
                 RefreshListBoxes();
                 employeeListBox.SelectedIndex = selectedIndex + 1;
-                SaveRotation();
             }
         }
 
@@ -89,7 +131,6 @@ namespace WPFUI
             _rotation.Rotation = _parent.employees.EmployeeList;
 
             RefreshListBoxes();
-            SaveRotation();
         }
 
         private void RenameRotationButton_Click(object sender, RoutedEventArgs e)
@@ -97,8 +138,13 @@ namespace WPFUI
             _rotation.RotationName = rotationNameTextBox.Text;
             rotationNameLabel.Content = $"{_rotation.RotationName} Rotation:";
             _label.Content = $"{_rotation.RotationName} Rotation:";
+        }
 
-            SaveRotation();
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetRotationRecurrence();
+            _rotation.Save(_rotation.FilePath);
+            Close();
         }
     }
 }
