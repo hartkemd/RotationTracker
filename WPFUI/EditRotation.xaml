@@ -12,7 +12,6 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -56,32 +55,15 @@
             </StackPanel>
         </GroupBox>
 
-        <GroupBox Grid.Row="0" Grid.Column="2" Margin="5">
-            <GroupBox.Header>
-                <Label>Day of Week:</Label>
-            </GroupBox.Header>
-            <StackPanel Margin="10">
-                <RadioButton Name="sundayRadioButton" VerticalContentAlignment="Center" IsChecked="True">Sunday</RadioButton>
-                <RadioButton Name="mondayRadioButton" VerticalContentAlignment="Center">Monday</RadioButton>
-                <RadioButton Name="tuesdayRadioButton" VerticalContentAlignment="Center">Tuesday</RadioButton>
-                <RadioButton Name="wednesdayRadioButton" VerticalContentAlignment="Center">Wednesday</RadioButton>
-                <RadioButton Name="thursdayRadioButton" VerticalContentAlignment="Center">Thursday</RadioButton>
-                <RadioButton Name="fridayRadioButton" VerticalContentAlignment="Center">Friday</RadioButton>
-                <RadioButton Name="saturdayRadioButton" VerticalContentAlignment="Center">Saturday</RadioButton>
-            </StackPanel>
-        </GroupBox>
-
-        <StackPanel Grid.Row="0" Grid.Column="3" Margin="5" Orientation="Vertical">
-            <Label>Start Date:</Label>
-            <DatePicker Name="startDateDatePicker" SelectedDateFormat="Short" FirstDayOfWeek="Sunday" Width="175"></DatePicker>
+        <StackPanel Grid.Row="0" Grid.Column="2" Margin="5" Orientation="Vertical">
+            <Label>Next Date Rotation Advances:</Label>
+            <DatePicker Name="nextDateRotationAdvancesDatePicker" SelectedDateFormat="Short"
+                        FirstDayOfWeek="Sunday" Width="175"></DatePicker>
+            <Label>Hour Rotation Advances (0-23):</Label>
+            <TextBox Name="hourRotationAdvancesTextBox" Width="50"></TextBox>
         </StackPanel>
 
-        <StackPanel Grid.Row="0" Grid.Column="4" Margin="5" Orientation="Vertical">
-            <Label>End Date:</Label>
-            <DatePicker Name="endDateDatePicker" SelectedDateFormat="Short" FirstDayOfWeek="Sunday" Width="175"></DatePicker>
-        </StackPanel>
-
-        <Button Name="saveButton" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Width="150"
+        <Button Name="saveButton" Grid.Row="1" Grid.Column="1" Width="150"
                 Click="SaveButton_Click">Save and Close</Button>
 
     </Grid>

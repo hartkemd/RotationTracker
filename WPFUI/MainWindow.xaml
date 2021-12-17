@@ -49,8 +49,8 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
-                    <TextBlock Text="Next Up: "></TextBlock>
-                    <TextBlock Name="rotation1NextUpName" Text="{Binding rotation1.NextUp}"></TextBlock>
+                    <TextBlock Text="Currently Up: "></TextBlock>
+                    <TextBlock Name="rotation1CurrentEmployeeTextBlock" Text="{Binding rotation1.CurrentEmployee}"></TextBlock>
                 </StackPanel>
                 <Button Name="advanceRotation1Button" Margin="0 5 0 5" Padding="5" Width="80"
                             Click="AdvanceRotation1Button_Click">Advance</Button>
@@ -73,8 +73,8 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
-                    <TextBlock Text="Next Up: "></TextBlock>
-                    <TextBlock Name="rotation2NextUpName" Text="{Binding rotation2.NextUp}"></TextBlock>
+                    <TextBlock Text="Currently Up: "></TextBlock>
+                    <TextBlock Name="rotation2CurrentEmployeeTextBlock" Text="{Binding rotation2.CurrentEmployee}"></TextBlock>
                 </StackPanel>
                 <Button Name="advanceRotation2Button" Margin="0 5 0 5" Padding="5" Width="80"
                             Click="AdvanceRotation2Button_Click">Advance</Button>
@@ -82,6 +82,11 @@
                     Click="EditRotation2Button_Click">Edit</Button>
             </StackPanel>
         </GroupBox>
+
+        <StackPanel Name="notificationStackPanel" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
+                    Visibility="Collapsed" Orientation="Vertical">
+            <TextBlock Name="notificationTextBlock"></TextBlock>
+        </StackPanel>
 
     </Grid>
 </Window>

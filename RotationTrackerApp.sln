@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RotationLibrary", "Rotation
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFUI", "WPFUI\WPFUI.csproj", "{5E5D6173-1E36-48A9-A7CC-CBF4C66BC275}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSONFileIOLibrary", "JSONFileIOLibrary\JSONFileIOLibrary.csproj", "{E84F66C2-61FE-4509-B8E7-0DCB314F6A5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JSONFileIOLibrary", "JSONFileIOLibrary\JSONFileIOLibrary.csproj", "{E84F66C2-61FE-4509-B8E7-0DCB314F6A5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFHelperLibrary", "WPFHelperLibrary\WPFHelperLibrary.csproj", "{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{E84F66C2-61FE-4509-B8E7-0DCB314F6A5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E84F66C2-61FE-4509-B8E7-0DCB314F6A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E84F66C2-61FE-4509-B8E7-0DCB314F6A5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

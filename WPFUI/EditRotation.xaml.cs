@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WPFHelperLibrary;
 
 namespace WPFUI
 {
@@ -38,6 +39,11 @@ namespace WPFUI
             rotationNameLabel.Content = $"{rotation.RotationName} Rotation:";
             employeeListBox.ItemsSource = rotation.Rotation;
             rotationNameTextBox.Text = rotation.RotationName;
+            if (_rotation.DateTimeRotationAdvances != DateTime.MinValue)
+            {
+                nextDateRotationAdvancesDatePicker.SelectedDate = _rotation.DateTimeRotationAdvances;
+            }
+            hourRotationAdvancesTextBox.Text = _rotation.DateTimeRotationAdvances.Hour.ToString();
         }
 
         private void RefreshListBoxes()
@@ -54,7 +60,6 @@ namespace WPFUI
             if (weeklyRadioButton.IsChecked == true)
             {
                 _rotation.RotationRecurrence = RecurrenceInterval.Weekly;
-                SetRecurrenceDayOfWeek();
             }
             else if (monthlyRadioButton.IsChecked == true)
             {
@@ -66,36 +71,34 @@ namespace WPFUI
             }
         }
 
-        private void SetRecurrenceDayOfWeek()
+        private bool SetNextDateTimeRotationAdvances()
         {
-            if (sundayRadioButton.IsChecked == true)
+            bool dateTimeSetSuccessfully = true;
+
+            if (nextDateRotationAdvancesDatePicker.SelectedDate.HasValue)
             {
-                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Sunday;
+                _rotation.DateTimeRotationAdvances = nextDateRotationAdvancesDatePicker.SelectedDate.Value;
+                if (string.IsNullOrWhiteSpace(hourRotationAdvancesTextBox.Text) == false)
+                {
+                    bool isValidInt = int.TryParse(hourRotationAdvancesTextBox.Text, out int hoursToAdd);
+                    if (isValidInt && hoursToAdd >= 0 && hoursToAdd <= 23)
+                    {
+                        _rotation.DateTimeRotationAdvances = _rotation.DateTimeRotationAdvances.AddHours(hoursToAdd);
+                    }
+                    else
+                    {
+                        WPFHelper.TextBoxInputWasInvalid("That was not a valid number of hours.", hourRotationAdvancesTextBox);
+                        dateTimeSetSuccessfully = false;
+                    }
+                }
             }
-            else if (mondayRadioButton.IsChecked == true)
+            else
             {
-                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Monday;
+                MessageBox.Show("No date was selected.");
+                dateTimeSetSuccessfully = false;
             }
-            else if (tuesdayRadioButton.IsChecked == true)
-            {
-                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Tuesday;
-            }
-            else if (wednesdayRadioButton.IsChecked == true)
-            {
-                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Wednesday;
-            }
-            else if (thursdayRadioButton.IsChecked == true)
-            {
-                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Thursday;
-            }
-            else if (fridayRadioButton.IsChecked == true)
-            {
-                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Friday;
-            }
-            else if (saturdayRadioButton.IsChecked == true)
-            {
-                _rotation.RotationRecurrenceDayOfWeek = DayOfWeek.Saturday;
-            }
+
+            return dateTimeSetSuccessfully;
         }
 
         private void MoveUpButton_Click(object sender, RoutedEventArgs e)
@@ -143,8 +146,13 @@ namespace WPFUI
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             SetRotationRecurrence();
-            _rotation.Save(_rotation.FilePath);
-            Close();
+
+            bool keepGoing = SetNextDateTimeRotationAdvances();
+            if (keepGoing)
+            {
+                _rotation.Save(_rotation.FilePath);
+                Close();
+            }
         }
     }
 }

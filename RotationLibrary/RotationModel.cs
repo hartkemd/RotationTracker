@@ -30,9 +30,9 @@ namespace RotationLibrary
         /// </summary>
         public DateTime EndDate { get; set; }
 
-        public string NextUp => GetNextUp();
+        public string CurrentEmployee => GetCurrentEmployee();
 
-        private string GetNextUp()
+        private string GetCurrentEmployee()
         {
             if (Rotation.Count > 0)
             {
