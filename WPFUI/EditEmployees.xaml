@@ -12,6 +12,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <GroupBox Grid.Row="0" Grid.Column="0" Margin="5">
@@ -28,8 +29,8 @@
                 </ListBox>
                 <TextBox Name="employeeNameTextBox" Margin="5" Padding="5" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Name="addEmployeeButton" Margin="5" Padding="5" Click="AddEmployeeButton_Click">Add</Button>
-                    <Button Name="removeEmployeeButton" Margin="5" Padding="5" Click="RemoveEmployeeButton_Click">Remove</Button>
+                    <Button Name="addEmployeeButton" Margin="5" Click="AddEmployeeButton_Click">Add</Button>
+                    <Button Name="removeEmployeeButton" Margin="5" Click="RemoveEmployeeButton_Click">Remove</Button>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

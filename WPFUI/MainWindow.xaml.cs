@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -35,6 +36,7 @@ namespace WPFUI
 
             SetObjectFilePaths();
             LoadObjectData();
+            SetObjectFilePaths();
 
             SetRotationNames();
             SetDataSourcesOfControls();
@@ -42,6 +44,20 @@ namespace WPFUI
             AdvanceRotationsIfDateTimeHasPassed();
 
             DisplayNotificationsAsync();
+            CreateTimer();
+        }
+
+        private void CreateTimer()
+        {
+            Timer refreshAppTimer = new();
+            refreshAppTimer.Interval = (15 * 60 * 1000); // 15 minutes
+            refreshAppTimer.Elapsed += new ElapsedEventHandler(RefreshAppTimer_Elapsed);
+            refreshAppTimer.Start();
+        }
+
+        private void RefreshAppTimer_Elapsed(object sender, EventArgs e)
+        {
+            AdvanceRotationsIfDateTimeHasPassed();
         }
 
         private async void DisplayNotificationsAsync()
@@ -99,23 +115,27 @@ namespace WPFUI
         private void AdvanceRotationsIfDateTimeHasPassed()
         {
             AdvanceRotationIfDateTimeHasPassed(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
+            AdvanceRotationIfDateTimeHasPassed(rotation2, rotation2CurrentEmployeeTextBlock, rotation2ListBox);
         }
 
         private void AdvanceRotationIfDateTimeHasPassed(RotationModel rotation, TextBlock textBlock, ListBox listBox)
         {
-            // work on this
-
-            DateTime now = DateTime.Now;
-            rotation.DateTimeRotationAdvances = DateTime.Parse("12/15/2021 5:00pm");
-
-            if (now > rotation.DateTimeRotationAdvances)
+            if (rotation.NextDateTimeRotationAdvances != DateTime.MinValue)
             {
-                rotation.AdvanceRotation();
-                rotation.DateTimeRotationAdvances = rotation.DateTimeRotationAdvances.AddSeconds(5);
-                notificationMessage += $"{rotation.Rotation.Last()} took their turn for {rotation.RotationName} Rotation.";
-                textBlock.Text = rotation.CurrentEmployee;
-                RefreshRotationListBox(listBox, rotation);
-                SaveRotation(rotation);
+                DateTime now = DateTime.Now;
+
+                if (now > rotation.NextDateTimeRotationAdvances)
+                {
+                    rotation.AdvanceRotation();
+                    rotation.SetNextDateTimeRotationAdvances();
+                    if (rotation.Rotation.Count > 0)
+                    {
+                        notificationMessage += $"{rotation.Rotation.Last()} took their turn for {rotation.RotationName} Rotation.\n";
+                    }
+                    textBlock.Text = rotation.CurrentEmployee;
+                    RefreshRotationListBox(listBox, rotation);
+                    SaveRotation(rotation);
+                }
             }
         }
 
@@ -139,9 +159,9 @@ namespace WPFUI
             SaveRotation(rotation);
         }
 
-        private void EditRotation(RotationModel rotation, ListBox listBox, Label label)
+        private void EditRotation(RotationModel rotation, ListBox listBox, Label label, TextBlock textBlock)
         {
-            EditRotation editRotation = new(this, rotation, listBox, label);
+            EditRotation editRotation = new(this, rotation, listBox, label, textBlock);
             editRotation.ShowDialog();
         }
 
@@ -158,7 +178,7 @@ namespace WPFUI
 
         private void EditRotation1Button_Click(object sender, RoutedEventArgs e)
         {
-            EditRotation(rotation1, rotation1ListBox, rotation1Name);
+            EditRotation(rotation1, rotation1ListBox, rotation1Name, rotation1CurrentEmployeeTextBlock);
         }
 
         private void AdvanceRotation2Button_Click(object sender, RoutedEventArgs e)
@@ -168,7 +188,7 @@ namespace WPFUI
 
         private void EditRotation2Button_Click(object sender, RoutedEventArgs e)
         {
-            EditRotation(rotation2, rotation2ListBox, rotation2Name);
+            EditRotation(rotation2, rotation2ListBox, rotation2Name, rotation2CurrentEmployeeTextBlock);
         }
     }
 }

@@ -11,9 +11,9 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
@@ -31,15 +31,14 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Name="moveUpButton" Margin="5" Padding="5" Click="MoveUpButton_Click">Move Up</Button>
-                    <Button Name="moveDownButton" Margin="5" Padding="5" Click="MoveDownButton_Click">Move Down</Button>
+                    <Button Name="moveUpButton" Margin="5" Click="MoveUpButton_Click">Move Up</Button>
+                    <Button Name="moveDownButton" Margin="5" Click="MoveDownButton_Click">Move Down</Button>
                 </StackPanel>
-                <Button Name="copyEmployeesToRotation" Margin="5" Padding="5" Width="215"
+                <Button Name="copyEmployeesToRotation" Margin="5" Width="215"
                         Click="CopyEmployeesToRotation_Click">Copy Employees to Rotation</Button>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBox Name="rotationNameTextBox" MinWidth="125" Margin="5" Padding="5"></TextBox>
                     <TextBlock Margin="0 5" Padding="5">Rotation</TextBlock>
-                    <Button Name="renameRotationButton" Margin="5" Padding="5" Click="RenameRotationButton_Click">Rename</Button>
                 </StackPanel>
             </StackPanel>
         </GroupBox>
@@ -63,8 +62,10 @@
             <TextBox Name="hourRotationAdvancesTextBox" Width="50"></TextBox>
         </StackPanel>
 
-        <Button Name="saveButton" Grid.Row="1" Grid.Column="1" Width="150"
+        <Button Name="saveButton" Grid.Row="1" Grid.Column="1" Width="150" Margin="5"
                 Click="SaveButton_Click">Save and Close</Button>
+        <Button Name="deleteButton" Grid.Row="2" Grid.Column="1" Width="150" Margin="5"
+                Click="DeleteButton_Click">Delete and Close</Button>
 
     </Grid>
 </Window>

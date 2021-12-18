@@ -14,6 +14,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
@@ -30,7 +31,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Button Name="editEmployeesButton" Width="45" Margin="0 5 0 0" Padding="5"
+                <Button Name="editEmployeesButton" Width="45" Margin="0 5 0 0"
                         Click="EditEmployeesButton_Click">Edit</Button>
             </StackPanel>
         </GroupBox>
@@ -52,10 +53,12 @@
                     <TextBlock Text="Currently Up: "></TextBlock>
                     <TextBlock Name="rotation1CurrentEmployeeTextBlock" Text="{Binding rotation1.CurrentEmployee}"></TextBlock>
                 </StackPanel>
-                <Button Name="advanceRotation1Button" Margin="0 5 0 5" Padding="5" Width="80"
-                            Click="AdvanceRotation1Button_Click">Advance</Button>
-                <Button Name="editRotation1Button" Width="45" Margin="5" Padding="5"
-                    Click="EditRotation1Button_Click">Edit</Button>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Name="advanceRotation1Button" Margin="0 5 0 5" Width="80"
+                                Click="AdvanceRotation1Button_Click">Advance</Button>
+                    <Button Name="editRotation1Button" Width="45" Margin="5"
+                        Click="EditRotation1Button_Click">Edit</Button>
+                </StackPanel>
             </StackPanel>
         </GroupBox>
 
@@ -76,14 +79,16 @@
                     <TextBlock Text="Currently Up: "></TextBlock>
                     <TextBlock Name="rotation2CurrentEmployeeTextBlock" Text="{Binding rotation2.CurrentEmployee}"></TextBlock>
                 </StackPanel>
-                <Button Name="advanceRotation2Button" Margin="0 5 0 5" Padding="5" Width="80"
-                            Click="AdvanceRotation2Button_Click">Advance</Button>
-                <Button Name="editRotation2Button" Width="45" Margin="5" Padding="5"
-                    Click="EditRotation2Button_Click">Edit</Button>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Name="advanceRotation2Button" Margin="0 5 0 5" Width="80"
+                                Click="AdvanceRotation2Button_Click">Advance</Button>
+                    <Button Name="editRotation2Button" Width="45" Margin="5"
+                        Click="EditRotation2Button_Click">Edit</Button>
+                </StackPanel>
             </StackPanel>
         </GroupBox>
 
-        <StackPanel Name="notificationStackPanel" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
+        <StackPanel Name="notificationStackPanel" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
                     Visibility="Collapsed" Orientation="Vertical">
             <TextBlock Name="notificationTextBlock"></TextBlock>
         </StackPanel>

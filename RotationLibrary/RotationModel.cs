@@ -14,21 +14,9 @@ namespace RotationLibrary
         /// <summary>
         /// Represents the time interval after which the rotation advances.
         /// </summary>
-        public RecurrenceInterval RotationRecurrence { get; set; }
+        public RecurrenceInterval RotationRecurrence { get; set; } = RecurrenceInterval.Weekly;
 
-        public DayOfWeek RotationRecurrenceDayOfWeek { get; set; }
-
-        public DateTime DateTimeRotationAdvances { get; set; }
-
-        /// <summary>
-        /// Represents the DateTime when the rotation begins and the employee starts their turn.
-        /// </summary>
-        public DateTime StartDate { get; set; }
-
-        /// <summary>
-        /// Represents the DateTime when the rotation ends and advances to the next employee.
-        /// </summary>
-        public DateTime EndDate { get; set; }
+        public DateTime NextDateTimeRotationAdvances { get; set; }
 
         public string CurrentEmployee => GetCurrentEmployee();
 
@@ -52,6 +40,30 @@ namespace RotationLibrary
                 Rotation.RemoveAt(0);
                 Rotation.Add(employeeWhoWent);
             }
+        }
+
+        public void SetNextDateTimeRotationAdvances()
+        {
+            if (RotationRecurrence == RecurrenceInterval.Weekly)
+            {
+                NextDateTimeRotationAdvances = NextDateTimeRotationAdvances.AddDays(7);
+            }
+            else if (RotationRecurrence == RecurrenceInterval.Monthly)
+            {
+                NextDateTimeRotationAdvances = NextDateTimeRotationAdvances.AddMonths(1);
+            }
+            else if (RotationRecurrence == RecurrenceInterval.Bimonthly)
+            {
+                NextDateTimeRotationAdvances = NextDateTimeRotationAdvances.AddMonths(2);
+            }
+        }
+
+        public void Clear()
+        {
+            RotationName = "";
+            Rotation.Clear();
+            RotationRecurrence = RecurrenceInterval.Weekly;
+            NextDateTimeRotationAdvances = DateTime.MinValue;
         }
     }
 }

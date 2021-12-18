@@ -26,8 +26,9 @@ namespace WPFUI
         private RotationModel _rotation;
         private ListBox _listBox;
         private Label _label;
+        private TextBlock _textBlock;
 
-        public EditRotation(MainWindow parentWindow, RotationModel rotation, ListBox listBox, Label label)
+        public EditRotation(MainWindow parentWindow, RotationModel rotation, ListBox listBox, Label label, TextBlock textBlock)
         {
             InitializeComponent();
 
@@ -35,15 +36,32 @@ namespace WPFUI
             _rotation = rotation;
             _listBox = listBox;
             _label = label;
+            _textBlock = textBlock;
 
             rotationNameLabel.Content = $"{rotation.RotationName} Rotation:";
             employeeListBox.ItemsSource = rotation.Rotation;
             rotationNameTextBox.Text = rotation.RotationName;
-            if (_rotation.DateTimeRotationAdvances != DateTime.MinValue)
+            if (_rotation.NextDateTimeRotationAdvances == DateTime.MinValue)
             {
-                nextDateRotationAdvancesDatePicker.SelectedDate = _rotation.DateTimeRotationAdvances;
+                nextDateRotationAdvancesDatePicker.SelectedDate = DateTime.Today;
             }
-            hourRotationAdvancesTextBox.Text = _rotation.DateTimeRotationAdvances.Hour.ToString();
+            else if (_rotation.NextDateTimeRotationAdvances != DateTime.MinValue)
+            {
+                nextDateRotationAdvancesDatePicker.SelectedDate = _rotation.NextDateTimeRotationAdvances;
+            }
+            hourRotationAdvancesTextBox.Text = _rotation.NextDateTimeRotationAdvances.Hour.ToString();
+        }
+
+        private void RefreshListBoxOnThisWindow()
+        {
+            employeeListBox.ItemsSource = null;
+            employeeListBox.ItemsSource = _parent.employees.EmployeeList;
+        }
+
+        private void RefreshListBoxOnParentWindow()
+        {
+            _listBox.ItemsSource = null;
+            _listBox.ItemsSource = _rotation.Rotation;
         }
 
         private void RefreshListBoxes()
@@ -77,13 +95,13 @@ namespace WPFUI
 
             if (nextDateRotationAdvancesDatePicker.SelectedDate.HasValue)
             {
-                _rotation.DateTimeRotationAdvances = nextDateRotationAdvancesDatePicker.SelectedDate.Value;
+                _rotation.NextDateTimeRotationAdvances = nextDateRotationAdvancesDatePicker.SelectedDate.Value;
                 if (string.IsNullOrWhiteSpace(hourRotationAdvancesTextBox.Text) == false)
                 {
                     bool isValidInt = int.TryParse(hourRotationAdvancesTextBox.Text, out int hoursToAdd);
                     if (isValidInt && hoursToAdd >= 0 && hoursToAdd <= 23)
                     {
-                        _rotation.DateTimeRotationAdvances = _rotation.DateTimeRotationAdvances.AddHours(hoursToAdd);
+                        _rotation.NextDateTimeRotationAdvances = _rotation.NextDateTimeRotationAdvances.AddHours(hoursToAdd);
                     }
                     else
                     {
@@ -131,26 +149,42 @@ namespace WPFUI
 
         private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
         {
-            _rotation.Rotation = _parent.employees.EmployeeList;
-
-            RefreshListBoxes();
-        }
-
-        private void RenameRotationButton_Click(object sender, RoutedEventArgs e)
-        {
-            _rotation.RotationName = rotationNameTextBox.Text;
-            rotationNameLabel.Content = $"{_rotation.RotationName} Rotation:";
-            _label.Content = $"{_rotation.RotationName} Rotation:";
+            RefreshListBoxOnThisWindow();
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            _rotation.Rotation = _parent.employees.EmployeeList;
+            RefreshListBoxOnParentWindow();
+
+            _rotation.RotationName = rotationNameTextBox.Text;
+            _label.Content = $"{_rotation.RotationName} Rotation:";
+
+            _textBlock.Text = _rotation.CurrentEmployee;
+
             SetRotationRecurrence();
 
             bool keepGoing = SetNextDateTimeRotationAdvances();
             if (keepGoing)
             {
                 _rotation.Save(_rotation.FilePath);
+                Close();
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult messageBoxResult =
+                MessageBox.Show("This will delete the rotation. Are you sure?",
+                "Delete?", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                _rotation.Clear();
+                _rotation.Save(_rotation.FilePath);
+                RefreshListBoxOnParentWindow();
+                _label.Content = "Rotation:";
+                _textBlock.Text = "";
                 Close();
             }
         }
