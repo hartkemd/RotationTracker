@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFUI"
         mc:Ignorable="d" FontSize="16"
-        Title="RotationTracker" Height="500" Width="800">
+        Title="RotationTracker" Height="550" Width="825">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />

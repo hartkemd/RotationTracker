@@ -42,25 +42,10 @@ namespace WPFUI
             hourRotationAdvancesTextBox.Text = _rotation.NextDateTimeRotationAdvances.Hour.ToString();
         }
 
-        private void RefreshListBoxOnThisWindow()
-        {
-            employeeListBox.ItemsSource = null;
-            employeeListBox.ItemsSource = _parent.employees.EmployeeList;
-        }
-
-        private void RefreshListBoxOnParentWindow()
-        {
-            _listBox.ItemsSource = null;
-            _listBox.ItemsSource = _rotation.Rotation;
-        }
-
         private void RefreshListBoxes()
         {
-            employeeListBox.ItemsSource = null;
-            _listBox.ItemsSource = null;
-
-            employeeListBox.ItemsSource = _rotation.Rotation;
-            _listBox.ItemsSource = _rotation.Rotation;
+            employeeListBox.RefreshContents(_rotation.Rotation);
+            _listBox.RefreshContents(_rotation.Rotation);
         }
 
         private void SetRotationRecurrence()
@@ -139,12 +124,13 @@ namespace WPFUI
 
         private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
         {
-            RefreshListBoxOnThisWindow();
+            _rotation.Rotation = _parent.employees.EmployeeList;
+            employeeListBox.RefreshContents(_rotation.Rotation);
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            RefreshListBoxOnParentWindow();
+            _listBox.RefreshContents(_rotation.Rotation);
 
             _rotation.RotationName = rotationNameTextBox.Text;
             _label.Content = $"{_rotation.RotationName} Rotation:";
@@ -171,7 +157,7 @@ namespace WPFUI
             {
                 _rotation.Clear();
                 _rotation.Save(_rotation.FilePath);
-                RefreshListBoxOnParentWindow();
+                _listBox.RefreshContents(_rotation.Rotation);
                 _label.Content = "Rotation:";
                 _textBlock.Text = "";
                 Close();
