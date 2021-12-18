@@ -34,6 +34,12 @@
                     <Button Name="moveUpButton" Margin="5" Click="MoveUpButton_Click">Move Up</Button>
                     <Button Name="moveDownButton" Margin="5" Click="MoveDownButton_Click">Move Down</Button>
                 </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBox Name="employeeNameTextBox" Margin="5" Width="150"></TextBox>
+                    <Button Name="addEmployeeButton" Margin="5" Click="AddEmployeeButton_Click">Add Employee</Button>
+                </StackPanel>
+                <Button Name="removeEmployeeButton" Margin="5" Click="RemoveEmployeeButton_Click"
+                        Width="150">Remove Employee</Button>
                 <Button Name="copyEmployeesToRotation" Margin="5" Width="215"
                         Click="CopyEmployeesToRotation_Click">Copy Employees to Rotation</Button>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

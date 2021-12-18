@@ -144,7 +144,6 @@ namespace WPFUI
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            _rotation.Rotation = _parent.employees.EmployeeList;
             RefreshListBoxOnParentWindow();
 
             _rotation.RotationName = rotationNameTextBox.Text;
@@ -176,6 +175,24 @@ namespace WPFUI
                 _label.Content = "Rotation:";
                 _textBlock.Text = "";
                 Close();
+            }
+        }
+
+        private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            _rotation.Rotation.Add(employeeNameTextBox.Text);
+
+            employeeNameTextBox.Clear();
+
+            employeeListBox.RefreshContents(_rotation.Rotation);
+        }
+
+        private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (employeeListBox.SelectedIndex != -1)
+            {
+                _rotation.Rotation.Remove(employeeListBox.SelectedItem.ToString());
+                employeeListBox.RefreshContents(_rotation.Rotation);
             }
         }
     }

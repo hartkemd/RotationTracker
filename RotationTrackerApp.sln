@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RotationLibrary", "RotationLibrary\RotationLibrary.csproj", "{40BA5F00-AF8D-4FEA-85D9-476C6C73D23B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFUI", "WPFUI\WPFUI.csproj", "{5E5D6173-1E36-48A9-A7CC-CBF4C66BC275}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RotationTracker", "WPFUI\RotationTracker.csproj", "{5E5D6173-1E36-48A9-A7CC-CBF4C66BC275}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JSONFileIOLibrary", "JSONFileIOLibrary\JSONFileIOLibrary.csproj", "{E84F66C2-61FE-4509-B8E7-0DCB314F6A5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFHelperLibrary", "WPFHelperLibrary\WPFHelperLibrary.csproj", "{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFHelperLibrary", "WPFHelperLibrary\WPFHelperLibrary.csproj", "{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
