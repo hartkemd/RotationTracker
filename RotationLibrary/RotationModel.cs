@@ -5,25 +5,12 @@ namespace RotationLibrary
 {
     public class RotationModel
     {
-        private string _rotationName;
-        public string RotationName {
-            get { return _rotationName; }
-            set
-            {
-                if (_rotationName == null)
-                {
-                    _rotationName = value;
-                }
-            }
-        }
+        public string RotationName { get; set; }
 
         public List<string> Rotation { get; set; } = new List<string>();
 
         public string FilePath { get; set; }
 
-        /// <summary>
-        /// Represents the time interval after which the rotation advances.
-        /// </summary>
         public RecurrenceInterval RotationRecurrence { get; set; } = RecurrenceInterval.Weekly;
 
         public DateTime NextDateTimeRotationAdvances { get; set; }

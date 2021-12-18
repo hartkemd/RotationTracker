@@ -28,7 +28,6 @@ namespace WPFUI
             LoadObjectData();
             SetObjectFilePaths();
 
-            SetRotationNames();
             SetDataSourcesOfControls();
 
             AdvanceRotationsIfDateTimeHasPassed();
@@ -73,12 +72,6 @@ namespace WPFUI
             employees = employees.Load(employees.FilePath);
             rotation1 = rotation1.Load(rotation1.FilePath);
             rotation2 = rotation2.Load(rotation2.FilePath);
-        }
-
-        private void SetRotationNames()
-        {
-            rotation1.RotationName = "First";
-            rotation2.RotationName = "Second";
         }
 
         private void SetDataSourcesOfControls()
