@@ -5,7 +5,17 @@ namespace RotationLibrary
 {
     public class RotationModel
     {
-        public string RotationName { get; set; }
+        private string _rotationName;
+        public string RotationName {
+            get { return _rotationName; }
+            set
+            {
+                if (_rotationName == null)
+                {
+                    _rotationName = value;
+                }
+            }
+        }
 
         public List<string> Rotation { get; set; } = new List<string>();
 

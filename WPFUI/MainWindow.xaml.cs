@@ -1,22 +1,12 @@
 ﻿using JSONFileIOLibrary;
 using RotationLibrary;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using WPFHelperLibrary;
 
 namespace WPFUI
 {
@@ -50,7 +40,7 @@ namespace WPFUI
         private void CreateTimer()
         {
             Timer refreshAppTimer = new();
-            refreshAppTimer.Interval = (15 * 60 * 1000); // 15 minutes
+            refreshAppTimer.Interval = 15 * 60 * 1000; // 15 minutes
             refreshAppTimer.Elapsed += new ElapsedEventHandler(RefreshAppTimer_Elapsed);
             refreshAppTimer.Start();
         }
@@ -87,29 +77,16 @@ namespace WPFUI
 
         private void SetRotationNames()
         {
-            SetRotationName(rotation1, "First");
-            SetRotationName(rotation2, "Second");
-        }
-
-        private static void SetRotationName(RotationModel rotation, string name)
-        {
-            if (rotation.RotationName == null)
-            {
-                rotation.RotationName = name;
-            }
+            rotation1.RotationName = "First";
+            rotation2.RotationName = "Second";
         }
 
         private void SetDataSourcesOfControls()
         {
             employeeListBox.ItemsSource = employees.EmployeeList;
 
-            rotation1Name.Content = $"{rotation1.RotationName} Rotation:";
-            rotation1ListBox.ItemsSource = rotation1.Rotation;
-            rotation1CurrentEmployeeTextBlock.Text = rotation1.CurrentEmployee;
-
-            rotation2Name.Content = $"{rotation2.RotationName} Rotation:";
-            rotation2ListBox.ItemsSource = rotation2.Rotation;
-            rotation2CurrentEmployeeTextBlock.Text = rotation2.CurrentEmployee;
+            rotation1.SetRotationControlsOnMainWindow(rotation1NameLabel, rotation1ListBox, rotation1CurrentEmployeeTextBlock);
+            rotation2.SetRotationControlsOnMainWindow(rotation2NameLabel, rotation2ListBox, rotation2CurrentEmployeeTextBlock);
         }
 
         private void AdvanceRotationsIfDateTimeHasPassed()
@@ -133,7 +110,7 @@ namespace WPFUI
                         notificationMessage += $"{rotation.Rotation.Last()} took their turn for {rotation.RotationName} Rotation.\n";
                     }
                     textBlock.Text = rotation.CurrentEmployee;
-                    RefreshRotationListBox(listBox, rotation);
+                    listBox.RefreshContents(rotation.Rotation);
                     SaveRotation(rotation);
                 }
             }
@@ -144,18 +121,12 @@ namespace WPFUI
             rotation.Save(rotation.FilePath);
         }
 
-        private static void RefreshRotationListBox(ListBox listBox, RotationModel rotation)
-        {
-            listBox.ItemsSource = null;
-            listBox.ItemsSource = rotation.Rotation;
-        }
-
-        private static void AdvanceRotation(RotationModel rotation, TextBlock textBlock, ListBox listBox)
+        private static void AdvanceRotationAndRefreshControls(RotationModel rotation, TextBlock textBlock, ListBox listBox)
         {
             rotation.AdvanceRotation();
             textBlock.Text = rotation.CurrentEmployee;
 
-            RefreshRotationListBox(listBox, rotation);
+            listBox.RefreshContents(rotation.Rotation);
             SaveRotation(rotation);
         }
 
@@ -173,22 +144,22 @@ namespace WPFUI
 
         private void AdvanceRotation1Button_Click(object sender, RoutedEventArgs e)
         {
-            AdvanceRotation(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
+            AdvanceRotationAndRefreshControls(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
         }
 
         private void EditRotation1Button_Click(object sender, RoutedEventArgs e)
         {
-            EditRotation(rotation1, rotation1ListBox, rotation1Name, rotation1CurrentEmployeeTextBlock);
+            EditRotation(rotation1, rotation1ListBox, rotation1NameLabel, rotation1CurrentEmployeeTextBlock);
         }
 
         private void AdvanceRotation2Button_Click(object sender, RoutedEventArgs e)
         {
-            AdvanceRotation(rotation2, rotation2CurrentEmployeeTextBlock, rotation2ListBox);
+            AdvanceRotationAndRefreshControls(rotation2, rotation2CurrentEmployeeTextBlock, rotation2ListBox);
         }
 
         private void EditRotation2Button_Click(object sender, RoutedEventArgs e)
         {
-            EditRotation(rotation2, rotation2ListBox, rotation2Name, rotation2CurrentEmployeeTextBlock);
+            EditRotation(rotation2, rotation2ListBox, rotation2NameLabel, rotation2CurrentEmployeeTextBlock);
         }
     }
 }

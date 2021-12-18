@@ -39,7 +39,7 @@
         <!-- Rotation 1 -->
         <GroupBox Grid.Row="0" Grid.Column="1" Margin="5">
             <GroupBox.Header>
-                <Label Name="rotation1Name" Content="First Rotation:"></Label>
+                <Label Name="rotation1NameLabel" Content="First Rotation:"></Label>
             </GroupBox.Header>
             <StackPanel>
                 <ListBox Name="rotation1ListBox" Margin="5 0 5 0">
@@ -65,7 +65,7 @@
         <!-- Rotation 2 -->
         <GroupBox Grid.Row="0" Grid.Column="2" Margin="5">
             <GroupBox.Header>
-                <Label Name="rotation2Name" Content="Second Rotation:"></Label>
+                <Label Name="rotation2NameLabel" Content="Second Rotation:"></Label>
             </GroupBox.Header>
             <StackPanel>
                 <ListBox Name="rotation2ListBox" Margin="5 0 5 0">

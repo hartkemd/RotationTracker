@@ -1,18 +1,8 @@
 ﻿using JSONFileIOLibrary;
 using RotationLibrary;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using WPFHelperLibrary;
 
 namespace WPFUI
@@ -175,8 +165,8 @@ namespace WPFUI
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult messageBoxResult =
-                MessageBox.Show("This will delete the rotation. Are you sure?",
-                "Delete?", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                WPFHelper.ShowYesNoExclamationMessageBox("This will delete the rotation. Are you sure?",
+                "Delete?");
 
             if (messageBoxResult == MessageBoxResult.Yes)
             {
