@@ -11,19 +11,21 @@ namespace JSONFileIOLibrary
 {
     public static class JSONFileIO
     {
-        public static void Save<T>(this T model, string fileName)
+        public static void Save<T>(this T model, string filePath, string fileName)
         {
+            DirectoryHelper.CreateDirectoryIfDoesNotExist(filePath);
+
             string jsonString = JsonSerializer.Serialize(model);
-            File.WriteAllText(fileName, jsonString);
+            File.WriteAllText($"{filePath}{fileName}", jsonString);
         }
 
-        public static T Load<T>(this T model, string fileName) where T : new()
+        public static T Load<T>(this T model, string fullFilePath) where T : new()
         {
             T output = new();
 
-            if (File.Exists(fileName))
+            if (File.Exists(fullFilePath))
             {
-                string jsonString = File.ReadAllText(fileName);
+                string jsonString = File.ReadAllText(fullFilePath);
                 output = JsonSerializer.Deserialize<T>(jsonString);
             }
             return output;

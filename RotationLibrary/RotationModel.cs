@@ -3,13 +3,11 @@ using System.Collections.Generic;
 
 namespace RotationLibrary
 {
-    public class RotationModel
+    public class RotationModel : BaseFileClass
     {
         public string RotationName { get; set; }
 
         public List<string> Rotation { get; set; } = new List<string>();
-
-        public string FilePath { get; set; }
 
         public RecurrenceInterval RotationRecurrence { get; set; } = RecurrenceInterval.Weekly;
 

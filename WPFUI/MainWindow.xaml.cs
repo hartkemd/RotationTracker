@@ -62,16 +62,21 @@ namespace WPFUI
 
         private void SetObjectFilePaths()
         {
-            employees.FilePath = "EmployeeList.json";
-            rotation1.FilePath = "Rotation1.json";
-            rotation2.FilePath = "Rotation2.json";
+            employees.FilePath = @"data\";
+            employees.FileName = "EmployeeList.json";
+
+            rotation1.FilePath = @"data\";
+            rotation1.FileName = "Rotation1.json";
+
+            rotation2.FilePath = @"data\";
+            rotation2.FileName = "Rotation2.json";
         }
 
         private void LoadObjectData()
         {
-            employees = employees.Load(employees.FilePath);
-            rotation1 = rotation1.Load(rotation1.FilePath);
-            rotation2 = rotation2.Load(rotation2.FilePath);
+            employees = employees.Load(employees.FullFilePath);
+            rotation1 = rotation1.Load(rotation1.FullFilePath);
+            rotation2 = rotation2.Load(rotation2.FullFilePath);
         }
 
         private void SetDataSourcesOfControls()
@@ -111,7 +116,7 @@ namespace WPFUI
 
         private static void SaveRotation(RotationModel rotation)
         {
-            rotation.Save(rotation.FilePath);
+            rotation.Save(rotation.FilePath, rotation.FileName);
         }
 
         private static void AdvanceRotationAndRefreshControls(RotationModel rotation, TextBlock textBlock, ListBox listBox)

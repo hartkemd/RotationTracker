@@ -8,9 +8,9 @@
         Title="RotationTracker" Height="550" Width="825">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" />
-            <ColumnDefinition Width="250" />
-            <ColumnDefinition Width="250" />
+            <ColumnDefinition Width="225" />
+            <ColumnDefinition Width="225" />
+            <ColumnDefinition Width="225" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />

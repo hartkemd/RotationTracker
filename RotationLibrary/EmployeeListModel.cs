@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace RotationLibrary
 {
-    public class EmployeeListModel
+    public class EmployeeListModel : BaseFileClass
     {
         public List<string> EmployeeList { get; set; } = new List<string>();
-        public string FilePath { get; set; }
     }
 }
