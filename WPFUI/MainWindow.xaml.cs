@@ -62,13 +62,8 @@ namespace WPFUI
 
         private void SetObjectFilePaths()
         {
-            employees.FilePath = @"data\";
             employees.FileName = "EmployeeList.json";
-
-            rotation1.FilePath = @"data\";
             rotation1.FileName = "Rotation1.json";
-
-            rotation2.FilePath = @"data\";
             rotation2.FileName = "Rotation2.json";
         }
 

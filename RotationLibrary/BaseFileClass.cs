@@ -11,7 +11,7 @@ namespace RotationLibrary
         /// <summary>
         /// Directory where file containing this object's data lives.
         /// </summary>
-        public string FilePath { get; set; }
+        public string FilePath { get; set; } = @"data\";
 
         /// <summary>
         /// File where this object's data lives.
