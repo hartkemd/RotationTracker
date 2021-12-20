@@ -8,9 +8,9 @@
         Title="RotationTracker" Height="600" Width="825">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" MaxWidth="225" />
+            <ColumnDefinition Width="auto" MaxWidth="225" />
+            <ColumnDefinition Width="auto" MaxWidth="225" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -49,9 +49,10 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
-                    <TextBlock Text="Currently Up: "></TextBlock>
-                    <TextBlock Name="rotation1CurrentEmployeeTextBlock" Text="{Binding rotation1.CurrentEmployee}"></TextBlock>
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <TextBlock HorizontalAlignment="Center" Text="Currently Up:"></TextBlock>
+                    <TextBlock Name="rotation1CurrentEmployeeTextBlock" Text="{Binding rotation1.CurrentEmployee}"
+                               HorizontalAlignment="Center"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Name="advanceRotation1Button" Margin="0 5 0 5" Width="80"
@@ -60,7 +61,7 @@
                         Click="EditRotation1Button_Click">Edit</Button>
                 </StackPanel>
                 <Label>Notes:</Label>
-                <TextBox Name="rotation1NotesTextBox" IsReadOnly="True" TextWrapping="Wrap" Height="60"
+                <TextBox Name="rotation1NotesTextBox" IsReadOnly="True" TextWrapping="Wrap" Height="60" MaxWidth="215"
                          VerticalScrollBarVisibility="Auto"></TextBox>
             </StackPanel>
         </GroupBox>
@@ -78,9 +79,10 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5 0 0">
-                    <TextBlock Text="Currently Up: "></TextBlock>
-                    <TextBlock Name="rotation2CurrentEmployeeTextBlock" Text="{Binding rotation2.CurrentEmployee}"></TextBlock>
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <TextBlock HorizontalAlignment="Center" Text="Currently Up:"></TextBlock>
+                    <TextBlock Name="rotation2CurrentEmployeeTextBlock" Text="{Binding rotation2.CurrentEmployee}"
+                               HorizontalAlignment="Center"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Name="advanceRotation2Button" Margin="0 5 0 5" Width="80"
@@ -89,7 +91,7 @@
                         Click="EditRotation2Button_Click">Edit</Button>
                 </StackPanel>
                 <Label>Notes:</Label>
-                <TextBox Name="rotation2NotesTextBox" IsReadOnly="True" TextWrapping="Wrap" Height="60"
+                <TextBox Name="rotation2NotesTextBox" IsReadOnly="True" TextWrapping="Wrap" Height="60" MaxWidth="215"
                          VerticalScrollBarVisibility="Auto"></TextBox>
             </StackPanel>
         </GroupBox>
