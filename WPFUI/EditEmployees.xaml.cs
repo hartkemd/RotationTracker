@@ -26,14 +26,14 @@ namespace WPFUI
             _parent.rotation1.Rotation.Remove(_employeeToRemove);
 
             _parent.rotation1ListBox.RefreshContents(_parent.rotation1.Rotation);
-            _parent.rotation1.Save(_parent.rotation1.FilePath, _parent.rotation1.FileName);
+            _parent.rotation1.SaveToJSON(_parent.rotation1.FilePath, _parent.rotation1.FileName);
 
             _parent.rotation1CurrentEmployeeTextBlock.Text = _parent.rotation1.CurrentEmployee;
 
             _parent.rotation2.Rotation.Remove(_employeeToRemove);
 
             _parent.rotation2ListBox.RefreshContents(_parent.rotation2.Rotation);
-            _parent.rotation2.Save(_parent.rotation2.FilePath, _parent.rotation1.FileName);
+            _parent.rotation2.SaveToJSON(_parent.rotation2.FilePath, _parent.rotation1.FileName);
 
             _parent.rotation2CurrentEmployeeTextBlock.Text = _parent.rotation2.CurrentEmployee;
         }
@@ -50,7 +50,7 @@ namespace WPFUI
 
             _parent.employees.EmployeeList = _parent.employees.EmployeeList;
 
-            _parent.employees.Save(_parent.employees.FilePath, _parent.employees.FileName);
+            _parent.employees.SaveToJSON(_parent.employees.FilePath, _parent.employees.FileName);
         }
 
         private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
@@ -63,7 +63,7 @@ namespace WPFUI
             {
                 _employeeToRemove = employeeListBox.SelectedItem.ToString();
                 _parent.employees.EmployeeList.RemoveAt(employeeListBox.SelectedIndex);
-                _parent.employees.Save(_parent.employees.FilePath, _parent.employees.FileName);
+                _parent.employees.SaveToJSON(_parent.employees.FilePath, _parent.employees.FileName);
 
                 employeeListBox.RefreshContents(_parent.employees.EmployeeList);
                 _parent.employeeListBox.RefreshContents(_parent.employees.EmployeeList);

@@ -13,13 +13,20 @@
             <ColumnDefinition Width="auto" MaxWidth="225" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+        
+        <!-- User information -->
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+            <TextBlock Text="Current User: "></TextBlock>
+            <TextBlock Name="userNameTextBlock"></TextBlock>
+        </StackPanel>
 
         <!-- Employees -->
-        <GroupBox Grid.Row="0" Grid.Column="0" Margin="5">
+        <GroupBox Grid.Row="1" Grid.Column="0" Margin="5">
             <GroupBox.Header>
                 <Label>Employees:</Label>
             </GroupBox.Header>
@@ -37,7 +44,7 @@
         </GroupBox>
 
         <!-- Rotation 1 -->
-        <GroupBox Grid.Row="0" Grid.Column="1" Margin="5">
+        <GroupBox Grid.Row="1" Grid.Column="1" Margin="5">
             <GroupBox.Header>
                 <Label Name="rotation1NameLabel" Content="First Rotation:"></Label>
             </GroupBox.Header>
@@ -67,7 +74,7 @@
         </GroupBox>
 
         <!-- Rotation 2 -->
-        <GroupBox Grid.Row="0" Grid.Column="2" Margin="5">
+        <GroupBox Grid.Row="1" Grid.Column="2" Margin="5">
             <GroupBox.Header>
                 <Label Name="rotation2NameLabel" Content="Second Rotation:"></Label>
             </GroupBox.Header>
@@ -97,7 +104,7 @@
         </GroupBox>
 
         <!-- Notification area -->
-        <StackPanel Name="notificationStackPanel" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
+        <StackPanel Name="notificationStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
                     Visibility="Collapsed" Orientation="Vertical">
             <TextBlock Name="notificationTextBlock"></TextBlock>
         </StackPanel>

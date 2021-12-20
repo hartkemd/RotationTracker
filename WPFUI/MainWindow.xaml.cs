@@ -2,6 +2,8 @@
 using RotationLibrary;
 using System;
 using System.Linq;
+using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -19,10 +21,14 @@ namespace WPFUI
         public RotationModel rotation1 = new();
         public RotationModel rotation2 = new();
         private string notificationMessage;
+        private string currentUser;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            ShowConfigOptionsIfNoConfigFileExists();
+            DisplayCurrentUser();
 
             SetObjectFilePaths();
             LoadObjectData();
@@ -36,9 +42,25 @@ namespace WPFUI
             CreateTimer();
         }
 
+        private void ShowConfigOptionsIfNoConfigFileExists()
+        {
+            
+        }
+
+        private void DisplayCurrentUser()
+        {
+            GetCurrentUser();
+            userNameTextBlock.Text = currentUser;
+        }
+
+        private void GetCurrentUser()
+        {
+            currentUser = WindowsIdentity.GetCurrent().Name;
+        }
+
         private void CreateTimer()
         {
-            Timer refreshAppTimer = new();
+            System.Timers.Timer refreshAppTimer = new();
             refreshAppTimer.Interval = 15 * 60 * 1000; // 15 minutes
             refreshAppTimer.Elapsed += new ElapsedEventHandler(RefreshAppTimer_Elapsed);
             refreshAppTimer.Start();
@@ -69,9 +91,9 @@ namespace WPFUI
 
         private void LoadObjectData()
         {
-            employees = employees.Load(employees.FullFilePath);
-            rotation1 = rotation1.Load(rotation1.FullFilePath);
-            rotation2 = rotation2.Load(rotation2.FullFilePath);
+            employees = employees.LoadFromJSON(employees.FullFilePath);
+            rotation1 = rotation1.LoadFromJSON(rotation1.FullFilePath);
+            rotation2 = rotation2.LoadFromJSON(rotation2.FullFilePath);
         }
 
         private void PopulateControls()
@@ -113,7 +135,7 @@ namespace WPFUI
 
         private static void SaveRotation(RotationModel rotation)
         {
-            rotation.Save(rotation.FilePath, rotation.FileName);
+            rotation.SaveToJSON(rotation.FilePath, rotation.FileName);
         }
 
         private static void AdvanceRotationAndRefreshControls(RotationModel rotation, TextBlock textBlock, ListBox listBox)

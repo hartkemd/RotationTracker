@@ -178,7 +178,7 @@ namespace WPFUI
             bool keepGoing = SetNextDateTimeRotationAdvances();
             if (keepGoing)
             {
-                _rotation.Save(_rotation.FilePath, _rotation.FileName);
+                _rotation.SaveToJSON(_rotation.FilePath, _rotation.FileName);
                 Close();
             }
         }
@@ -192,7 +192,7 @@ namespace WPFUI
             if (messageBoxResult == MessageBoxResult.Yes)
             {
                 _rotation.Clear();
-                _rotation.Save(_rotation.FilePath, _rotation.FileName);
+                _rotation.SaveToJSON(_rotation.FilePath, _rotation.FileName);
                 _listBox.RefreshContents(_rotation.Rotation);
                 _label.Content = "Rotation:";
                 _textBlock.Text = "";
