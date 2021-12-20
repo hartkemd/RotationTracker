@@ -13,6 +13,8 @@ namespace RotationLibrary
 
         public DateTime NextDateTimeRotationAdvances { get; set; }
 
+        public string Notes { get; set; }
+
         public string CurrentEmployee => GetCurrentEmployee();
 
         private string GetCurrentEmployee()
@@ -59,6 +61,7 @@ namespace RotationLibrary
             Rotation.Clear();
             RotationRecurrence = RecurrenceInterval.Weekly;
             NextDateTimeRotationAdvances = DateTime.MinValue;
+            Notes = "";
         }
     }
 }

@@ -21,11 +21,20 @@ namespace WPFHelperLibrary
             return output;
         }
 
-        public static void TextBoxInputWasInvalid(string message, TextBox textBox)
+        public static void ShowErrorMessageBoxAndResetTextBox(string message, TextBox textBox)
         {
-            MessageBox.Show(message);
+            MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             textBox.Clear();
             textBox.Focus();
+        }
+
+        // template for TextBox validation
+        public static void IfTextBoxTextIsValid(TextBox textBox)
+        {
+            if (string.IsNullOrWhiteSpace(textBox.Text) == false)
+            {
+
+            }
         }
     }
 }

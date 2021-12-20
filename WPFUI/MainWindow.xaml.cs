@@ -28,7 +28,7 @@ namespace WPFUI
             LoadObjectData();
             SetObjectFilePaths();
 
-            SetDataSourcesOfControls();
+            PopulateControls();
 
             AdvanceRotationsIfDateTimeHasPassed();
 
@@ -74,12 +74,14 @@ namespace WPFUI
             rotation2 = rotation2.Load(rotation2.FullFilePath);
         }
 
-        private void SetDataSourcesOfControls()
+        private void PopulateControls()
         {
             employeeListBox.ItemsSource = employees.EmployeeList;
 
-            rotation1.SetRotationControlsOnMainWindow(rotation1NameLabel, rotation1ListBox, rotation1CurrentEmployeeTextBlock);
-            rotation2.SetRotationControlsOnMainWindow(rotation2NameLabel, rotation2ListBox, rotation2CurrentEmployeeTextBlock);
+            rotation1.SetRotationControlsOnMainWindow(rotation1NameLabel, rotation1ListBox,
+                rotation1CurrentEmployeeTextBlock, rotation1NotesTextBox);
+            rotation2.SetRotationControlsOnMainWindow(rotation2NameLabel, rotation2ListBox,
+                rotation2CurrentEmployeeTextBlock, rotation2NotesTextBox);
         }
 
         private void AdvanceRotationsIfDateTimeHasPassed()

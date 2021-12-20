@@ -28,9 +28,16 @@ namespace WPFUI
             _label = label;
             _textBlock = textBlock;
 
-            rotationNameLabel.Content = $"{rotation.RotationName} Rotation:";
-            employeeListBox.ItemsSource = rotation.Rotation;
-            rotationNameTextBox.Text = rotation.RotationName;
+            PopulateControls();
+        }
+
+        private void PopulateControls()
+        {
+            rotationNameLabel.Content = $"{_rotation.RotationName} Rotation:";
+            employeeListBox.ItemsSource = _rotation.Rotation;
+            rotationNameTextBox.Text = _rotation.RotationName;
+            notesTextBox.Text = _rotation.Notes;
+
             if (_rotation.NextDateTimeRotationAdvances == DateTime.MinValue)
             {
                 nextDateRotationAdvancesDatePicker.SelectedDate = DateTime.Today;
@@ -39,6 +46,7 @@ namespace WPFUI
             {
                 nextDateRotationAdvancesDatePicker.SelectedDate = _rotation.NextDateTimeRotationAdvances;
             }
+
             hourRotationAdvancesTextBox.Text = _rotation.NextDateTimeRotationAdvances.Hour.ToString();
         }
 
@@ -80,7 +88,8 @@ namespace WPFUI
                     }
                     else
                     {
-                        WPFHelper.TextBoxInputWasInvalid("That was not a valid number of hours.", hourRotationAdvancesTextBox);
+                        WPFHelper.ShowErrorMessageBoxAndResetTextBox("That was not a valid number of hours.",
+                            hourRotationAdvancesTextBox);
                         dateTimeSetSuccessfully = false;
                     }
                 }
@@ -128,6 +137,30 @@ namespace WPFUI
             employeeListBox.RefreshContents(_rotation.Rotation);
         }
 
+        private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(employeeNameTextBox.Text) == false)
+            {
+                _rotation.Rotation.Add(employeeNameTextBox.Text);
+                employeeNameTextBox.Clear();
+                employeeListBox.RefreshContents(_rotation.Rotation);
+            }
+            else
+            {
+                employeeNameTextBox.Clear();
+                employeeNameTextBox.Focus();
+            }
+        }
+
+        private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (employeeListBox.SelectedIndex != -1)
+            {
+                _rotation.Rotation.Remove(employeeListBox.SelectedItem.ToString());
+                employeeListBox.RefreshContents(_rotation.Rotation);
+            }
+        }
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             _listBox.RefreshContents(_rotation.Rotation);
@@ -136,6 +169,9 @@ namespace WPFUI
             _label.Content = $"{_rotation.RotationName} Rotation:";
 
             _textBlock.Text = _rotation.CurrentEmployee;
+
+            _rotation.Notes = notesTextBox.Text;
+            _parent.rotation1NotesTextBox.Text = _rotation.Notes;
 
             SetRotationRecurrence();
 
@@ -161,24 +197,6 @@ namespace WPFUI
                 _label.Content = "Rotation:";
                 _textBlock.Text = "";
                 Close();
-            }
-        }
-
-        private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
-        {
-            _rotation.Rotation.Add(employeeNameTextBox.Text);
-
-            employeeNameTextBox.Clear();
-
-            employeeListBox.RefreshContents(_rotation.Rotation);
-        }
-
-        private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (employeeListBox.SelectedIndex != -1)
-            {
-                _rotation.Rotation.Remove(employeeListBox.SelectedItem.ToString());
-                employeeListBox.RefreshContents(_rotation.Rotation);
             }
         }
     }

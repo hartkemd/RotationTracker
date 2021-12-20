@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFUI"
         mc:Ignorable="d" FontSize="16"
-        Title="RotationTracker" Height="550" Width="825">
+        Title="RotationTracker" Height="600" Width="825">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="225" />
@@ -59,6 +59,9 @@
                     <Button Name="editRotation1Button" Width="45" Margin="5"
                         Click="EditRotation1Button_Click">Edit</Button>
                 </StackPanel>
+                <Label>Notes:</Label>
+                <TextBox Name="rotation1NotesTextBox" IsReadOnly="True" TextWrapping="Wrap" Height="60"
+                         VerticalScrollBarVisibility="Auto"></TextBox>
             </StackPanel>
         </GroupBox>
 
@@ -85,9 +88,13 @@
                     <Button Name="editRotation2Button" Width="45" Margin="5"
                         Click="EditRotation2Button_Click">Edit</Button>
                 </StackPanel>
+                <Label>Notes:</Label>
+                <TextBox Name="rotation2NotesTextBox" IsReadOnly="True" TextWrapping="Wrap" Height="60"
+                         VerticalScrollBarVisibility="Auto"></TextBox>
             </StackPanel>
         </GroupBox>
 
+        <!-- Notification area -->
         <StackPanel Name="notificationStackPanel" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
                     Visibility="Collapsed" Orientation="Vertical">
             <TextBlock Name="notificationTextBlock"></TextBlock>

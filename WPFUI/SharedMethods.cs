@@ -11,11 +11,12 @@ namespace WPFUI
     internal static class SharedMethods
     {
         public static void SetRotationControlsOnMainWindow(this RotationModel rotation,
-            Label label, ListBox listBox, TextBlock textBlock)
+            Label label, ListBox listBox, TextBlock textBlock, TextBox textBox)
         {
             label.Content = $"{rotation.RotationName} Rotation:";
             listBox.ItemsSource = rotation.Rotation;
             textBlock.Text = rotation.CurrentEmployee;
+            textBox.Text = rotation.Notes;
         }
     }
 }
