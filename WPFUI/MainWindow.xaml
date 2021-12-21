@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WPFUI"
         mc:Ignorable="d" FontSize="16"
         Title="RotationTracker" Height="600" Width="825">
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" MaxWidth="225" />
@@ -20,7 +21,7 @@
         </Grid.RowDefinitions>
         
         <!-- User information -->
-        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="10 0 0 0">
             <TextBlock Text="Current User: "></TextBlock>
             <TextBlock Name="userNameTextBlock"></TextBlock>
         </StackPanel>
@@ -38,8 +39,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Button Name="editEmployeesButton" Width="45" Margin="0 5 0 0"
-                        Click="EditEmployeesButton_Click">Edit</Button>
+                <Button Name="editEmployeesButton" Width="45" Margin="0 5 0 0" Click="EditEmployeesButton_Click">Edit</Button>
             </StackPanel>
         </GroupBox>
 

@@ -8,7 +8,7 @@ namespace BinaryFileIOLibrary
 
         public static void WriteData()
         {
-            using (BinaryWriter writer = new BinaryWriter(File.Open(fileName, FileMode.Append)))
+            using (BinaryWriter writer = new (File.Open(fileName, FileMode.OpenOrCreate)))
             {
                 writer.Write(@"sample data");
             }
@@ -20,7 +20,7 @@ namespace BinaryFileIOLibrary
 
             if (File.Exists(fileName))
             {
-                using (BinaryReader reader = new BinaryReader(File.Open(fileName, FileMode.Open)))
+                using (BinaryReader reader = new (File.Open(fileName, FileMode.Open)))
                 {
                     data = reader.ReadString();
                 }

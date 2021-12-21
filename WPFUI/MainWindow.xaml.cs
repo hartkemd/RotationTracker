@@ -1,9 +1,9 @@
-﻿using JSONFileIOLibrary;
+﻿using FileIOLibrary;
+using JSONFileIOLibrary;
 using RotationLibrary;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -17,17 +17,24 @@ namespace WPFUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        const string configFilePath = @"data\config.txt";
         public EmployeeListModel employees = new();
         public RotationModel rotation1 = new();
         public RotationModel rotation2 = new();
         private string notificationMessage;
+        List<string> admins = new();
         private string currentUser;
+        private bool currentUserIsAdmin = false;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            ShowConfigOptionsIfNoConfigFileExists();
+            GetCurrentUser();
+            WriteAdminsToFile();
+            ReadAdminsFromFile();
+            CheckIfCurrentUserIsAdmin();
+            CollapseControlsIfUserIsNotAdmin();
             DisplayCurrentUser();
 
             SetObjectFilePaths();
@@ -42,20 +49,48 @@ namespace WPFUI
             CreateTimer();
         }
 
-        private void ShowConfigOptionsIfNoConfigFileExists()
+        private void WriteAdminsToFile()
         {
-            
+            admins.Add("Mark");
+            TextFileIO.WriteListToFile(configFilePath, admins);
         }
 
-        private void DisplayCurrentUser()
+        private void ReadAdminsFromFile()
         {
-            GetCurrentUser();
-            userNameTextBlock.Text = currentUser;
+            admins = TextFileIO.ReadListFromFile(configFilePath);
+        }
+
+        private void CollapseControlsIfUserIsNotAdmin()
+        {
+            if (currentUserIsAdmin == false)
+            {
+                editEmployeesButton.Visibility = Visibility.Collapsed;
+                advanceRotation1Button.Visibility = Visibility.Collapsed;
+                advanceRotation2Button.Visibility = Visibility.Collapsed;
+                editRotation1Button.Visibility = Visibility.Collapsed;
+                editRotation2Button.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void CheckIfCurrentUserIsAdmin()
+        {
+            foreach (string user in admins)
+            {
+                if (currentUser == user)
+                {
+                    currentUserIsAdmin = true;
+                }
+            }
         }
 
         private void GetCurrentUser()
         {
-            currentUser = WindowsIdentity.GetCurrent().Name;
+            currentUser = Environment.UserName;
+        }
+
+        private void DisplayCurrentUser()
+        {
+            userNameTextBlock.Text = currentUser;
         }
 
         private void CreateTimer()
