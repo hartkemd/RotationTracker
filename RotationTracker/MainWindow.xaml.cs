@@ -34,7 +34,7 @@ namespace WPFUI
             WriteAdminsToFile();
             ReadAdminsFromFile();
             CheckIfCurrentUserIsAdmin();
-            ShowControlsIfUserIsAdmin();
+            CollapseControlsIfUserIsNotAdmin();
             DisplayCurrentUser();
 
             SetObjectFilePaths();
@@ -60,15 +60,15 @@ namespace WPFUI
             admins = TextFileIO.ReadListFromFile(configFilePath);
         }
 
-        private void ShowControlsIfUserIsAdmin()
+        private void CollapseControlsIfUserIsNotAdmin()
         {
-            if (currentUserIsAdmin == true)
+            if (currentUserIsAdmin == false)
             {
-                editEmployeesButton.Visibility = Visibility.Visible;
-                advanceRotation1Button.Visibility = Visibility.Visible;
-                advanceRotation2Button.Visibility = Visibility.Visible;
-                editRotation1Button.Visibility = Visibility.Visible;
-                editRotation2Button.Visibility = Visibility.Visible;
+                editEmployeesButton.Visibility = Visibility.Collapsed;
+                advanceRotation1Button.Visibility = Visibility.Collapsed;
+                advanceRotation2Button.Visibility = Visibility.Collapsed;
+                editRotation1Button.Visibility = Visibility.Collapsed;
+                editRotation2Button.Visibility = Visibility.Collapsed;
             }
         }
 
