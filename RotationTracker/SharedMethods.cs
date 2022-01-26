@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace WPFUI
 {
-    internal static class SharedUIMethods
+    internal static class SharedMethods
     {
         public static void SetRotationControlsOnMainWindow(this RotationModel rotation,
             Label label, ListBox listBox, TextBlock textBlock, TextBox textBox)
