@@ -104,6 +104,8 @@
                 </StackPanel>
             </GroupBox>
 
+            <Button x:Name="addRotationButton" Height="30" Click="AddRotationButton_Click">Add Rotation</Button>
+
         </WrapPanel>
 
         <!-- Notification area -->
