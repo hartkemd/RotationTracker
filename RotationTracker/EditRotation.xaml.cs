@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WPFHelperLibrary;
 
-namespace WPFUI
+namespace RotationTracker
 {
     /// <summary>
     /// Interaction logic for EditRotation.xaml

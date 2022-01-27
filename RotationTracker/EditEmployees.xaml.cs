@@ -2,7 +2,7 @@
 using System.Windows;
 using WPFHelperLibrary;
 
-namespace WPFUI
+namespace RotationTracker
 {
     /// <summary>
     /// Interaction logic for EditEmployees.xaml
@@ -29,13 +29,6 @@ namespace WPFUI
             _parent.rotation1.SaveToJSON(_parent.rotation1.FilePath, _parent.rotation1.FileName);
 
             _parent.rotation1CurrentEmployeeTextBlock.Text = _parent.rotation1.CurrentEmployee;
-
-            _parent.rotation2.Rotation.Remove(_employeeToRemove);
-
-            _parent.rotation2ListBox.RefreshContents(_parent.rotation2.Rotation);
-            _parent.rotation2.SaveToJSON(_parent.rotation2.FilePath, _parent.rotation1.FileName);
-
-            _parent.rotation2CurrentEmployeeTextBlock.Text = _parent.rotation2.CurrentEmployee;
         }
 
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)

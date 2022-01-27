@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using WPFHelperLibrary;
 
-namespace WPFUI
+namespace RotationTracker
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -19,6 +19,7 @@ namespace WPFUI
     {
         const string configFilePath = @"data\config.txt";
         public EmployeeListModel employees = new();
+        public List<RotationModel> rotations = new List<RotationModel>();
         public RotationModel rotation1 = new();
         public RotationModel rotation2 = new();
         private string notificationMessage;
@@ -66,9 +67,7 @@ namespace WPFUI
             {
                 editEmployeesButton.Visibility = Visibility.Visible;
                 advanceRotation1Button.Visibility = Visibility.Visible;
-                advanceRotation2Button.Visibility = Visibility.Visible;
                 editRotation1Button.Visibility = Visibility.Visible;
-                editRotation2Button.Visibility = Visibility.Visible;
             }
         }
 
@@ -137,14 +136,11 @@ namespace WPFUI
 
             rotation1.SetRotationControlsOnMainWindow(rotation1NameLabel, rotation1ListBox,
                 rotation1CurrentEmployeeTextBlock, rotation1NotesTextBox);
-            rotation2.SetRotationControlsOnMainWindow(rotation2NameLabel, rotation2ListBox,
-                rotation2CurrentEmployeeTextBlock, rotation2NotesTextBox);
         }
 
         private void AdvanceRotationsIfDateTimeHasPassed()
         {
             AdvanceRotationIfDateTimeHasPassed(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
-            AdvanceRotationIfDateTimeHasPassed(rotation2, rotation2CurrentEmployeeTextBlock, rotation2ListBox);
         }
 
         private void AdvanceRotationIfDateTimeHasPassed(RotationModel rotation, TextBlock textBlock, ListBox listBox)
@@ -194,24 +190,81 @@ namespace WPFUI
             editEmployees.ShowDialog();
         }
 
-        private void AdvanceRotation1Button_Click(object sender, RoutedEventArgs e)
+        private void AdvanceRotationButton_Click(object sender, RoutedEventArgs e)
         {
-            AdvanceRotationAndRefreshControls(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
+            Button button = (Button)sender;
+            RotationModel rotation = (RotationModel)button.DataContext;
+            AdvanceRotationAndRefreshControls(rotation, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
         }
 
-        private void EditRotation1Button_Click(object sender, RoutedEventArgs e)
+        private void EditRotationButton_Click(object sender, RoutedEventArgs e)
         {
-            EditRotation(rotation1, rotation1ListBox, rotation1NameLabel, rotation1CurrentEmployeeTextBlock);
+            EditRotation((RotationModel)e.Source, rotation1ListBox, rotation1NameLabel, rotation1CurrentEmployeeTextBlock);
         }
 
-        private void AdvanceRotation2Button_Click(object sender, RoutedEventArgs e)
+        private void AddRotationButton_Click(object sender, RoutedEventArgs e)
         {
-            AdvanceRotationAndRefreshControls(rotation2, rotation2CurrentEmployeeTextBlock, rotation2ListBox);
-        }
+            RotationModel rotation = new RotationModel();
+            rotation.RotationName = "Test";
+            rotation.Rotation.Add("Mark");
+            rotation.Rotation.Add("Tim");
+            rotations.Add(rotation);
 
-        private void EditRotation2Button_Click(object sender, RoutedEventArgs e)
-        {
-            EditRotation(rotation2, rotation2ListBox, rotation2NameLabel, rotation2CurrentEmployeeTextBlock);
+            GroupBox groupBox = new GroupBox();
+            groupBox.Margin = new Thickness(5);
+            Label label = new Label();
+            label.Content = $"Rotation {rotations.Count}:";
+            groupBox.Header = label;
+            
+            StackPanel stackPanel = new StackPanel();
+            stackPanel.Orientation = Orientation.Vertical;
+            ListBox listBox = new ListBox();
+            listBox.Margin = new Thickness(5, 0, 5, 0);
+            listBox.ItemsSource = rotation.Rotation;
+
+            StackPanel stackPanel2 = new StackPanel();
+            stackPanel2.Orientation = Orientation.Vertical;
+            stackPanel2.Margin = new Thickness(5);
+            TextBlock currentlyUpTextBlock = new TextBlock();
+            currentlyUpTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            currentlyUpTextBlock.Text = $"Currently Up: {rotation.CurrentEmployee}";
+            stackPanel2.Children.Add(currentlyUpTextBlock);
+
+            StackPanel stackPanel3 = new StackPanel();
+            stackPanel3.Orientation = Orientation.Horizontal;
+            stackPanel3.HorizontalAlignment = HorizontalAlignment.Center;
+            Button advanceButton = new Button();
+            advanceButton.Margin = new Thickness(0, 5, 0, 5);
+            advanceButton.Width = 80;
+            advanceButton.Content = "Advance";
+            advanceButton.Click += AdvanceRotationButton_Click;
+            Button editButton = new Button();
+            editButton.Margin = new Thickness(5);
+            editButton.Width = 45;
+            editButton.Content = "Edit";
+            editButton.Click += EditRotationButton_Click;
+            stackPanel3.Children.Add(advanceButton);
+            stackPanel3.Children.Add(editButton);
+
+            Label notesLabel = new Label();
+            notesLabel.Content = "Notes:";
+            TextBox notesTextBox = new TextBox();
+            notesTextBox.IsReadOnly = true;
+            notesTextBox.TextWrapping = TextWrapping.Wrap;
+            notesTextBox.Height = 60;
+            notesTextBox.MaxWidth = 215;
+            notesTextBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            notesTextBox.Text = rotation.Notes;
+
+            stackPanel.Children.Add(listBox);
+            stackPanel.Children.Add(stackPanel2);
+            stackPanel.Children.Add(stackPanel3);
+            stackPanel.Children.Add(notesLabel);
+            stackPanel.Children.Add(notesTextBox);
+
+            groupBox.Content = stackPanel;
+
+            rotationsWrapPanel.Children.Add(groupBox);
         }
     }
 }
