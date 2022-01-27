@@ -1,6 +1,7 @@
 ﻿using FileIOLibrary;
 using JSONFileIOLibrary;
 using RotationLibrary;
+using RotationLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -205,7 +206,7 @@ namespace RotationTracker
         private void AddRotationButton_Click(object sender, RoutedEventArgs e)
         {
             RotationModel rotation = new RotationModel();
-            rotation.RotationName = "Test";
+            rotation.RotationName = $"Rotation {rotations.Count}:";
             rotation.Rotation.Add("Mark");
             rotation.Rotation.Add("Tim");
             rotations.Add(rotation);
@@ -213,7 +214,7 @@ namespace RotationTracker
             GroupBox groupBox = new GroupBox();
             groupBox.Margin = new Thickness(5);
             Label label = new Label();
-            label.Content = $"Rotation {rotations.Count}:";
+            label.Content = rotation.RotationName;
             groupBox.Header = label;
             
             StackPanel stackPanel = new StackPanel();

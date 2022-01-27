@@ -1,5 +1,6 @@
 ﻿using JSONFileIOLibrary;
 using RotationLibrary;
+using RotationLibrary.Models;
 using System;
 using System.Windows;
 using System.Windows.Controls;

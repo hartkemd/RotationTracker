@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RotationLibrary
+namespace RotationLibrary.Models
 {
     public class RotationModel : BaseFileClass
     {
