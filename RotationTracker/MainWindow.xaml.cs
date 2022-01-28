@@ -163,19 +163,13 @@ namespace RotationTracker
             rotation.SaveToJSON(rotation.FilePath, rotation.FileName);
         }
 
-        private static void AdvanceRotationAndRefreshControls(RotationModel rotation, TextBlock textBlock, ListBox listBox)
+        private static void AdvanceRotationAndRefreshControls(RotationUIModel rotationUIModel)
         {
-            rotation.AdvanceRotation();
-            textBlock.Text = $"Currently Up: {rotation.CurrentEmployee}";
+            rotationUIModel.RotationModel.AdvanceRotation();
+            rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.RotationModel.CurrentEmployee}";
 
-            listBox.RefreshContents(rotation.Rotation);
+            rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.RotationModel.Rotation);
             //SaveRotation(rotation);
-        }
-
-        private void EditRotation(RotationUIModel rotationUIModel)
-        {
-            EditRotation editRotation = new(this, rotationUIModel);
-            editRotation.ShowDialog();
         }
 
         private void EditEmployeesButton_Click(object sender, RoutedEventArgs e)
@@ -188,15 +182,21 @@ namespace RotationTracker
         {
             Button button = (Button)sender;
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            AdvanceRotationAndRefreshControls(rotationUIModel.RotationModel, rotationUIModel.CurrentEmployeeTextBlock,
-                rotationUIModel.RotationListBox);
+            AdvanceRotationAndRefreshControls(rotationUIModel);
         }
 
         private void EditRotationButton_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            EditRotation(rotationUIModel);
+            EditRotation editRotation = new(this, rotationUIModel);
+            editRotation.ShowDialog();
+        }
+
+        private void RemoveRotationButton_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveRotation removeRotation = new(this);
+            removeRotation.ShowDialog();
         }
 
         private void AddRotationButton_Click(object sender, RoutedEventArgs e)
@@ -273,12 +273,6 @@ namespace RotationTracker
 
             rotationUIModels.Add(rotationUIModel);
             rotationsWrapPanel.Children.Add(groupBox);
-        }
-
-        private void RemoveRotationButton_Click(object sender, RoutedEventArgs e)
-        {
-            RemoveRotation removeRotation = new(this);
-            removeRotation.ShowDialog();
         }
     }
 }
