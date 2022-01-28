@@ -204,7 +204,7 @@ namespace RotationTracker
             RotationUIModel rotationUIModel = new();
 
             RotationModel rotation = new RotationModel();
-            rotation.RotationName = $"Rotation {rotations.Count}:";
+            rotation.RotationName = $"Rotation {rotations.Count}";
             rotation.Rotation.Add("Mark");
             rotation.Rotation.Add("Tim");
 
@@ -214,7 +214,7 @@ namespace RotationTracker
             GroupBox groupBox = new GroupBox();
             groupBox.Margin = new Thickness(5);
             Label label = new Label();
-            label.Content = rotation.RotationName;
+            label.Content = $"{rotation.RotationName}:";
             rotationUIModel.RotationNameLabel = label;
             groupBox.Header = label;
             

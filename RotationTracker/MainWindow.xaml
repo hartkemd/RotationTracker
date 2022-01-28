@@ -44,7 +44,8 @@
             </StackPanel>
         </GroupBox>
 
-        <Button x:Name="addRotationButton" Click="AddRotationButton_Click" Grid.Row="2" Grid.Column="0">Add Rotation</Button>
+        <Button x:Name="addRotationButton" Click="AddRotationButton_Click" Grid.Row="2" Grid.Column="0"
+                Margin="5">Add Rotation</Button>
         
         <!-- Rotations -->
         <WrapPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" />

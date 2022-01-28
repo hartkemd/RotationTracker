@@ -182,26 +182,26 @@ namespace RotationTracker
             bool keepGoing = SetNextDateTimeRotationAdvances();
             if (keepGoing)
             {
-                _rotationUIModel.SaveToJSON(_rotation.FilePath, _rotation.FileName);
+                //_rotationUIModel.SaveToJSON(_rotation.FilePath, _rotation.FileName);
                 Close();
             }
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBoxResult messageBoxResult =
-                WPFHelper.ShowYesNoExclamationMessageBox("This will delete the rotation. Are you sure?",
-                "Delete?");
+        //private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    MessageBoxResult messageBoxResult =
+        //        WPFHelper.ShowYesNoExclamationMessageBox("This will delete the rotation. Are you sure?",
+        //        "Delete?");
 
-            if (messageBoxResult == MessageBoxResult.Yes)
-            {
-                _rotation.Clear();
-                _rotationUIModel.SaveToJSON(_rotation.FilePath, _rotation.FileName);
-                _listBox.RefreshContents(_rotation.Rotation);
-                _label.Content = "Rotation:";
-                _textBlock.Text = "";
-                Close();
-            }
-        }
+        //    if (messageBoxResult == MessageBoxResult.Yes)
+        //    {
+        //        _rotation.Clear();
+        //        //_rotationUIModel.SaveToJSON(_rotation.FilePath, _rotation.FileName);
+        //        _listBox.RefreshContents(_rotation.Rotation);
+        //        _label.Content = "Rotation:";
+        //        _textBlock.Text = "";
+        //        Close();
+        //    }
+        //}
     }
 }

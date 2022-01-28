@@ -76,11 +76,9 @@
             </StackPanel>
         </GroupBox>
 
-        <!-- Save & Delete buttons -->
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Margin="5">
-            <Button Name="saveButton" Width="150" Margin="5" Click="SaveButton_Click">Save and Close</Button>
-            <Button Name="deleteButton" Width="150" Margin="5" Click="DeleteButton_Click">Delete and Close</Button>
-        </StackPanel>
+        <!-- Save button -->
+        <Button x:Name="saveButton" Grid.Row="1" Grid.Column="1" Width="150" Margin="5"
+                    Click="SaveButton_Click">Save and Close</Button>
 
     </Grid>
 </Window>
