@@ -21,10 +21,10 @@
         <!-- Column 0 -->
         <GroupBox Grid.Row="0" Grid.Column="0" Margin="5">
             <GroupBox.Header>
-                <Label Name="rotationNameLabel"></Label>
+                <Label x:Name="rotationNameLabel"></Label>
             </GroupBox.Header>
             <StackPanel>
-                <ListBox Name="employeeListBox" Margin="5 0 5 0">
+                <ListBox x:Name="employeeListBox" Margin="5 0 5 0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding}" />
@@ -32,20 +32,20 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Name="moveUpButton" Margin="5" Click="MoveUpButton_Click">Move Up</Button>
-                    <Button Name="moveDownButton" Margin="5" Click="MoveDownButton_Click">Move Down</Button>
+                    <Button x:Name="moveUpButton" Margin="5" Click="MoveUpButton_Click">Move Up</Button>
+                    <Button x:Name="moveDownButton" Margin="5" Click="MoveDownButton_Click">Move Down</Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBox Name="employeeNameTextBox" Margin="5" Width="150"></TextBox>
-                    <Button Name="addEmployeeButton" Margin="5" Click="AddEmployeeButton_Click">Add Employee</Button>
+                    <TextBox x:Name="employeeNameTextBox" Margin="5" Width="150"></TextBox>
+                    <Button x:Name="addEmployeeButton" Margin="5" Click="AddEmployeeButton_Click">Add Employee</Button>
                 </StackPanel>
-                <Button Name="removeEmployeeButton" Margin="5" Click="RemoveEmployeeButton_Click"
+                <Button x:Name="removeEmployeeButton" Margin="5" Click="RemoveEmployeeButton_Click"
                         Width="150">Remove Employee</Button>
-                <Button Name="copyEmployeesToRotation" Margin="5" Width="215"
+                <Button x:Name="copyEmployeesToRotation" Margin="5" Width="215"
                         Click="CopyEmployeesToRotation_Click">Copy Employees to Rotation</Button>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBlock Margin="0 5" Padding="5">Rotation Name:</TextBlock>
-                    <TextBox Name="rotationNameTextBox" MinWidth="125" Margin="5" Padding="5"></TextBox>
+                    <TextBox x:Name="rotationNameTextBox" MinWidth="125" Margin="5" Padding="5"></TextBox>
                 </StackPanel>
             </StackPanel>
         </GroupBox>
@@ -55,7 +55,7 @@
             <GroupBox.Header>
                 <Label>Notes:</Label>
             </GroupBox.Header>
-            <TextBox Name="notesTextBox" Margin="5 0 5 0" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True"
+            <TextBox x:Name="notesTextBox" Margin="5 0 5 0" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True"
                      VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" Height="200" Width="200"></TextBox>
         </GroupBox>
 
@@ -65,14 +65,14 @@
                 <Label>Recurrence:</Label>
             </GroupBox.Header>
             <StackPanel Orientation="Vertical" Margin="10 0 5 0">
-                <RadioButton Name="weeklyRadioButton" VerticalContentAlignment="Center" IsChecked="True">Weekly</RadioButton>
-                <RadioButton Name="monthlyRadioButton" VerticalContentAlignment="Center">Monthly on day</RadioButton>
-                <RadioButton Name="bimonthlyRadioButton" VerticalContentAlignment="Center">Bimonthly on day</RadioButton>
+                <RadioButton x:Name="weeklyRadioButton" VerticalContentAlignment="Center" IsChecked="True">Weekly</RadioButton>
+                <RadioButton x:Name="monthlyRadioButton" VerticalContentAlignment="Center">Monthly on day</RadioButton>
+                <RadioButton x:Name="bimonthlyRadioButton" VerticalContentAlignment="Center">Bimonthly on day</RadioButton>
                 <Label Margin="0 10 0 0">Next Date Rotation Advances:</Label>
-                <DatePicker Name="nextDateRotationAdvancesDatePicker" SelectedDateFormat="Short"
+                <DatePicker x:Name="nextDateRotationAdvancesDatePicker" SelectedDateFormat="Short"
                         FirstDayOfWeek="Sunday" Width="175" HorizontalAlignment="Left" Margin="15 0 0 0"></DatePicker>
                 <Label>Hour Rotation Advances (0-23):</Label>
-                <TextBox Name="hourRotationAdvancesTextBox" Width="50" Margin="15 0 0 0" HorizontalAlignment="Left"></TextBox>
+                <TextBox x:Name="hourRotationAdvancesTextBox" Width="50" Margin="15 0 0 0" HorizontalAlignment="Left"></TextBox>
             </StackPanel>
         </GroupBox>
 

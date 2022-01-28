@@ -24,7 +24,7 @@
         <!-- User information -->
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="10 0 0 0">
             <TextBlock Text="Current User: " />
-            <TextBlock Name="userNameTextBlock" />
+            <TextBlock x:Name="userNameTextBlock" />
         </StackPanel>
 
         <!-- Employees -->
@@ -33,7 +33,7 @@
                 <Label>Employees:</Label>
             </GroupBox.Header>
             <StackPanel>
-                <ListBox Name="employeeListBox" Margin="5 0 5 0">
+                <ListBox x:Name="employeeListBox" Margin="5 0 5 0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding}" />
@@ -51,9 +51,9 @@
         <WrapPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" />
 
         <!-- Notification area -->
-        <StackPanel Name="notificationStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
+        <StackPanel x:Name="notificationStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
                     Visibility="Collapsed" Orientation="Vertical">
-            <TextBlock Name="notificationTextBlock" />
+            <TextBlock x:Name="notificationTextBlock" />
         </StackPanel>
 
     </Grid>

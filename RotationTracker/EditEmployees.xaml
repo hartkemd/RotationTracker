@@ -20,17 +20,17 @@
                 <Label>Employees:</Label>
             </GroupBox.Header>
             <StackPanel>
-                <ListBox Name="employeeListBox" Margin="5 0 5 0">
+                <ListBox x:Name="employeeListBox" Margin="5 0 5 0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <TextBox Name="employeeNameTextBox" Margin="5" Padding="5" />
+                <TextBox x:Name="employeeNameTextBox" Margin="5" Padding="5" />
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Name="addEmployeeButton" Margin="5" Click="AddEmployeeButton_Click">Add</Button>
-                    <Button Name="removeEmployeeButton" Margin="5" Click="RemoveEmployeeButton_Click">Remove</Button>
+                    <Button x:Name="addEmployeeButton" Margin="5" Click="AddEmployeeButton_Click">Add</Button>
+                    <Button x:Name="removeEmployeeButton" Margin="5" Click="RemoveEmployeeButton_Click">Remove</Button>
                 </StackPanel>
             </StackPanel>
         </GroupBox>
