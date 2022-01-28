@@ -10,9 +10,10 @@ namespace RotationTracker.Models
 {
     public class RotationUIModel
     {
-        public RotationModel Rotation { get; set; }
+        public RotationModel RotationModel { get; set; }
         public TextBlock CurrentEmployeeTextBlock { get; set; }
         public ListBox RotationListBox { get; set; }
         public Label RotationNameLabel { get; set; }
+        public TextBox RotationNotesTextBox { get; set; }
     }
 }

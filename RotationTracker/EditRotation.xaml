@@ -44,8 +44,8 @@
                 <Button Name="copyEmployeesToRotation" Margin="5" Width="215"
                         Click="CopyEmployeesToRotation_Click">Copy Employees to Rotation</Button>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Margin="0 5" Padding="5">Rotation Name:</TextBlock>
                     <TextBox Name="rotationNameTextBox" MinWidth="125" Margin="5" Padding="5"></TextBox>
-                    <TextBlock Margin="0 5" Padding="5">Rotation</TextBlock>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

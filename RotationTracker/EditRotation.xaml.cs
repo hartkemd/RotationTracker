@@ -1,6 +1,7 @@
 ﻿using JSONFileIOLibrary;
 using RotationLibrary;
 using RotationLibrary.Models;
+using RotationTracker.Models;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,20 +15,22 @@ namespace RotationTracker
     public partial class EditRotation : Window
     {
         private MainWindow _parent;
+        private RotationUIModel _rotationUIModel;
         private RotationModel _rotation;
         private ListBox _listBox;
         private Label _label;
         private TextBlock _textBlock;
 
-        public EditRotation(MainWindow parentWindow, RotationModel rotation, ListBox listBox, Label label, TextBlock textBlock)
+        public EditRotation(MainWindow parentWindow, RotationUIModel rotationUIModel)
         {
             InitializeComponent();
 
             _parent = parentWindow;
-            _rotation = rotation;
-            _listBox = listBox;
-            _label = label;
-            _textBlock = textBlock;
+            _rotationUIModel = rotationUIModel;
+            _rotation = _rotationUIModel.RotationModel;
+            _listBox = _rotationUIModel.RotationListBox;
+            _label = _rotationUIModel.RotationNameLabel;
+            _textBlock = _rotationUIModel.CurrentEmployeeTextBlock;
 
             PopulateControls();
         }
@@ -167,19 +170,19 @@ namespace RotationTracker
             _listBox.RefreshContents(_rotation.Rotation);
 
             _rotation.RotationName = rotationNameTextBox.Text;
-            _label.Content = $"{_rotation.RotationName} Rotation:";
+            _label.Content = _rotation.RotationName;
 
             _textBlock.Text = _rotation.CurrentEmployee;
 
             _rotation.Notes = notesTextBox.Text;
-            _parent.rotation1NotesTextBox.Text = _rotation.Notes;
+            _rotationUIModel.RotationNotesTextBox.Text = _rotation.Notes;
 
             SetRotationRecurrence();
 
             bool keepGoing = SetNextDateTimeRotationAdvances();
             if (keepGoing)
             {
-                _rotation.SaveToJSON(_rotation.FilePath, _rotation.FileName);
+                _rotationUIModel.SaveToJSON(_rotation.FilePath, _rotation.FileName);
                 Close();
             }
         }
@@ -193,7 +196,7 @@ namespace RotationTracker
             if (messageBoxResult == MessageBoxResult.Yes)
             {
                 _rotation.Clear();
-                _rotation.SaveToJSON(_rotation.FilePath, _rotation.FileName);
+                _rotationUIModel.SaveToJSON(_rotation.FilePath, _rotation.FileName);
                 _listBox.RefreshContents(_rotation.Rotation);
                 _label.Content = "Rotation:";
                 _textBlock.Text = "";

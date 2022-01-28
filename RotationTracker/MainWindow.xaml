@@ -23,8 +23,8 @@
         
         <!-- User information -->
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="10 0 0 0">
-            <TextBlock Text="Current User: "></TextBlock>
-            <TextBlock Name="userNameTextBlock"></TextBlock>
+            <TextBlock Text="Current User: " />
+            <TextBlock Name="userNameTextBlock" />
         </StackPanel>
 
         <!-- Employees -->
@@ -45,45 +45,14 @@
         </GroupBox>
 
         <Button x:Name="addRotationButton" Click="AddRotationButton_Click" Grid.Row="2" Grid.Column="0">Add Rotation</Button>
-
-        <WrapPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
-        <!-- Rotation 1 -->
-        <GroupBox Margin="5">
-            <GroupBox.Header>
-                <Label Name="rotation1NameLabel" Content="First Rotation:"></Label>
-            </GroupBox.Header>
-            <StackPanel Orientation="Vertical">
-                <ListBox Name="rotation1ListBox" Margin="5 0 5 0">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <StackPanel Orientation="Vertical" Margin="5">
-                    <TextBlock HorizontalAlignment="Center" Text="Currently Up:"></TextBlock>
-                    <TextBlock Name="rotation1CurrentEmployeeTextBlock" Text="{Binding rotation1.CurrentEmployee}"
-                               HorizontalAlignment="Center"></TextBlock>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Name="advanceRotation1Button" Margin="0 5 0 5" Width="80"
-                                Click="AdvanceRotationButton_Click">Advance</Button>
-                    <Button Name="editRotation1Button" Width="45" Margin="5"
-                        Click="EditRotationButton_Click">Edit</Button>
-                </StackPanel>
-                <Label>Notes:</Label>
-                <TextBox Name="rotation1NotesTextBox" IsReadOnly="True" TextWrapping="Wrap" Height="60" MaxWidth="215"
-                         VerticalScrollBarVisibility="Auto"></TextBox>
-            </StackPanel>
-        </GroupBox>
-
-            
-        </WrapPanel>
+        
+        <!-- Rotations -->
+        <WrapPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" />
 
         <!-- Notification area -->
         <StackPanel Name="notificationStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
                     Visibility="Collapsed" Orientation="Vertical">
-            <TextBlock Name="notificationTextBlock"></TextBlock>
+            <TextBlock Name="notificationTextBlock" />
         </StackPanel>
 
     </Grid>

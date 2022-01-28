@@ -22,6 +22,7 @@ namespace RotationTracker
         const string configFilePath = @"data\config.txt";
         public EmployeeListModel employees = new();
         public List<RotationModel> rotations = new List<RotationModel>();
+        public List<RotationUIModel> rotationUIModels = new List<RotationUIModel>();
         private string notificationMessage;
         List<string> admins = new();
         private string currentUser;
@@ -66,8 +67,8 @@ namespace RotationTracker
             if (currentUserIsAdmin == true)
             {
                 editEmployeesButton.Visibility = Visibility.Visible;
-                advanceRotation1Button.Visibility = Visibility.Visible;
-                editRotation1Button.Visibility = Visibility.Visible;
+                //advanceRotation1Button.Visibility = Visibility.Visible;
+                //editRotation1Button.Visibility = Visibility.Visible;
             }
         }
 
@@ -171,9 +172,9 @@ namespace RotationTracker
             //SaveRotation(rotation);
         }
 
-        private void EditRotation(RotationModel rotation, ListBox listBox, Label label, TextBlock textBlock)
+        private void EditRotation(RotationUIModel rotationUIModel)
         {
-            EditRotation editRotation = new(this, rotation, listBox, label, textBlock);
+            EditRotation editRotation = new(this, rotationUIModel);
             editRotation.ShowDialog();
         }
 
@@ -187,7 +188,7 @@ namespace RotationTracker
         {
             Button button = (Button)sender;
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            AdvanceRotationAndRefreshControls(rotationUIModel.Rotation, rotationUIModel.CurrentEmployeeTextBlock,
+            AdvanceRotationAndRefreshControls(rotationUIModel.RotationModel, rotationUIModel.CurrentEmployeeTextBlock,
                 rotationUIModel.RotationListBox);
         }
 
@@ -195,8 +196,7 @@ namespace RotationTracker
         {
             Button button = (Button)sender;
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            EditRotation(rotationUIModel.Rotation, rotationUIModel.RotationListBox, rotationUIModel.RotationNameLabel,
-                rotationUIModel.CurrentEmployeeTextBlock);
+            EditRotation(rotationUIModel);
         }
 
         private void AddRotationButton_Click(object sender, RoutedEventArgs e)
@@ -208,7 +208,7 @@ namespace RotationTracker
             rotation.Rotation.Add("Mark");
             rotation.Rotation.Add("Tim");
 
-            rotationUIModel.Rotation = rotation;
+            rotationUIModel.RotationModel = rotation;
             rotations.Add(rotation);
 
             GroupBox groupBox = new GroupBox();
@@ -255,6 +255,7 @@ namespace RotationTracker
             Label notesLabel = new Label();
             notesLabel.Content = "Notes:";
             TextBox notesTextBox = new TextBox();
+            rotationUIModel.RotationNotesTextBox = notesTextBox;
             notesTextBox.IsReadOnly = true;
             notesTextBox.TextWrapping = TextWrapping.Wrap;
             notesTextBox.Height = 60;
@@ -270,6 +271,7 @@ namespace RotationTracker
 
             groupBox.Content = stackPanel;
 
+            rotationUIModels.Add(rotationUIModel);
             rotationsWrapPanel.Children.Add(groupBox);
         }
     }

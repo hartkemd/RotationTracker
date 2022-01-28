@@ -23,12 +23,14 @@ namespace RotationTracker
 
         private void RemoveEmployeeFromAllRotationsAndSave()
         {
-            _parent.rotation1.Rotation.Remove(_employeeToRemove);
-
-            _parent.rotation1ListBox.RefreshContents(_parent.rotation1.Rotation);
-            _parent.rotation1.SaveToJSON(_parent.rotation1.FilePath, _parent.rotation1.FileName);
-
-            _parent.rotation1CurrentEmployeeTextBlock.Text = _parent.rotation1.CurrentEmployee;
+            foreach (var rotationUIModel in _parent.rotationUIModels)
+            {
+                rotationUIModel.RotationModel.Rotation.Remove(_employeeToRemove);
+                rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.RotationModel.Rotation);
+                rotationUIModel.CurrentEmployeeTextBlock.Text = rotationUIModel.RotationModel.CurrentEmployee;
+            }
+            
+            //_parent.rotation1.SaveToJSON(_parent.rotation1.FilePath, _parent.rotation1.FileName);
         }
 
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
