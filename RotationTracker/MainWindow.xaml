@@ -44,8 +44,11 @@
             </StackPanel>
         </GroupBox>
 
-        <Button x:Name="addRotationButton" Click="AddRotationButton_Click" Grid.Row="2" Grid.Column="0"
-                Margin="5">Add Rotation</Button>
+        <!-- Add and remove rotations buttons -->
+        <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="0">
+            <Button x:Name="addRotationButton" Click="AddRotationButton_Click" Margin="5">Add Rotation</Button>
+            <Button x:Name="removeRotationButton" Click="RemoveRotationButton_Click" Margin="5">Remove Rotation</Button>
+        </StackPanel>
         
         <!-- Rotations -->
         <WrapPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" />

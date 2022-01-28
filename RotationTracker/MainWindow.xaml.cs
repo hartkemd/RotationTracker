@@ -166,7 +166,7 @@ namespace RotationTracker
         private static void AdvanceRotationAndRefreshControls(RotationModel rotation, TextBlock textBlock, ListBox listBox)
         {
             rotation.AdvanceRotation();
-            textBlock.Text = rotation.CurrentEmployee;
+            textBlock.Text = $"Currently Up: {rotation.CurrentEmployee}";
 
             listBox.RefreshContents(rotation.Rotation);
             //SaveRotation(rotation);
@@ -273,6 +273,12 @@ namespace RotationTracker
 
             rotationUIModels.Add(rotationUIModel);
             rotationsWrapPanel.Children.Add(groupBox);
+        }
+
+        private void RemoveRotationButton_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveRotation removeRotation = new(this);
+            removeRotation.ShowDialog();
         }
     }
 }
