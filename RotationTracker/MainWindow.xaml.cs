@@ -36,7 +36,7 @@ namespace RotationTracker
             WriteAdminsToFile();
             ReadAdminsFromFile();
             CheckIfCurrentUserIsAdmin();
-            ShowControlsIfUserIsAdmin();
+            //ShowControlsIfUserIsAdmin();
             DisplayCurrentUser();
 
             SetObjectFilePaths();

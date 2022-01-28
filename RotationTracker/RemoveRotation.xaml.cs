@@ -32,8 +32,12 @@ namespace RotationTracker
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            _parentWindow.rotations.Remove(rotationComboBox.SelectedItem as RotationModel);
-            rotationComboBox.Items.Refresh();
+            if (rotationComboBox.SelectedIndex != -1)
+            {
+                _parentWindow.rotations.Remove(rotationComboBox.SelectedItem as RotationModel);
+                _parentWindow.rotationsWrapPanel.Children.RemoveAt(rotationComboBox.SelectedIndex);
+                rotationComboBox.Items.Refresh();
+            }
         }
     }
 }
