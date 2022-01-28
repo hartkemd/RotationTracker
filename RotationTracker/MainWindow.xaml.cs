@@ -2,6 +2,7 @@
 using JSONFileIOLibrary;
 using RotationLibrary;
 using RotationLibrary.Models;
+using RotationTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,6 @@ namespace RotationTracker
         const string configFilePath = @"data\config.txt";
         public EmployeeListModel employees = new();
         public List<RotationModel> rotations = new List<RotationModel>();
-        public RotationModel rotation1 = new();
-        public RotationModel rotation2 = new();
         private string notificationMessage;
         List<string> admins = new();
         private string currentUser;
@@ -45,7 +44,7 @@ namespace RotationTracker
 
             PopulateControls();
 
-            AdvanceRotationsIfDateTimeHasPassed();
+            //AdvanceRotationsIfDateTimeHasPassed();
 
             DisplayNotificationsAsync();
             CreateTimer();
@@ -97,14 +96,14 @@ namespace RotationTracker
         {
             System.Timers.Timer refreshAppTimer = new();
             refreshAppTimer.Interval = 15 * 60 * 1000; // 15 minutes
-            refreshAppTimer.Elapsed += new ElapsedEventHandler(RefreshAppTimer_Elapsed);
+            //refreshAppTimer.Elapsed += new ElapsedEventHandler(RefreshAppTimer_Elapsed);
             refreshAppTimer.Start();
         }
 
-        private void RefreshAppTimer_Elapsed(object sender, EventArgs e)
-        {
-            AdvanceRotationsIfDateTimeHasPassed();
-        }
+        //private void RefreshAppTimer_Elapsed(object sender, EventArgs e)
+        //{
+        //    AdvanceRotationsIfDateTimeHasPassed();
+        //}
 
         private async void DisplayNotificationsAsync()
         {
@@ -120,29 +119,22 @@ namespace RotationTracker
         private void SetObjectFilePaths()
         {
             employees.FileName = "EmployeeList.json";
-            rotation1.FileName = "Rotation1.json";
-            rotation2.FileName = "Rotation2.json";
         }
 
         private void LoadObjectData()
         {
             employees = employees.LoadFromJSON(employees.FullFilePath);
-            rotation1 = rotation1.LoadFromJSON(rotation1.FullFilePath);
-            rotation2 = rotation2.LoadFromJSON(rotation2.FullFilePath);
         }
 
         private void PopulateControls()
         {
             employeeListBox.ItemsSource = employees.EmployeeList;
-
-            rotation1.SetRotationControlsOnMainWindow(rotation1NameLabel, rotation1ListBox,
-                rotation1CurrentEmployeeTextBlock, rotation1NotesTextBox);
         }
 
-        private void AdvanceRotationsIfDateTimeHasPassed()
-        {
-            AdvanceRotationIfDateTimeHasPassed(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
-        }
+        //private void AdvanceRotationsIfDateTimeHasPassed()
+        //{
+        //    AdvanceRotationIfDateTimeHasPassed(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
+        //}
 
         private void AdvanceRotationIfDateTimeHasPassed(RotationModel rotation, TextBlock textBlock, ListBox listBox)
         {
@@ -176,7 +168,7 @@ namespace RotationTracker
             textBlock.Text = rotation.CurrentEmployee;
 
             listBox.RefreshContents(rotation.Rotation);
-            SaveRotation(rotation);
+            //SaveRotation(rotation);
         }
 
         private void EditRotation(RotationModel rotation, ListBox listBox, Label label, TextBlock textBlock)
@@ -194,27 +186,36 @@ namespace RotationTracker
         private void AdvanceRotationButton_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
-            RotationModel rotation = (RotationModel)button.DataContext;
-            AdvanceRotationAndRefreshControls(rotation, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
+            RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
+            AdvanceRotationAndRefreshControls(rotationUIModel.Rotation, rotationUIModel.CurrentEmployeeTextBlock,
+                rotationUIModel.RotationListBox);
         }
 
         private void EditRotationButton_Click(object sender, RoutedEventArgs e)
         {
-            EditRotation((RotationModel)e.Source, rotation1ListBox, rotation1NameLabel, rotation1CurrentEmployeeTextBlock);
+            Button button = (Button)sender;
+            RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
+            EditRotation(rotationUIModel.Rotation, rotationUIModel.RotationListBox, rotationUIModel.RotationNameLabel,
+                rotationUIModel.CurrentEmployeeTextBlock);
         }
 
         private void AddRotationButton_Click(object sender, RoutedEventArgs e)
         {
+            RotationUIModel rotationUIModel = new();
+
             RotationModel rotation = new RotationModel();
             rotation.RotationName = $"Rotation {rotations.Count}:";
             rotation.Rotation.Add("Mark");
             rotation.Rotation.Add("Tim");
+
+            rotationUIModel.Rotation = rotation;
             rotations.Add(rotation);
 
             GroupBox groupBox = new GroupBox();
             groupBox.Margin = new Thickness(5);
             Label label = new Label();
             label.Content = rotation.RotationName;
+            rotationUIModel.RotationNameLabel = label;
             groupBox.Header = label;
             
             StackPanel stackPanel = new StackPanel();
@@ -222,6 +223,7 @@ namespace RotationTracker
             ListBox listBox = new ListBox();
             listBox.Margin = new Thickness(5, 0, 5, 0);
             listBox.ItemsSource = rotation.Rotation;
+            rotationUIModel.RotationListBox = listBox;
 
             StackPanel stackPanel2 = new StackPanel();
             stackPanel2.Orientation = Orientation.Vertical;
@@ -229,17 +231,20 @@ namespace RotationTracker
             TextBlock currentlyUpTextBlock = new TextBlock();
             currentlyUpTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
             currentlyUpTextBlock.Text = $"Currently Up: {rotation.CurrentEmployee}";
+            rotationUIModel.CurrentEmployeeTextBlock = currentlyUpTextBlock;
             stackPanel2.Children.Add(currentlyUpTextBlock);
 
             StackPanel stackPanel3 = new StackPanel();
             stackPanel3.Orientation = Orientation.Horizontal;
             stackPanel3.HorizontalAlignment = HorizontalAlignment.Center;
             Button advanceButton = new Button();
+            advanceButton.DataContext = rotationUIModel;
             advanceButton.Margin = new Thickness(0, 5, 0, 5);
             advanceButton.Width = 80;
             advanceButton.Content = "Advance";
             advanceButton.Click += AdvanceRotationButton_Click;
             Button editButton = new Button();
+            editButton.DataContext = rotationUIModel;
             editButton.Margin = new Thickness(5);
             editButton.Width = 45;
             editButton.Content = "Edit";

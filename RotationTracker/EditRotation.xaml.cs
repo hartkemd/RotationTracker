@@ -34,7 +34,7 @@ namespace RotationTracker
 
         private void PopulateControls()
         {
-            rotationNameLabel.Content = $"{_rotation.RotationName} Rotation:";
+            rotationNameLabel.Content = _rotation.RotationName;
             employeeListBox.ItemsSource = _rotation.Rotation;
             rotationNameTextBox.Text = _rotation.RotationName;
             notesTextBox.Text = _rotation.Notes;
