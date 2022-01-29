@@ -136,7 +136,7 @@ namespace RotationTracker
 
         private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
         {
-            _rotation.Rotation = _parent.employees.EmployeeList;
+            _rotation.Rotation = _parent.employees;
             employeeListBox.RefreshContents(_rotation.Rotation);
         }
 

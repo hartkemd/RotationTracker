@@ -17,7 +17,7 @@ namespace RotationTracker
     /// </summary>
     public partial class MainWindow : Window
     {
-        public EmployeeListModel employees = new();
+        public List<string> employees = new() { "Mark", "Tim", "Sue", "Bob" };
         public List<RotationModel> rotations = new List<RotationModel>();
         public List<RotationUIModel> rotationUIModels = new List<RotationUIModel>();
         private string notificationMessage;
@@ -126,7 +126,7 @@ namespace RotationTracker
 
         private void PopulateControls()
         {
-            employeeListBox.ItemsSource = employees.EmployeeList;
+            employeeListBox.ItemsSource = employees;
         }
 
         //private void AdvanceRotationsIfDateTimeHasPassed()
@@ -201,9 +201,8 @@ namespace RotationTracker
             RotationUIModel rotationUIModel = new();
 
             RotationModel rotation = new RotationModel();
-            rotation.RotationName = $"Rotation {rotations.Count}";
-            rotation.Rotation.Add("Mark");
-            rotation.Rotation.Add("Tim");
+            rotation.RotationName = $"Rotation {rotations.Count + 1}";
+            rotation.Rotation = employees;
 
             rotationUIModel.RotationModel = rotation;
             rotations.Add(rotation);

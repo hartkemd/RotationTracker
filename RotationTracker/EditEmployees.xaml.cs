@@ -17,7 +17,7 @@ namespace RotationTracker
 
             _parent = parent;
 
-            employeeListBox.ItemsSource = _parent.employees.EmployeeList;
+            employeeListBox.ItemsSource = _parent.employees;
         }
 
         private void RemoveEmployeeFromAllRotationsAndSave()
@@ -34,15 +34,13 @@ namespace RotationTracker
 
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-            _parent.employees.EmployeeList.Add(employeeNameTextBox.Text);
-            _parent.employees.EmployeeList.Sort();
+            _parent.employees.Add(employeeNameTextBox.Text);
+            _parent.employees.Sort();
 
             employeeNameTextBox.Clear();
 
-            employeeListBox.RefreshContents(_parent.employees.EmployeeList);
-            _parent.employeeListBox.RefreshContents(_parent.employees.EmployeeList);
-
-            _parent.employees.EmployeeList = _parent.employees.EmployeeList;
+            employeeListBox.RefreshContents(_parent.employees);
+            _parent.employeeListBox.RefreshContents(_parent.employees);
 
             //_parent.employees.SaveToJSON(_parent.employees.FilePath, _parent.employees.FileName);
         }
@@ -56,11 +54,11 @@ namespace RotationTracker
             if (messageBoxResult == MessageBoxResult.Yes)
             {
                 _employeeToRemove = employeeListBox.SelectedItem.ToString();
-                _parent.employees.EmployeeList.RemoveAt(employeeListBox.SelectedIndex);
+                _parent.employees.RemoveAt(employeeListBox.SelectedIndex);
                 //_parent.employees.SaveToJSON(_parent.employees.FilePath, _parent.employees.FileName);
 
-                employeeListBox.RefreshContents(_parent.employees.EmployeeList);
-                _parent.employeeListBox.RefreshContents(_parent.employees.EmployeeList);
+                employeeListBox.RefreshContents(_parent.employees);
+                _parent.employeeListBox.RefreshContents(_parent.employees);
 
                 RemoveEmployeeFromAllRotationsAndSave();
             }
