@@ -6,7 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
-    <ProjectReference Include="..\FileIOLibrary\FileIOLibrary.csproj" />
     <ProjectReference Include="..\RotationLibrary\RotationLibrary.csproj" />
     <ProjectReference Include="..\WPFHelperLibrary\WPFHelperLibrary.csproj" />
   </ItemGroup>

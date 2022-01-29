@@ -1,6 +1,4 @@
-﻿using FileIOLibrary;
-using JSONFileIOLibrary;
-using RotationLibrary;
+﻿using RotationLibrary;
 using RotationLibrary.Models;
 using RotationTracker.Models;
 using System;
@@ -19,7 +17,6 @@ namespace RotationTracker
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string configFilePath = @"data\config.txt";
         public EmployeeListModel employees = new();
         public List<RotationModel> rotations = new List<RotationModel>();
         public List<RotationUIModel> rotationUIModels = new List<RotationUIModel>();
@@ -54,12 +51,12 @@ namespace RotationTracker
         private void WriteAdminsToFile()
         {
             admins.Add("Mark");
-            TextFileIO.WriteListToFile(configFilePath, admins);
+            //TextFileIO.WriteListToFile(configFilePath, admins);
         }
 
         private void ReadAdminsFromFile()
         {
-            admins = TextFileIO.ReadListFromFile(configFilePath);
+            //admins = TextFileIO.ReadListFromFile(configFilePath);
         }
 
         private void ShowControlsIfUserIsAdmin()
@@ -119,12 +116,12 @@ namespace RotationTracker
 
         private void SetObjectFilePaths()
         {
-            employees.FileName = "EmployeeList.json";
+            //employees.FileName = "EmployeeList.json";
         }
 
         private void LoadObjectData()
         {
-            employees = employees.LoadFromJSON(employees.FullFilePath);
+            //employees = employees.LoadFromJSON(employees.FullFilePath);
         }
 
         private void PopulateControls()
@@ -160,7 +157,7 @@ namespace RotationTracker
 
         private static void SaveRotation(RotationModel rotation)
         {
-            rotation.SaveToJSON(rotation.FilePath, rotation.FileName);
+            //rotation.SaveToJSON(rotation.FilePath, rotation.FileName);
         }
 
         private static void AdvanceRotationAndRefreshControls(RotationUIModel rotationUIModel)

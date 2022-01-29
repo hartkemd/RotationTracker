@@ -1,5 +1,4 @@
-﻿using JSONFileIOLibrary;
-using System.Windows;
+﻿using System.Windows;
 using WPFHelperLibrary;
 
 namespace RotationTracker
@@ -45,7 +44,7 @@ namespace RotationTracker
 
             _parent.employees.EmployeeList = _parent.employees.EmployeeList;
 
-            _parent.employees.SaveToJSON(_parent.employees.FilePath, _parent.employees.FileName);
+            //_parent.employees.SaveToJSON(_parent.employees.FilePath, _parent.employees.FileName);
         }
 
         private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
@@ -58,7 +57,7 @@ namespace RotationTracker
             {
                 _employeeToRemove = employeeListBox.SelectedItem.ToString();
                 _parent.employees.EmployeeList.RemoveAt(employeeListBox.SelectedIndex);
-                _parent.employees.SaveToJSON(_parent.employees.FilePath, _parent.employees.FileName);
+                //_parent.employees.SaveToJSON(_parent.employees.FilePath, _parent.employees.FileName);
 
                 employeeListBox.RefreshContents(_parent.employees.EmployeeList);
                 _parent.employeeListBox.RefreshContents(_parent.employees.EmployeeList);

@@ -9,9 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RotationTracker", "Rotation
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFHelperLibrary", "WPFHelperLibrary\WPFHelperLibrary.csproj", "{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileIOLibrary", "FileIOLibrary\FileIOLibrary.csproj", "{DD0A7A60-F668-474E-AC0E-E033AA159813}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLibrary", "DataAccessLibrary\DataAccessLibrary.csproj", "{531C80C1-7788-4D2F-96DA-5F70671FF0A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLibrary", "DataAccessLibrary\DataAccessLibrary.csproj", "{531C80C1-7788-4D2F-96DA-5F70671FF0A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9DD6DC9-B8A8-4847-AD9F-8564BB7001F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD0A7A60-F668-474E-AC0E-E033AA159813}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD0A7A60-F668-474E-AC0E-E033AA159813}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD0A7A60-F668-474E-AC0E-E033AA159813}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD0A7A60-F668-474E-AC0E-E033AA159813}.Release|Any CPU.Build.0 = Release|Any CPU
 		{531C80C1-7788-4D2F-96DA-5F70671FF0A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{531C80C1-7788-4D2F-96DA-5F70671FF0A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{531C80C1-7788-4D2F-96DA-5F70671FF0A9}.Release|Any CPU.ActiveCfg = Release|Any CPU

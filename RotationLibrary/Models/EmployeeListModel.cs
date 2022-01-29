@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RotationLibrary.Models
 {
-    public class EmployeeListModel : BaseFileClass
+    public class EmployeeListModel
     {
         public List<string> EmployeeList { get; set; } = new List<string>();
     }

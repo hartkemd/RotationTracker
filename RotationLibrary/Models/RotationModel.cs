@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace RotationLibrary.Models
 {
-    public class RotationModel : BaseFileClass
+    public class RotationModel
     {
         public string RotationName { get; set; }
 
