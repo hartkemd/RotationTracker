@@ -1,0 +1,64 @@
+﻿<Window x:Class="RotationTracker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RotationTracker"
+        mc:Ignorable="d" FontSize="16"
+        Title="RotationTracker" Height="725" Width="825">
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        
+        <!-- User information -->
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="10 0 0 0">
+            <TextBlock Text="Current User: " />
+            <TextBlock x:Name="userNameTextBlock" />
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0">
+            <!-- Employees -->
+            <GroupBox Margin="5">
+                <GroupBox.Header>
+                    <Label>Employees:</Label>
+                </GroupBox.Header>
+                <StackPanel>
+                    <ListBox x:Name="employeeListBox" Margin="5 0 5 0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <Button Name="editEmployeesButton" Width="45" Margin="0 5 0 0" Click="EditEmployeesButton_Click">Edit</Button>
+                </StackPanel>
+            </GroupBox>
+
+        <!-- Add and remove rotations buttons -->
+            <Button x:Name="addRotationButton" Click="AddRotationButton_Click" Margin="5">Add Rotation</Button>
+            <Button x:Name="removeRotationButton" Click="RemoveRotationButton_Click" Margin="5">Remove Rotation</Button>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+            <!-- Rotations -->
+            <WrapPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" />
+        </Grid>
+
+        <!-- Notification area -->
+        <StackPanel x:Name="notificationStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Margin="10"
+                    Visibility="Collapsed" Orientation="Vertical">
+            <TextBlock x:Name="notificationTextBlock" />
+        </StackPanel>
+
+    </Grid>
+</Window>
