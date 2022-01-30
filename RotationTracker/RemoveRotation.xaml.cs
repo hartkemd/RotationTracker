@@ -1,4 +1,5 @@
-﻿using RotationLibrary.Models;
+﻿using DataAccessLibrary.Models;
+using RotationLibrary.Models;
 using System.Windows;
 
 namespace RotationTracker
@@ -32,7 +33,7 @@ namespace RotationTracker
         {
             if (rotationComboBox.SelectedIndex != -1)
             {
-                _parentWindow.rotations.Remove(rotationComboBox.SelectedItem as RotationModel);
+                _parentWindow.rotations.Remove(rotationComboBox.SelectedItem as FullRotationModel);
                 _parentWindow.rotationsWrapPanel.Children.RemoveAt(rotationComboBox.SelectedIndex);
                 rotationComboBox.Items.Refresh();
             }

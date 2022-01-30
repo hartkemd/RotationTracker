@@ -39,7 +39,31 @@ namespace DataAccessLibrary.Data
             _db.SaveData(sql, new { Id = id }, connectionStringName);
         }
 
-        public BasicRotationModel GetRotationById(int id) // needs work
+        public void CreateRotation(FullRotationModel rotation)
+        {
+            string sql = "INSERT INTO Rotations (RotationName, RotationRecurrence, NextDateTimeRotationAdvances, Notes) " +
+                            "VALUES(@RotationName, @RecurrenceInterval, @NextDateTimeRotationAdvances, @Notes);";
+
+            _db.SaveData(sql, new { RotationName = rotation.BasicInfo.RotationName,
+                                    RecurrenceInterval = rotation.BasicInfo.RotationRecurrence,
+                                    NextDateTimeRotationAdvances = rotation.BasicInfo.NextDateTimeRotationAdvances,
+                                    Notes = rotation.BasicInfo.Notes},
+                                    connectionStringName);
+
+            sql = "SELECT Id FROM Rotations ORDER BY Id DESC LIMIT 1;"; // select the id of the row just inserted
+
+            int rotationId = _db.LoadData<int, dynamic>(sql, new { }, connectionStringName).First();
+
+            foreach (var employee in rotation.RotationOfEmployees)
+            {
+                sql = "INSERT INTO RotationEmployees (RotationId, EmployeeId) " +
+                        "VALUES(@RotationId, @EmployeeId);";
+
+                _db.SaveData(sql, new { RotationId = rotationId, EmployeeId = employee.Id }, connectionStringName);
+            }
+        }
+
+        public BasicRotationModel GetBasicRotationById(int id) // needs work
         {
             string sql = "SELECT * FROM Rotations WHERE Id = @Id;";
 

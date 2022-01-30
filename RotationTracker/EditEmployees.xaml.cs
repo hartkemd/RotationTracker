@@ -10,7 +10,7 @@ namespace RotationTracker
     public partial class EditEmployees : Window
     {
         private MainWindow _parent;
-        private string _employeeToRemove;
+        private EmployeeModel _employeeToRemove;
 
         public EditEmployees(MainWindow parent)
         {
@@ -25,9 +25,9 @@ namespace RotationTracker
         {
             foreach (var rotationUIModel in _parent.rotationUIModels)
             {
-                rotationUIModel.RotationModel.Rotation.Remove(_employeeToRemove);
-                rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.RotationModel.Rotation);
-                rotationUIModel.CurrentEmployeeTextBlock.Text = rotationUIModel.RotationModel.CurrentEmployee;
+                rotationUIModel.FullRotationModel.RotationOfEmployees.Remove(_employeeToRemove);
+                rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
+                rotationUIModel.CurrentEmployeeTextBlock.Text = rotationUIModel.FullRotationModel.CurrentEmployee;
             }
             
             //_parent.rotation1.SaveToJSON(_parent.rotation1.FilePath, _parent.rotation1.FileName);

@@ -20,8 +20,8 @@ namespace RotationTracker
     public partial class MainWindow : Window
     {
         private readonly ISqliteData _db;
-        public List<EmployeeModel> employees = new();
-        public List<RotationModel> rotations = new ();
+        public List<EmployeeModel> employees = new ();
+        public List<FullRotationModel> rotations = new ();
         public List<RotationUIModel> rotationUIModels = new ();
         private string notificationMessage;
         List<string> admins = new();
@@ -63,6 +63,11 @@ namespace RotationTracker
         public void DeleteEmployee(int id)
         {
             _db.DeleteEmployee(id);
+        }
+
+        private void CreateRotation(FullRotationModel rotation)
+        {
+            _db.CreateRotation(rotation);
         }
 
         private void WriteAdminsToFile()
@@ -169,10 +174,10 @@ namespace RotationTracker
 
         private static void AdvanceRotationAndRefreshControls(RotationUIModel rotationUIModel)
         {
-            rotationUIModel.RotationModel.AdvanceRotation();
-            rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.RotationModel.CurrentEmployee}";
+            rotationUIModel.FullRotationModel.AdvanceRotation();
+            rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
 
-            rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.RotationModel.Rotation);
+            rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
             //SaveRotation(rotation);
         }
 
@@ -203,33 +208,24 @@ namespace RotationTracker
             removeRotation.ShowDialog();
         }
 
-        private List<string> ConvertEmployeeModelToListOfString()
-        {
-            List<string> output = new ();
-
-            foreach (var employee in employees)
-            {
-                output.Add(employee.FullName);
-            }
-
-            return output;
-        }
-
         private void AddRotationButton_Click(object sender, RoutedEventArgs e)
         {
-            RotationUIModel rotationUIModel = new();
+            RotationUIModel rotationUIModel = new ();
 
-            RotationModel rotation = new ();
-            rotation.RotationName = $"Rotation {rotations.Count + 1}";
-            rotation.Rotation = ConvertEmployeeModelToListOfString();
+            FullRotationModel rotation = new ();
+            rotation.BasicInfo.RotationName = $"Rotation {rotations.Count + 1}";
+            rotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7).ToString();
+            rotation.RotationOfEmployees = employees;
 
-            rotationUIModel.RotationModel = rotation;
+            rotationUIModel.FullRotationModel = rotation;
             rotations.Add(rotation);
+
+            CreateRotation(rotation);
 
             GroupBox groupBox = new GroupBox();
             groupBox.Margin = new Thickness(5);
             Label label = new Label();
-            label.Content = $"{rotation.RotationName}:";
+            label.Content = $"{rotation.BasicInfo.RotationName}:";
             rotationUIModel.RotationNameLabel = label;
             groupBox.Header = label;
             
@@ -237,7 +233,8 @@ namespace RotationTracker
             stackPanel.Orientation = Orientation.Vertical;
             ListBox listBox = new ListBox();
             listBox.Margin = new Thickness(5, 0, 5, 0);
-            listBox.ItemsSource = rotation.Rotation;
+            listBox.ItemsSource = rotation.RotationOfEmployees;
+            listBox.DisplayMemberPath = "FullName";
             rotationUIModel.RotationListBox = listBox;
 
             StackPanel stackPanel2 = new StackPanel();
@@ -276,7 +273,7 @@ namespace RotationTracker
             notesTextBox.Height = 60;
             notesTextBox.MaxWidth = 215;
             notesTextBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            notesTextBox.Text = rotation.Notes;
+            notesTextBox.Text = rotation.BasicInfo.Notes;
 
             stackPanel.Children.Add(listBox);
             stackPanel.Children.Add(stackPanel2);

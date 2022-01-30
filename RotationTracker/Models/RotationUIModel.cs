@@ -1,4 +1,5 @@
-﻿using RotationLibrary.Models;
+﻿using DataAccessLibrary.Models;
+using RotationLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace RotationTracker.Models
 {
     public class RotationUIModel
     {
-        public RotationModel RotationModel { get; set; }
+        public FullRotationModel FullRotationModel { get; set; }
         public TextBlock CurrentEmployeeTextBlock { get; set; }
         public ListBox RotationListBox { get; set; }
         public Label RotationNameLabel { get; set; }
