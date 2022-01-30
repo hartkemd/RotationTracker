@@ -23,7 +23,7 @@
                 <ListBox x:Name="employeeListBox" Margin="5 0 5 0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" />
+                            <TextBlock Text="{Binding Path=FullName}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

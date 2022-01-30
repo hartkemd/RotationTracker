@@ -1,4 +1,6 @@
-﻿using RotationLibrary;
+﻿using DataAccessLibrary.Data;
+using DataAccessLibrary.Models;
+using RotationLibrary;
 using RotationLibrary.Models;
 using RotationTracker.Models;
 using System;
@@ -17,17 +19,19 @@ namespace RotationTracker
     /// </summary>
     public partial class MainWindow : Window
     {
-        public List<string> employees = new() { "Mark", "Tim", "Sue", "Bob" };
-        public List<RotationModel> rotations = new List<RotationModel>();
-        public List<RotationUIModel> rotationUIModels = new List<RotationUIModel>();
+        private readonly ISqliteData _db;
+        public List<EmployeeModel> employees = new();
+        public List<RotationModel> rotations = new ();
+        public List<RotationUIModel> rotationUIModels = new ();
         private string notificationMessage;
         List<string> admins = new();
         private string currentUser;
         private bool currentUserIsAdmin = false;
 
-        public MainWindow()
+        public MainWindow(ISqliteData db)
         {
             InitializeComponent();
+            _db = db;
 
             GetCurrentUser();
             WriteAdminsToFile();
@@ -36,9 +40,7 @@ namespace RotationTracker
             //ShowControlsIfUserIsAdmin();
             DisplayCurrentUser();
 
-            SetObjectFilePaths();
-            LoadObjectData();
-            SetObjectFilePaths();
+            ReadEmployees();
 
             PopulateControls();
 
@@ -46,6 +48,21 @@ namespace RotationTracker
 
             DisplayNotificationsAsync();
             CreateTimer();
+        }
+
+        public void ReadEmployees()
+        {
+            employees = _db.GetAllEmployees();
+        }
+
+        public void CreateEmployee(string employeeName)
+        {
+            _db.CreateEmployee(employeeName);
+        }
+
+        public void DeleteEmployee(int id)
+        {
+            _db.DeleteEmployee(id);
         }
 
         private void WriteAdminsToFile()
@@ -112,16 +129,6 @@ namespace RotationTracker
                 await Task.Delay(5000);
                 notificationStackPanel.Visibility = Visibility.Collapsed;
             }
-        }
-
-        private void SetObjectFilePaths()
-        {
-            //employees.FileName = "EmployeeList.json";
-        }
-
-        private void LoadObjectData()
-        {
-            //employees = employees.LoadFromJSON(employees.FullFilePath);
         }
 
         private void PopulateControls()
@@ -196,13 +203,25 @@ namespace RotationTracker
             removeRotation.ShowDialog();
         }
 
+        private List<string> ConvertEmployeeModelToListOfString()
+        {
+            List<string> output = new ();
+
+            foreach (var employee in employees)
+            {
+                output.Add(employee.FullName);
+            }
+
+            return output;
+        }
+
         private void AddRotationButton_Click(object sender, RoutedEventArgs e)
         {
             RotationUIModel rotationUIModel = new();
 
-            RotationModel rotation = new RotationModel();
+            RotationModel rotation = new ();
             rotation.RotationName = $"Rotation {rotations.Count + 1}";
-            rotation.Rotation = employees;
+            rotation.Rotation = ConvertEmployeeModelToListOfString();
 
             rotationUIModel.RotationModel = rotation;
             rotations.Add(rotation);

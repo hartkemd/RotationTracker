@@ -6,7 +6,7 @@ namespace WPFHelperLibrary
 {
     public static class WPFHelper
     {
-        public static void RefreshContents(this ListBox listBox, List<string> list)
+        public static void RefreshContents<T>(this ListBox listBox, List<T> list)
         {
             listBox.ItemsSource = null;
             listBox.ItemsSource = list;

@@ -2,6 +2,7 @@
 using RotationLibrary.Models;
 using RotationTracker.Models;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using WPFHelperLibrary;
@@ -136,7 +137,14 @@ namespace RotationTracker
 
         private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
         {
-            _rotation.Rotation = _parent.employees;
+            List<string> employeeNames = new ();
+
+            foreach (var employee in _parent.employees)
+            {
+                employeeNames.Add(employee.FullName);
+            }
+
+            _rotation.Rotation = employeeNames;
             employeeListBox.RefreshContents(_rotation.Rotation);
         }
 
