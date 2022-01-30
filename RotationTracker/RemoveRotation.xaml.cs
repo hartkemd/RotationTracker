@@ -31,11 +31,15 @@ namespace RotationTracker
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (rotationComboBox.SelectedIndex != -1)
+            int selectedIndex = rotationComboBox.SelectedIndex;
+
+            if (selectedIndex != -1)
             {
-                _parentWindow.rotations.Remove(rotationComboBox.SelectedItem as FullRotationModel);
-                _parentWindow.rotationsWrapPanel.Children.RemoveAt(rotationComboBox.SelectedIndex);
+                FullRotationModel fullRotationModel = (FullRotationModel)rotationComboBox.SelectedItem;
+                _parentWindow.rotations.Remove(fullRotationModel);
+                _parentWindow.rotationsWrapPanel.Children.RemoveAt(selectedIndex);
                 rotationComboBox.Items.Refresh();
+                _parentWindow.DeleteRotationFromDB(fullRotationModel.BasicInfo.Id);
             }
         }
     }

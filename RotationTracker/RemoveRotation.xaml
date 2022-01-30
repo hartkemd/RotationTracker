@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
 
         <ComboBox x:Name="rotationComboBox" Grid.Column="0" Grid.Row="0" Margin="5"
-                  MinWidth="150" ItemsSource="{Binding}" DisplayMemberPath="RotationName"></ComboBox>
+                  MinWidth="150" ItemsSource="{Binding}" DisplayMemberPath="BasicInfo.RotationName"></ComboBox>
         <Button x:Name="removeButton" Grid.Column="0" Grid.Row="1" Margin="5"
                 Click="RemoveButton_Click">Remove</Button>
         

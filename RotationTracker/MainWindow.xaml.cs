@@ -40,9 +40,10 @@ namespace RotationTracker
             //ShowControlsIfUserIsAdmin();
             DisplayCurrentUser();
 
-            ReadEmployees();
-
-            PopulateControls();
+            ReadEmployeesFromDB();
+            employeeListBox.ItemsSource = employees;
+            ReadRotationsFromDB();
+            LoadRotationsIntoUI();
 
             //AdvanceRotationsIfDateTimeHasPassed();
 
@@ -50,24 +51,117 @@ namespace RotationTracker
             CreateTimer();
         }
 
-        public void ReadEmployees()
+        public void ReadEmployeesFromDB()
         {
             employees = _db.GetAllEmployees();
         }
 
-        public void CreateEmployee(string employeeName)
+        public void ReadRotationsFromDB()
+        {
+            rotations = _db.GetAllRotations();
+        }
+
+        public void CreateEmployeeInDB(string employeeName)
         {
             _db.CreateEmployee(employeeName);
         }
 
-        public void DeleteEmployee(int id)
+        public void DeleteEmployeeFromDB(int id)
         {
             _db.DeleteEmployee(id);
         }
 
-        private void CreateRotation(FullRotationModel rotation)
+        private void CreateRotationInDB(FullRotationModel rotation)
         {
             _db.CreateRotation(rotation);
+        }
+
+        public void DeleteRotationFromDB(int id)
+        {
+            _db.DeleteRotation(id);
+        }
+
+        private void LoadRotationsIntoUI()
+        {
+            foreach (var rotation in rotations)
+            {
+                LoadRotationIntoUI(rotation);
+            }
+        }
+
+        private void CreateRotationInUI(RotationUIModel rotationUIModel, FullRotationModel rotation)
+        {
+            GroupBox groupBox = new GroupBox();
+            groupBox.Margin = new Thickness(5);
+            Label label = new Label();
+            label.Content = $"{rotation.BasicInfo.RotationName}:";
+            rotationUIModel.RotationNameLabel = label;
+            groupBox.Header = label;
+
+            StackPanel stackPanel = new StackPanel();
+            stackPanel.Orientation = Orientation.Vertical;
+            ListBox listBox = new ListBox();
+            listBox.Margin = new Thickness(5, 0, 5, 0);
+            listBox.ItemsSource = rotation.RotationOfEmployees;
+            listBox.DisplayMemberPath = "FullName";
+            rotationUIModel.RotationListBox = listBox;
+
+            StackPanel stackPanel2 = new StackPanel();
+            stackPanel2.Orientation = Orientation.Vertical;
+            stackPanel2.Margin = new Thickness(5);
+            TextBlock currentlyUpTextBlock = new TextBlock();
+            currentlyUpTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            currentlyUpTextBlock.Text = $"Currently Up: {rotation.CurrentEmployee}";
+            rotationUIModel.CurrentEmployeeTextBlock = currentlyUpTextBlock;
+            stackPanel2.Children.Add(currentlyUpTextBlock);
+
+            StackPanel stackPanel3 = new StackPanel();
+            stackPanel3.Orientation = Orientation.Horizontal;
+            stackPanel3.HorizontalAlignment = HorizontalAlignment.Center;
+            Button advanceButton = new Button();
+            advanceButton.DataContext = rotationUIModel;
+            advanceButton.Margin = new Thickness(0, 5, 0, 5);
+            advanceButton.Width = 80;
+            advanceButton.Content = "Advance";
+            advanceButton.Click += AdvanceRotationButton_Click;
+            Button editButton = new Button();
+            editButton.DataContext = rotationUIModel;
+            editButton.Margin = new Thickness(5);
+            editButton.Width = 45;
+            editButton.Content = "Edit";
+            editButton.Click += EditRotationButton_Click;
+            stackPanel3.Children.Add(advanceButton);
+            stackPanel3.Children.Add(editButton);
+
+            Label notesLabel = new Label();
+            notesLabel.Content = "Notes:";
+            TextBox notesTextBox = new TextBox();
+            rotationUIModel.RotationNotesTextBox = notesTextBox;
+            notesTextBox.IsReadOnly = true;
+            notesTextBox.TextWrapping = TextWrapping.Wrap;
+            notesTextBox.Height = 60;
+            notesTextBox.MaxWidth = 215;
+            notesTextBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            notesTextBox.Text = rotation.BasicInfo.Notes;
+
+            stackPanel.Children.Add(listBox);
+            stackPanel.Children.Add(stackPanel2);
+            stackPanel.Children.Add(stackPanel3);
+            stackPanel.Children.Add(notesLabel);
+            stackPanel.Children.Add(notesTextBox);
+
+            groupBox.Content = stackPanel;
+
+            rotationUIModels.Add(rotationUIModel);
+            rotationsWrapPanel.Children.Add(groupBox);
+        }
+
+        private void LoadRotationIntoUI(FullRotationModel rotation)
+        {
+            RotationUIModel rotationUIModel = new();
+            rotationUIModel.FullRotationModel = rotation;
+
+            CreateRotationInUI(rotationUIModel, rotation);
         }
 
         private void WriteAdminsToFile()
@@ -136,11 +230,6 @@ namespace RotationTracker
             }
         }
 
-        private void PopulateControls()
-        {
-            employeeListBox.ItemsSource = employees;
-        }
-
         //private void AdvanceRotationsIfDateTimeHasPassed()
         //{
         //    AdvanceRotationIfDateTimeHasPassed(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
@@ -162,14 +251,9 @@ namespace RotationTracker
                     }
                     textBlock.Text = rotation.CurrentEmployee;
                     listBox.RefreshContents(rotation.Rotation);
-                    SaveRotation(rotation);
+                    //SaveRotation(rotation);
                 }
             }
-        }
-
-        private static void SaveRotation(RotationModel rotation)
-        {
-            //rotation.SaveToJSON(rotation.FilePath, rotation.FileName);
         }
 
         private static void AdvanceRotationAndRefreshControls(RotationUIModel rotationUIModel)
@@ -220,71 +304,10 @@ namespace RotationTracker
             rotationUIModel.FullRotationModel = rotation;
             rotations.Add(rotation);
 
-            CreateRotation(rotation);
+            CreateRotationInDB(rotation);
+            ReadRotationsFromDB(); // re-read the rotations to fill in the RotationId of the rotation that was just created
 
-            GroupBox groupBox = new GroupBox();
-            groupBox.Margin = new Thickness(5);
-            Label label = new Label();
-            label.Content = $"{rotation.BasicInfo.RotationName}:";
-            rotationUIModel.RotationNameLabel = label;
-            groupBox.Header = label;
-            
-            StackPanel stackPanel = new StackPanel();
-            stackPanel.Orientation = Orientation.Vertical;
-            ListBox listBox = new ListBox();
-            listBox.Margin = new Thickness(5, 0, 5, 0);
-            listBox.ItemsSource = rotation.RotationOfEmployees;
-            listBox.DisplayMemberPath = "FullName";
-            rotationUIModel.RotationListBox = listBox;
-
-            StackPanel stackPanel2 = new StackPanel();
-            stackPanel2.Orientation = Orientation.Vertical;
-            stackPanel2.Margin = new Thickness(5);
-            TextBlock currentlyUpTextBlock = new TextBlock();
-            currentlyUpTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-            currentlyUpTextBlock.Text = $"Currently Up: {rotation.CurrentEmployee}";
-            rotationUIModel.CurrentEmployeeTextBlock = currentlyUpTextBlock;
-            stackPanel2.Children.Add(currentlyUpTextBlock);
-
-            StackPanel stackPanel3 = new StackPanel();
-            stackPanel3.Orientation = Orientation.Horizontal;
-            stackPanel3.HorizontalAlignment = HorizontalAlignment.Center;
-            Button advanceButton = new Button();
-            advanceButton.DataContext = rotationUIModel;
-            advanceButton.Margin = new Thickness(0, 5, 0, 5);
-            advanceButton.Width = 80;
-            advanceButton.Content = "Advance";
-            advanceButton.Click += AdvanceRotationButton_Click;
-            Button editButton = new Button();
-            editButton.DataContext = rotationUIModel;
-            editButton.Margin = new Thickness(5);
-            editButton.Width = 45;
-            editButton.Content = "Edit";
-            editButton.Click += EditRotationButton_Click;
-            stackPanel3.Children.Add(advanceButton);
-            stackPanel3.Children.Add(editButton);
-
-            Label notesLabel = new Label();
-            notesLabel.Content = "Notes:";
-            TextBox notesTextBox = new TextBox();
-            rotationUIModel.RotationNotesTextBox = notesTextBox;
-            notesTextBox.IsReadOnly = true;
-            notesTextBox.TextWrapping = TextWrapping.Wrap;
-            notesTextBox.Height = 60;
-            notesTextBox.MaxWidth = 215;
-            notesTextBox.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            notesTextBox.Text = rotation.BasicInfo.Notes;
-
-            stackPanel.Children.Add(listBox);
-            stackPanel.Children.Add(stackPanel2);
-            stackPanel.Children.Add(stackPanel3);
-            stackPanel.Children.Add(notesLabel);
-            stackPanel.Children.Add(notesTextBox);
-
-            groupBox.Content = stackPanel;
-
-            rotationUIModels.Add(rotationUIModel);
-            rotationsWrapPanel.Children.Add(groupBox);
+            CreateRotationInUI(rotationUIModel, rotation);
         }
     }
 }

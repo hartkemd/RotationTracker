@@ -8,6 +8,7 @@ namespace DataAccessLibrary.Data
         void CreateEmployee(string employeeName);
         void DeleteEmployee(int id);
         void CreateRotation(FullRotationModel rotation);
-        BasicRotationModel GetBasicRotationById(int id);
+        List<FullRotationModel> GetAllRotations();
+        void DeleteRotation(int id);
     }
 }

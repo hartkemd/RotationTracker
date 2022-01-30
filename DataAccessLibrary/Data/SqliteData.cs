@@ -63,11 +63,41 @@ namespace DataAccessLibrary.Data
             }
         }
 
-        public BasicRotationModel GetBasicRotationById(int id) // needs work
+        public List<FullRotationModel> GetAllRotations()
         {
-            string sql = "SELECT * FROM Rotations WHERE Id = @Id;";
+            List<FullRotationModel> output = new();
 
-            return _db.LoadData<BasicRotationModel, dynamic>(sql, new { Id = id }, connectionStringName).First();
+            string sql = "SELECT Id FROM Rotations;";
+
+            List<int> rotationIds = _db.LoadData<int, dynamic>(sql, new { }, connectionStringName);
+
+            foreach (var id in rotationIds)
+            {
+                FullRotationModel fullRotation = new();
+
+                sql = "SELECT * FROM Rotations WHERE Id = @Id;";
+
+                fullRotation.BasicInfo = _db.LoadData<BasicRotationModel, dynamic>(sql, new { Id = id }, connectionStringName).First();
+
+                sql = "SELECT e.* FROM Employees e " +
+                        "INNER JOIN RotationEmployees re ON e.Id = re.EmployeeId " +
+                        "INNER JOIN Rotations r ON re.RotationId = r.Id " +
+                        "WHERE r.Id = @Id;";
+
+                fullRotation.RotationOfEmployees = _db.LoadData<EmployeeModel, dynamic>(sql, new { Id = id }, connectionStringName);
+
+                output.Add(fullRotation);
+            }
+
+            return output;
+        }
+
+        public void DeleteRotation(int id)
+        {
+            string sql = "DELETE FROM Rotations WHERE Id = @Id; " +
+                            "DELETE FROM RotationEmployees WHERE RotationId = @Id;";
+
+            _db.SaveData(sql, new { Id = id }, connectionStringName);
         }
     }
 }
