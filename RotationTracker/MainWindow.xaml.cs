@@ -1,7 +1,6 @@
 ﻿using DataAccessLibrary.Data;
 using DataAccessLibrary.Models;
 using RotationLibrary;
-using RotationLibrary.Models;
 using RotationTracker.Models;
 using System;
 using System.Collections.Generic;
@@ -250,26 +249,26 @@ namespace RotationTracker
         //    AdvanceRotationIfDateTimeHasPassed(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
         //}
 
-        private void AdvanceRotationIfDateTimeHasPassed(RotationModel rotation, TextBlock textBlock, ListBox listBox)
-        {
-            if (rotation.NextDateTimeRotationAdvances != DateTime.MinValue)
-            {
-                DateTime now = DateTime.Now;
+        //private void AdvanceRotationIfDateTimeHasPassed(RotationModel rotation, TextBlock textBlock, ListBox listBox)
+        //{
+        //    if (rotation.NextDateTimeRotationAdvances != DateTime.MinValue)
+        //    {
+        //        DateTime now = DateTime.Now;
 
-                if (now > rotation.NextDateTimeRotationAdvances)
-                {
-                    rotation.AdvanceRotation();
-                    rotation.SetNextDateTimeRotationAdvances();
-                    if (rotation.Rotation.Count > 0)
-                    {
-                        notificationMessage += $"{rotation.Rotation.Last()} took their turn for {rotation.RotationName} Rotation.\n";
-                    }
-                    textBlock.Text = rotation.CurrentEmployee;
-                    listBox.RefreshContents(rotation.Rotation);
-                    //SaveRotation(rotation);
-                }
-            }
-        }
+        //        if (now > rotation.NextDateTimeRotationAdvances)
+        //        {
+        //            rotation.AdvanceRotation();
+        //            rotation.SetNextDateTimeRotationAdvances();
+        //            if (rotation.Rotation.Count > 0)
+        //            {
+        //                notificationMessage += $"{rotation.Rotation.Last()} took their turn for {rotation.RotationName} Rotation.\n";
+        //            }
+        //            textBlock.Text = rotation.CurrentEmployee;
+        //            listBox.RefreshContents(rotation.Rotation);
+        //            //SaveRotation(rotation);
+        //        }
+        //    }
+        //}
 
         private void AdvanceRotationAndRefreshControls(RotationUIModel rotationUIModel)
         {

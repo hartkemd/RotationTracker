@@ -1,5 +1,4 @@
 ﻿using DataAccessLibrary.Models;
-using RotationLibrary.Models;
 using System.Windows;
 
 namespace RotationTracker
