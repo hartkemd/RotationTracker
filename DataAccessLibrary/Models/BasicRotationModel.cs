@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RotationLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,8 @@ namespace DataAccessLibrary.Models
     {
         public int Id { get; set; }
         public string RotationName { get; set; }
-        public int RotationRecurrence { get; set; }
-        public string NextDateTimeRotationAdvances { get; set; }
+        public RecurrenceInterval RotationRecurrence { get; set; }
+        public DateTime NextDateTimeRotationAdvances { get; set; }
         public string Notes { get; set; }
     }
 }

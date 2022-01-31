@@ -63,6 +63,22 @@ namespace DataAccessLibrary.Data
             }
         }
 
+        public void RecreateRotationOfEmployees(FullRotationModel fullRotation)
+        {
+            int rotationId = fullRotation.BasicInfo.Id;
+
+            string sql = "DELETE FROM RotationEmployees WHERE RotationId = @RotationId;";
+
+            _db.SaveData(sql, new { RotationId = rotationId }, connectionStringName);
+
+            foreach (var employee in fullRotation.RotationOfEmployees)
+            {
+                sql = "INSERT INTO RotationEmployees(RotationId, EmployeeId) VALUES(@RotationId, @EmployeeId);";
+
+                _db.SaveData(sql, new { RotationId = rotationId, EmployeeId = employee.Id }, connectionStringName);
+            }
+        }
+
         public List<FullRotationModel> GetAllRotations()
         {
             List<FullRotationModel> output = new();
@@ -90,6 +106,36 @@ namespace DataAccessLibrary.Data
             }
 
             return output;
+        }
+
+        public void UpdateRotationBasicInfo(BasicRotationModel basicRotation)
+        {
+            string sql = "UPDATE Rotations SET RotationName = @RotationName, RotationRecurrence = @RotationRecurrence, " +
+                            "NextDateTimeRotationAdvances = @NextDateTimeRotationAdvances, Notes = @Notes WHERE Id = @Id;";
+
+            _db.SaveData(sql, new { basicRotation.RotationName,
+                                    basicRotation.RotationRecurrence,
+                                    basicRotation.NextDateTimeRotationAdvances,
+                                    basicRotation.Notes,
+                                    basicRotation.Id },
+                                    connectionStringName);
+        }
+
+        public void AdvanceRotation(FullRotationModel fullRotation)
+        {
+            string sql = "SELECT * FROM RotationEmployees WHERE RotationId = @RotationId LIMIT 1;";
+
+            RotationEmployeeModel rotationEmployee = _db.LoadData<RotationEmployeeModel, dynamic>(sql,
+                                                                new { RotationId = fullRotation.BasicInfo.Id },
+                                                                connectionStringName).First();
+
+            sql = "DELETE FROM RotationEmployees WHERE Id = @Id; " +
+                            "INSERT INTO RotationEmployees(RotationId, EmployeeId) VALUES(@RotationId, @EmployeeId);";
+
+            _db.SaveData(sql, new { rotationEmployee.Id,
+                                    rotationEmployee.RotationId,
+                                    rotationEmployee.EmployeeId },
+                                    connectionStringName);
         }
 
         public void DeleteRotation(int id)

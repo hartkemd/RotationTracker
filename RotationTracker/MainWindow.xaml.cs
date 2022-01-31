@@ -71,9 +71,24 @@ namespace RotationTracker
             _db.DeleteEmployee(id);
         }
 
-        private void CreateRotationInDB(FullRotationModel rotation)
+        private void CreateRotationInDB(FullRotationModel fullRotation)
         {
-            _db.CreateRotation(rotation);
+            _db.CreateRotation(fullRotation);
+        }
+
+        public void RecreateRotationInDB(FullRotationModel fullRotation)
+        {
+            _db.RecreateRotationOfEmployees(fullRotation);
+        }
+
+        public void UpdateRotationBasicInfoInDB(BasicRotationModel basicRotation)
+        {
+            _db.UpdateRotationBasicInfo(basicRotation);
+        }
+
+        private void AdvanceRotationInDB(FullRotationModel fullRotation)
+        {
+            _db.AdvanceRotation(fullRotation);
         }
 
         public void DeleteRotationFromDB(int id)
@@ -256,13 +271,13 @@ namespace RotationTracker
             }
         }
 
-        private static void AdvanceRotationAndRefreshControls(RotationUIModel rotationUIModel)
+        private void AdvanceRotationAndRefreshControls(RotationUIModel rotationUIModel)
         {
             rotationUIModel.FullRotationModel.AdvanceRotation();
             rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
 
             rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
-            //SaveRotation(rotation);
+            AdvanceRotationInDB(rotationUIModel.FullRotationModel);
         }
 
         private void EditEmployeesButton_Click(object sender, RoutedEventArgs e)
@@ -298,7 +313,7 @@ namespace RotationTracker
 
             FullRotationModel rotation = new ();
             rotation.BasicInfo.RotationName = $"Rotation {rotations.Count + 1}";
-            rotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7).ToString();
+            rotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7);
             rotation.RotationOfEmployees = employees;
 
             rotationUIModel.FullRotationModel = rotation;

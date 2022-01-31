@@ -15,7 +15,7 @@ namespace RotationTracker
     /// </summary>
     public partial class EditRotation : Window
     {
-        private MainWindow _parent;
+        private MainWindow _parentWindow;
         private RotationUIModel _rotationUIModel;
         private FullRotationModel _rotation;
         private ListBox _listBox;
@@ -26,7 +26,7 @@ namespace RotationTracker
         {
             InitializeComponent();
 
-            _parent = parentWindow;
+            _parentWindow = parentWindow;
             _rotationUIModel = rotationUIModel;
             _rotation = _rotationUIModel.FullRotationModel;
             _listBox = _rotationUIModel.RotationListBox;
@@ -38,21 +38,38 @@ namespace RotationTracker
 
         private void PopulateControls()
         {
-            rotationNameLabel.Content = _rotation.BasicInfo.RotationName;
+            rotationNameLabel.Content = $"{_rotation.BasicInfo.RotationName}:";
             employeeListBox.ItemsSource = _rotation.RotationOfEmployees;
             rotationNameTextBox.Text = _rotation.BasicInfo.RotationName;
             notesTextBox.Text = _rotation.BasicInfo.Notes;
+            GetRotationRecurrence();
 
-            //if (_rotation.NextDateTimeRotationAdvances == DateTime.MinValue)
-            //{
-            //    nextDateRotationAdvancesDatePicker.SelectedDate = DateTime.Today;
-            //}
-            //else if (_rotation.NextDateTimeRotationAdvances != DateTime.MinValue)
-            //{
-            //    nextDateRotationAdvancesDatePicker.SelectedDate = _rotation.NextDateTimeRotationAdvances;
-            //}
+            if (_rotation.BasicInfo.NextDateTimeRotationAdvances == DateTime.MinValue)
+            {
+                nextDateRotationAdvancesDatePicker.SelectedDate = DateTime.Today;
+            }
+            else
+            {
+                nextDateRotationAdvancesDatePicker.SelectedDate = _rotation.BasicInfo.NextDateTimeRotationAdvances;
+            }
 
-            //hourRotationAdvancesTextBox.Text = _rotation.NextDateTimeRotationAdvances.Hour.ToString();
+            hourRotationAdvancesTextBox.Text = _rotation.BasicInfo.NextDateTimeRotationAdvances.Hour.ToString();
+        }
+
+        private void GetRotationRecurrence()
+        {
+            switch (_rotation.BasicInfo.RotationRecurrence)
+            {
+                case RecurrenceInterval.Weekly:
+                    weeklyRadioButton.IsChecked = true;
+                    break;
+                case RecurrenceInterval.Monthly:
+                    monthlyRadioButton.IsChecked = true;
+                    break;
+                case RecurrenceInterval.Bimonthly:
+                    bimonthlyRadioButton.IsChecked = true;
+                    break;
+            }
         }
 
         private void RefreshListBoxes()
@@ -65,48 +82,48 @@ namespace RotationTracker
         {
             if (weeklyRadioButton.IsChecked == true)
             {
-                _rotation.BasicInfo.RotationRecurrence = (int)RecurrenceInterval.Weekly;
+                _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
             }
             else if (monthlyRadioButton.IsChecked == true)
             {
-                _rotation.BasicInfo.RotationRecurrence = (int)RecurrenceInterval.Monthly;
+                _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Monthly;
             }
             else if (bimonthlyRadioButton.IsChecked == true)
             {
-                _rotation.BasicInfo.RotationRecurrence = (int)RecurrenceInterval.Bimonthly;
+                _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Bimonthly;
             }
         }
 
-        //private bool SetNextDateTimeRotationAdvances()
-        //{
-        //    bool dateTimeSetSuccessfully = true;
+        private bool SetNextDateTimeRotationAdvances()
+        {
+            bool dateTimeSetSuccessfully = true;
 
-        //    if (nextDateRotationAdvancesDatePicker.SelectedDate.HasValue)
-        //    {
-        //        _rotation.NextDateTimeRotationAdvances = nextDateRotationAdvancesDatePicker.SelectedDate.Value;
-        //        if (string.IsNullOrWhiteSpace(hourRotationAdvancesTextBox.Text) == false)
-        //        {
-        //            bool isValidInt = int.TryParse(hourRotationAdvancesTextBox.Text, out int hoursToAdd);
-        //            if (isValidInt && hoursToAdd >= 0 && hoursToAdd <= 23)
-        //            {
-        //                _rotation.NextDateTimeRotationAdvances = _rotation.NextDateTimeRotationAdvances.AddHours(hoursToAdd);
-        //            }
-        //            else
-        //            {
-        //                WPFHelper.ShowErrorMessageBoxAndResetTextBox("That was not a valid number of hours.",
-        //                    hourRotationAdvancesTextBox);
-        //                dateTimeSetSuccessfully = false;
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("No date was selected.");
-        //        dateTimeSetSuccessfully = false;
-        //    }
+            if (nextDateRotationAdvancesDatePicker.SelectedDate.HasValue)
+            {
+                _rotation.BasicInfo.NextDateTimeRotationAdvances = nextDateRotationAdvancesDatePicker.SelectedDate.Value;
+                if (string.IsNullOrWhiteSpace(hourRotationAdvancesTextBox.Text) == false)
+                {
+                    bool isValidInt = int.TryParse(hourRotationAdvancesTextBox.Text, out int hoursToAdd);
+                    if (isValidInt && hoursToAdd >= 0 && hoursToAdd <= 23)
+                    {
+                        _rotation.BasicInfo.NextDateTimeRotationAdvances = _rotation.BasicInfo.NextDateTimeRotationAdvances.AddHours(hoursToAdd);
+                    }
+                    else
+                    {
+                        WPFHelper.ShowErrorMessageBoxAndResetTextBox("That was not a valid number of hours.",
+                            hourRotationAdvancesTextBox);
+                        dateTimeSetSuccessfully = false;
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No date was selected.");
+                dateTimeSetSuccessfully = false;
+            }
 
-        //    return dateTimeSetSuccessfully;
-        //}
+            return dateTimeSetSuccessfully;
+        }
 
         private void MoveUpButton_Click(object sender, RoutedEventArgs e)
         {
@@ -136,12 +153,6 @@ namespace RotationTracker
             }
         }
 
-        private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
-        {
-            _rotation.RotationOfEmployees = _parent.employees;
-            employeeListBox.RefreshContents(_rotation.RotationOfEmployees);
-        }
-
         private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
             if (employeeListBox.SelectedIndex != -1)
@@ -156,21 +167,22 @@ namespace RotationTracker
             _listBox.RefreshContents(_rotation.RotationOfEmployees);
 
             _rotation.BasicInfo.RotationName = rotationNameTextBox.Text;
-            _label.Content = _rotation.BasicInfo.RotationName;
+            _label.Content = $"{_rotation.BasicInfo.RotationName}:";
 
-            _textBlock.Text = _rotation.CurrentEmployee;
+            _textBlock.Text = $"Currently Up: {_rotation.CurrentEmployee}";
 
             _rotation.BasicInfo.Notes = notesTextBox.Text;
             _rotationUIModel.RotationNotesTextBox.Text = _rotation.BasicInfo.Notes;
 
             SetRotationRecurrence();
 
-            //bool keepGoing = SetNextDateTimeRotationAdvances();
-            //if (keepGoing)
-            //{
-                //_rotationUIModel.SaveToJSON(_rotation.FilePath, _rotation.FileName);
-            Close();
-            //}
+            bool keepGoing = SetNextDateTimeRotationAdvances();
+            if (keepGoing == true)
+            {
+                _parentWindow.UpdateRotationBasicInfoInDB(_rotation.BasicInfo);
+                _parentWindow.RecreateRotationInDB(_rotation);
+                Close();
+            }
         }
     }
 }
