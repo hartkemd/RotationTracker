@@ -15,5 +15,7 @@ namespace RotationTracker.Models
         public ListBox RotationListBox { get; set; }
         public Label RotationNameLabel { get; set; }
         public TextBox RotationNotesTextBox { get; set; }
+        public Button AdvanceButton { get; set; }
+        public Button EditButton { get; set; }
     }
 }

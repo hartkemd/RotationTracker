@@ -13,5 +13,6 @@ namespace DataAccessLibrary.Data
         void UpdateRotationBasicInfo(BasicRotationModel basicRotation);
         void AdvanceRotation(FullRotationModel fullRotation);
         void DeleteRotation(int id);
+        List<string> ReadAllAdmins();
     }
 }

@@ -145,5 +145,16 @@ namespace DataAccessLibrary.Data
 
             _db.SaveData(sql, new { Id = id }, connectionStringName);
         }
+
+        public List<string> ReadAllAdmins()
+        {
+            List<string> output = new ();
+
+            string sql = "SELECT UserName FROM Admins;";
+
+            output = _db.LoadData<string, dynamic>(sql, new { }, connectionStringName);
+
+            return output;
+        }
     }
 }

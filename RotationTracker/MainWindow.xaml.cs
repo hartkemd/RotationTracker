@@ -22,27 +22,26 @@ namespace RotationTracker
         public List<EmployeeModel> employees = new ();
         public List<FullRotationModel> rotations = new ();
         public List<RotationUIModel> rotationUIModels = new ();
-        private string notificationMessage;
-        List<string> admins = new();
+        private List<string> admins = new();
         private string currentUser;
         private bool currentUserIsAdmin = false;
+        private string notificationMessage;
 
         public MainWindow(ISqliteData db)
         {
             InitializeComponent();
             _db = db;
 
-            GetCurrentUser();
-            WriteAdminsToFile();
-            ReadAdminsFromFile();
-            CheckIfCurrentUserIsAdmin();
-            //ShowControlsIfUserIsAdmin();
-            DisplayCurrentUser();
-
             ReadEmployeesFromDB();
             employeeListBox.ItemsSource = employees;
             ReadRotationsFromDB();
             LoadRotationsIntoUI();
+
+            GetCurrentUser();
+            DisplayCurrentUser();
+            ReadAdminsFromDB();
+            CheckIfCurrentUserIsAdmin();
+            ShowControlsIfCurrentUserIsAdmin();
 
             //AdvanceRotationsIfDateTimeHasPassed();
 
@@ -138,12 +137,16 @@ namespace RotationTracker
             advanceButton.Width = 80;
             advanceButton.Content = "Advance";
             advanceButton.Click += AdvanceRotationButton_Click;
+            advanceButton.Visibility = Visibility.Collapsed;
+            rotationUIModel.AdvanceButton = advanceButton;
             Button editButton = new Button();
             editButton.DataContext = rotationUIModel;
             editButton.Margin = new Thickness(5);
             editButton.Width = 45;
             editButton.Content = "Edit";
             editButton.Click += EditRotationButton_Click;
+            editButton.Visibility = Visibility.Collapsed;
+            rotationUIModel.EditButton = editButton;
             stackPanel3.Children.Add(advanceButton);
             stackPanel3.Children.Add(editButton);
 
@@ -178,24 +181,24 @@ namespace RotationTracker
             CreateRotationInUI(rotationUIModel, rotation);
         }
 
-        private void WriteAdminsToFile()
+        private void ReadAdminsFromDB()
         {
-            admins.Add("Mark");
-            //TextFileIO.WriteListToFile(configFilePath, admins);
+            admins = _db.ReadAllAdmins();
         }
 
-        private void ReadAdminsFromFile()
-        {
-            //admins = TextFileIO.ReadListFromFile(configFilePath);
-        }
-
-        private void ShowControlsIfUserIsAdmin()
+        private void ShowControlsIfCurrentUserIsAdmin()
         {
             if (currentUserIsAdmin == true)
             {
                 editEmployeesButton.Visibility = Visibility.Visible;
-                //advanceRotation1Button.Visibility = Visibility.Visible;
-                //editRotation1Button.Visibility = Visibility.Visible;
+                addRotationButton.Visibility = Visibility.Visible;
+                removeRotationButton.Visibility = Visibility.Visible;
+
+                foreach (var uiModel in rotationUIModels)
+                {
+                    uiModel.AdvanceButton.Visibility = Visibility.Visible;
+                    uiModel.EditButton.Visibility = Visibility.Visible;
+                }
             }
         }
 
@@ -244,7 +247,7 @@ namespace RotationTracker
             }
         }
 
-        //private void AdvanceRotationsIfDateTimeHasPassed()
+        //private void AdvanceRotationsIfDateTimeHasPassed() // assumes app will be run every week; needs work
         //{
         //    AdvanceRotationIfDateTimeHasPassed(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
         //}
