@@ -59,6 +59,22 @@ namespace RotationTracker
             rotations = _db.GetAllRotations();
         }
 
+        private void LoadRotationsIntoUI()
+        {
+            foreach (var rotation in rotations)
+            {
+                LoadRotationIntoUI(rotation);
+            }
+        }
+
+        private void LoadRotationIntoUI(FullRotationModel rotation)
+        {
+            RotationUIModel rotationUIModel = new();
+            rotationUIModel.FullRotationModel = rotation;
+
+            CreateRotationInUI(rotationUIModel, rotation);
+        }
+
         public void CreateEmployeeInDB(string employeeName)
         {
             _db.CreateEmployee(employeeName);
@@ -92,14 +108,6 @@ namespace RotationTracker
         public void DeleteRotationFromDB(int id)
         {
             _db.DeleteRotation(id);
-        }
-
-        private void LoadRotationsIntoUI()
-        {
-            foreach (var rotation in rotations)
-            {
-                LoadRotationIntoUI(rotation);
-            }
         }
 
         private void CreateRotationInUI(RotationUIModel rotationUIModel, FullRotationModel rotation)
@@ -173,17 +181,30 @@ namespace RotationTracker
             rotationsWrapPanel.Children.Add(groupBox);
         }
 
-        private void LoadRotationIntoUI(FullRotationModel rotation)
+        private void GetCurrentUser()
         {
-            RotationUIModel rotationUIModel = new();
-            rotationUIModel.FullRotationModel = rotation;
+            currentUser = Environment.UserName;
+        }
 
-            CreateRotationInUI(rotationUIModel, rotation);
+        private void DisplayCurrentUser()
+        {
+            userNameTextBlock.Text = currentUser;
         }
 
         private void ReadAdminsFromDB()
         {
             admins = _db.ReadAllAdmins();
+        }
+
+        private void CheckIfCurrentUserIsAdmin()
+        {
+            foreach (string user in admins)
+            {
+                if (currentUser == user)
+                {
+                    currentUserIsAdmin = true;
+                }
+            }
         }
 
         private void ShowControlsIfCurrentUserIsAdmin()
@@ -200,27 +221,6 @@ namespace RotationTracker
                     uiModel.EditButton.Visibility = Visibility.Visible;
                 }
             }
-        }
-
-        private void CheckIfCurrentUserIsAdmin()
-        {
-            foreach (string user in admins)
-            {
-                if (currentUser == user)
-                {
-                    currentUserIsAdmin = true;
-                }
-            }
-        }
-
-        private void GetCurrentUser()
-        {
-            currentUser = Environment.UserName;
-        }
-
-        private void DisplayCurrentUser()
-        {
-            userNameTextBlock.Text = currentUser;
         }
 
         private void CreateTimer()
@@ -288,27 +288,6 @@ namespace RotationTracker
             editEmployees.ShowDialog();
         }
 
-        private void AdvanceRotationButton_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = (Button)sender;
-            RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            AdvanceRotationAndRefreshControls(rotationUIModel);
-        }
-
-        private void EditRotationButton_Click(object sender, RoutedEventArgs e)
-        {
-            Button button = (Button)sender;
-            RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            EditRotation editRotation = new(this, rotationUIModel);
-            editRotation.ShowDialog();
-        }
-
-        private void RemoveRotationButton_Click(object sender, RoutedEventArgs e)
-        {
-            RemoveRotation removeRotation = new(this);
-            removeRotation.ShowDialog();
-        }
-
         private void AddRotationButton_Click(object sender, RoutedEventArgs e)
         {
             RotationUIModel rotationUIModel = new ();
@@ -325,6 +304,27 @@ namespace RotationTracker
             ReadRotationsFromDB(); // re-read the rotations to fill in the RotationId of the rotation that was just created
 
             CreateRotationInUI(rotationUIModel, rotation);
+        }
+
+        private void RemoveRotationButton_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveRotation removeRotation = new(this);
+            removeRotation.ShowDialog();
+        }
+
+        private void AdvanceRotationButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
+            AdvanceRotationAndRefreshControls(rotationUIModel);
+        }
+
+        private void EditRotationButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
+            EditRotation editRotation = new(this, rotationUIModel);
+            editRotation.ShowDialog();
         }
     }
 }
