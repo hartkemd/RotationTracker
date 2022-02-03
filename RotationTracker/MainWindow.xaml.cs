@@ -43,7 +43,7 @@ namespace RotationTracker
             CheckIfCurrentUserIsAdmin();
             ShowControlsIfCurrentUserIsAdmin();
 
-            //AdvanceRotationsIfDateTimeHasPassed();
+            AdvanceRotationsIfDateTimeHasPassed();
 
             DisplayNotificationsAsync();
             CreateTimer();
@@ -227,14 +227,14 @@ namespace RotationTracker
         {
             System.Timers.Timer refreshAppTimer = new();
             refreshAppTimer.Interval = 15 * 60 * 1000; // 15 minutes
-            //refreshAppTimer.Elapsed += new ElapsedEventHandler(RefreshAppTimer_Elapsed);
+            refreshAppTimer.Elapsed += new ElapsedEventHandler(RefreshAppTimer_Elapsed);
             refreshAppTimer.Start();
         }
 
-        //private void RefreshAppTimer_Elapsed(object sender, EventArgs e)
-        //{
-        //    AdvanceRotationsIfDateTimeHasPassed();
-        //}
+        private void RefreshAppTimer_Elapsed(object sender, EventArgs e)
+        {
+            AdvanceRotationsIfDateTimeHasPassed();
+        }
 
         private async void DisplayNotificationsAsync()
         {
@@ -247,33 +247,40 @@ namespace RotationTracker
             }
         }
 
-        //private void AdvanceRotationsIfDateTimeHasPassed() // assumes app will be run every week; needs work
-        //{
-        //    AdvanceRotationIfDateTimeHasPassed(rotation1, rotation1CurrentEmployeeTextBlock, rotation1ListBox);
-        //}
+        private void AdvanceRotationsIfDateTimeHasPassed()
+        {
+            foreach (var model in rotationUIModels)
+            {
+                AdvanceRotationIfDateTimeHasPassed(model);
+            }
+        }
 
-        //private void AdvanceRotationIfDateTimeHasPassed(RotationModel rotation, TextBlock textBlock, ListBox listBox)
-        //{
-        //    if (rotation.NextDateTimeRotationAdvances != DateTime.MinValue)
-        //    {
-        //        DateTime now = DateTime.Now;
+        private void AdvanceRotationIfDateTimeHasPassed(RotationUIModel rotationUIModel) // assumes app will be run every week; needs work
+        {
+            DateTime nextDateTimeRotationAdvances = rotationUIModel.FullRotationModel.BasicInfo.NextDateTimeRotationAdvances;
 
-        //        if (now > rotation.NextDateTimeRotationAdvances)
-        //        {
-        //            rotation.AdvanceRotation();
-        //            rotation.SetNextDateTimeRotationAdvances();
-        //            if (rotation.Rotation.Count > 0)
-        //            {
-        //                notificationMessage += $"{rotation.Rotation.Last()} took their turn for {rotation.RotationName} Rotation.\n";
-        //            }
-        //            textBlock.Text = rotation.CurrentEmployee;
-        //            listBox.RefreshContents(rotation.Rotation);
-        //            //SaveRotation(rotation);
-        //        }
-        //    }
-        //}
+            if (nextDateTimeRotationAdvances != DateTime.MinValue)
+            {
+                if (DateTime.Now > nextDateTimeRotationAdvances)
+                {
+                    rotationUIModel.FullRotationModel.AdvanceRotation();
+                    rotationUIModel.FullRotationModel.SetNextDateTimeRotationAdvances();
 
-        private void AdvanceRotationAndRefreshControls(RotationUIModel rotationUIModel)
+                    if (rotationUIModel.FullRotationModel.RotationOfEmployees.Count > 0)
+                    {
+                        notificationMessage += $"{rotationUIModel.FullRotationModel.RotationOfEmployees.Last()} " +
+                            $"took their turn for {rotationUIModel.FullRotationModel.BasicInfo.RotationName} Rotation." +
+                            $"{Environment.NewLine}";
+                    }
+
+                    rotationUIModel.CurrentEmployeeTextBlock.Text = rotationUIModel.FullRotationModel.CurrentEmployee;
+                    rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
+                    UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
+                }
+            }
+        }
+
+        private void AdvanceRotation(RotationUIModel rotationUIModel)
         {
             rotationUIModel.FullRotationModel.AdvanceRotation();
             rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
@@ -294,6 +301,7 @@ namespace RotationTracker
 
             FullRotationModel rotation = new ();
             rotation.BasicInfo.RotationName = $"Rotation {rotations.Count + 1}";
+            rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
             rotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7);
             rotation.RotationOfEmployees = employees;
 
@@ -316,7 +324,7 @@ namespace RotationTracker
         {
             Button button = (Button)sender;
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            AdvanceRotationAndRefreshControls(rotationUIModel);
+            AdvanceRotation(rotationUIModel);
         }
 
         private void EditRotationButton_Click(object sender, RoutedEventArgs e)

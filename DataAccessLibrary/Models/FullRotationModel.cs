@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RotationLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,20 +35,20 @@ namespace DataAccessLibrary.Models
             }
         }
 
-        //public void SetNextDateTimeRotationAdvances()
-        //{
-        //    if (RotationRecurrence == RecurrenceInterval.Weekly)
-        //    {
-        //        NextDateTimeRotationAdvances = NextDateTimeRotationAdvances.AddDays(7);
-        //    }
-        //    else if (RotationRecurrence == RecurrenceInterval.Monthly)
-        //    {
-        //        NextDateTimeRotationAdvances = NextDateTimeRotationAdvances.AddMonths(1);
-        //    }
-        //    else if (RotationRecurrence == RecurrenceInterval.Bimonthly)
-        //    {
-        //        NextDateTimeRotationAdvances = NextDateTimeRotationAdvances.AddMonths(2);
-        //    }
-        //}
+        public void SetNextDateTimeRotationAdvances()
+        {
+            if (BasicInfo.RotationRecurrence == RecurrenceInterval.Weekly)
+            {
+                BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddDays(7);
+            }
+            else if (BasicInfo.RotationRecurrence == RecurrenceInterval.Monthly)
+            {
+                BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddMonths(1);
+            }
+            else if (BasicInfo.RotationRecurrence == RecurrenceInterval.Bimonthly)
+            {
+                BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddMonths(2);
+            }
+        }
     }
 }
