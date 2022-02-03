@@ -255,7 +255,7 @@ namespace RotationTracker
             }
         }
 
-        private void AdvanceRotationIfDateTimeHasPassed(RotationUIModel rotationUIModel) // assumes app will be run every week; needs work
+        private void AdvanceRotationIfDateTimeHasPassed(RotationUIModel rotationUIModel) // assumes app will be run at least every week; needs work
         {
             DateTime nextDateTimeRotationAdvances = rotationUIModel.FullRotationModel.BasicInfo.NextDateTimeRotationAdvances;
 
@@ -264,16 +264,17 @@ namespace RotationTracker
                 if (DateTime.Now > nextDateTimeRotationAdvances)
                 {
                     rotationUIModel.FullRotationModel.AdvanceRotation();
+                    AdvanceRotationInDB(rotationUIModel.FullRotationModel);
                     rotationUIModel.FullRotationModel.SetNextDateTimeRotationAdvances();
 
                     if (rotationUIModel.FullRotationModel.RotationOfEmployees.Count > 0)
                     {
-                        notificationMessage += $"{rotationUIModel.FullRotationModel.RotationOfEmployees.Last()} " +
-                            $"took their turn for {rotationUIModel.FullRotationModel.BasicInfo.RotationName} Rotation." +
+                        notificationMessage += $"{rotationUIModel.FullRotationModel.RotationOfEmployees.Last().FullName} " +
+                            $"took their turn for {rotationUIModel.FullRotationModel.BasicInfo.RotationName}." +
                             $"{Environment.NewLine}";
                     }
 
-                    rotationUIModel.CurrentEmployeeTextBlock.Text = rotationUIModel.FullRotationModel.CurrentEmployee;
+                    rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
                     rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
                     UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
                 }
