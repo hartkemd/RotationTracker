@@ -255,29 +255,42 @@ namespace RotationTracker
             }
         }
 
-        private void AdvanceRotationIfDateTimeHasPassed(RotationUIModel rotationUIModel) // assumes app will be run at least every week; needs work
+        private void AdvanceRotationIfDateTimeHasPassed(RotationUIModel rotationUIModel)
         {
             DateTime nextDateTimeRotationAdvances = rotationUIModel.FullRotationModel.BasicInfo.NextDateTimeRotationAdvances;
 
             if (nextDateTimeRotationAdvances != DateTime.MinValue)
             {
-                if (DateTime.Now > nextDateTimeRotationAdvances)
+                DateTime now = DateTime.Now;
+                bool keepAdvancing = false;
+
+                do
                 {
-                    rotationUIModel.FullRotationModel.AdvanceRotation();
-                    AdvanceRotationInDB(rotationUIModel.FullRotationModel);
-                    rotationUIModel.FullRotationModel.SetNextDateTimeRotationAdvances();
+                    nextDateTimeRotationAdvances = rotationUIModel.FullRotationModel.BasicInfo.NextDateTimeRotationAdvances;
 
-                    if (rotationUIModel.FullRotationModel.RotationOfEmployees.Count > 0)
+                    if (now > nextDateTimeRotationAdvances)
                     {
-                        notificationMessage += $"{rotationUIModel.FullRotationModel.RotationOfEmployees.Last().FullName} " +
-                            $"took their turn for {rotationUIModel.FullRotationModel.BasicInfo.RotationName}." +
-                            $"{Environment.NewLine}";
-                    }
+                        rotationUIModel.FullRotationModel.AdvanceRotation();
+                        AdvanceRotationInDB(rotationUIModel.FullRotationModel);
+                        rotationUIModel.FullRotationModel.SetNextDateTimeRotationAdvances();
 
-                    rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
-                    rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
-                    UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
-                }
+                        if (rotationUIModel.FullRotationModel.RotationOfEmployees.Count > 0)
+                        {
+                            notificationMessage += $"{rotationUIModel.FullRotationModel.RotationOfEmployees.Last().FullName} " +
+                                $"took their turn for {rotationUIModel.FullRotationModel.BasicInfo.RotationName}." +
+                                $"{Environment.NewLine}";
+                        }
+
+                        rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
+                        rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
+                        UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
+
+                        if (now > nextDateTimeRotationAdvances)
+                        {
+                            keepAdvancing = true;
+                        }
+                    }
+                } while (keepAdvancing == true);
             }
         }
 
