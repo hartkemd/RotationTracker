@@ -129,7 +129,6 @@ namespace RotationTracker
 
             StackPanel stackPanel2 = new StackPanel();
             stackPanel2.Orientation = Orientation.Vertical;
-            stackPanel2.HorizontalAlignment = HorizontalAlignment.Center;
             stackPanel2.Margin = new Thickness(5);
             TextBlock currentlyUpTextBlock = new TextBlock();
             currentlyUpTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
