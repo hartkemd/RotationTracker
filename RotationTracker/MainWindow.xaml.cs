@@ -129,12 +129,24 @@ namespace RotationTracker
 
             StackPanel stackPanel2 = new StackPanel();
             stackPanel2.Orientation = Orientation.Vertical;
+            stackPanel2.HorizontalAlignment = HorizontalAlignment.Center;
             stackPanel2.Margin = new Thickness(5);
             TextBlock currentlyUpTextBlock = new TextBlock();
             currentlyUpTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            currentlyUpTextBlock.Margin = new Thickness(0, 4, 0, 4);
             currentlyUpTextBlock.Text = $"Currently Up: {rotation.CurrentEmployee}";
             rotationUIModel.CurrentEmployeeTextBlock = currentlyUpTextBlock;
+            TextBlock rotationAdvancesTextBlock = new ();
+            rotationAdvancesTextBlock.Margin = new Thickness(0, 4, 0, 0);
+            rotationAdvancesTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            rotationAdvancesTextBlock.Text = $"Rotation Advances:";
+            TextBlock dateTimeTextBlock = new ();
+            dateTimeTextBlock.Margin = new Thickness(0, 0, 0, 4);
+            dateTimeTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            dateTimeTextBlock.Text = $"{rotation.BasicInfo.NextDateTimeRotationAdvances:g}";
             stackPanel2.Children.Add(currentlyUpTextBlock);
+            stackPanel2.Children.Add(rotationAdvancesTextBlock);
+            stackPanel2.Children.Add(dateTimeTextBlock);
 
             StackPanel stackPanel3 = new StackPanel();
             stackPanel3.Orientation = Orientation.Horizontal;
