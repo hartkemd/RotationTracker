@@ -285,10 +285,20 @@ namespace RotationTracker
                         rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
                         UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
 
+                        nextDateTimeRotationAdvances = rotationUIModel.FullRotationModel.BasicInfo.NextDateTimeRotationAdvances;
+
                         if (now > nextDateTimeRotationAdvances)
                         {
                             keepAdvancing = true;
                         }
+                        else
+                        {
+                            keepAdvancing = false;
+                        }
+                    }
+                    else
+                    {
+                        keepAdvancing = false;
                     }
                 } while (keepAdvancing == true);
             }
