@@ -41,11 +41,15 @@ namespace DataAccessLibrary.Models
             {
                 BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddDays(7);
             }
-            else if (BasicInfo.RotationRecurrence == RecurrenceInterval.Monthly)
+            else if (BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+            {
+                BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddDays(14);
+            }
+            else if (BasicInfo.RotationRecurrence == RecurrenceInterval.MonthlyOnDay)
             {
                 BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddMonths(1);
             }
-            else if (BasicInfo.RotationRecurrence == RecurrenceInterval.Bimonthly)
+            else if (BasicInfo.RotationRecurrence == RecurrenceInterval.BimonthlyOnDay)
             {
                 BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddMonths(2);
             }

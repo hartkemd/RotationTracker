@@ -9,7 +9,8 @@ namespace RotationLibrary
     public enum RecurrenceInterval
     {
         Weekly,
-        Monthly,
-        Bimonthly
+        BiweeklyOnDay,
+        MonthlyOnDay,
+        BimonthlyOnDay
     }
 }

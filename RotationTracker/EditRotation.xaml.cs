@@ -2,7 +2,6 @@
 using RotationLibrary;
 using RotationTracker.Models;
 using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using WPFHelperLibrary;
@@ -62,10 +61,13 @@ namespace RotationTracker
                 case RecurrenceInterval.Weekly:
                     weeklyRadioButton.IsChecked = true;
                     break;
-                case RecurrenceInterval.Monthly:
+                case RecurrenceInterval.BiweeklyOnDay:
+                    biweeklyRadioButton.IsChecked = true;
+                    break;
+                case RecurrenceInterval.MonthlyOnDay:
                     monthlyRadioButton.IsChecked = true;
                     break;
-                case RecurrenceInterval.Bimonthly:
+                case RecurrenceInterval.BimonthlyOnDay:
                     bimonthlyRadioButton.IsChecked = true;
                     break;
             }
@@ -83,13 +85,17 @@ namespace RotationTracker
             {
                 _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
             }
+            else if (biweeklyRadioButton.IsChecked == true)
+            {
+                _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.BiweeklyOnDay;
+            }
             else if (monthlyRadioButton.IsChecked == true)
             {
-                _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Monthly;
+                _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.MonthlyOnDay;
             }
             else if (bimonthlyRadioButton.IsChecked == true)
             {
-                _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Bimonthly;
+                _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.BimonthlyOnDay;
             }
         }
 
