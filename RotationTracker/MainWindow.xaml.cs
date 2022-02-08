@@ -155,16 +155,16 @@ namespace RotationTracker
             advanceButton.Margin = new Thickness(0, 5, 0, 5);
             advanceButton.Width = 80;
             advanceButton.Content = "Advance";
+            ShowButtonIfUserIsAdmin(advanceButton);
             advanceButton.Click += AdvanceRotationButton_Click;
-            advanceButton.Visibility = Visibility.Collapsed;
             rotationUIModel.AdvanceButton = advanceButton;
             Button editButton = new Button();
             editButton.DataContext = rotationUIModel;
             editButton.Margin = new Thickness(5);
             editButton.Width = 45;
             editButton.Content = "Edit";
+            ShowButtonIfUserIsAdmin(editButton);
             editButton.Click += EditRotationButton_Click;
-            editButton.Visibility = Visibility.Collapsed;
             rotationUIModel.EditButton = editButton;
             stackPanel3.Children.Add(advanceButton);
             stackPanel3.Children.Add(editButton);
@@ -190,6 +190,18 @@ namespace RotationTracker
 
             rotationUIModels.Add(rotationUIModel);
             rotationsWrapPanel.Children.Add(groupBox);
+        }
+
+        private void ShowButtonIfUserIsAdmin(Button button)
+        {
+            if (currentUserIsAdmin == false)
+            {
+                button.Visibility = Visibility.Collapsed;
+            }
+            else if (currentUserIsAdmin == true)
+            {
+                button.Visibility = Visibility.Visible;
+            }
         }
 
         private void GetCurrentUser()
