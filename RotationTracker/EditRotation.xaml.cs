@@ -17,8 +17,8 @@ namespace RotationTracker
         private RotationUIModel _rotationUIModel;
         private FullRotationModel _rotation;
         private ListBox _listBox;
-        private Label _label;
-        private TextBlock _textBlock;
+        private Label _rotationNameLabel;
+        private TextBlock _currentEmployeeTextBlock;
 
         public EditRotation(MainWindow parentWindow, RotationUIModel rotationUIModel)
         {
@@ -28,8 +28,8 @@ namespace RotationTracker
             _rotationUIModel = rotationUIModel;
             _rotation = _rotationUIModel.FullRotationModel;
             _listBox = _rotationUIModel.RotationListBox;
-            _label = _rotationUIModel.RotationNameLabel;
-            _textBlock = _rotationUIModel.CurrentEmployeeTextBlock;
+            _rotationNameLabel = _rotationUIModel.RotationNameLabel;
+            _currentEmployeeTextBlock = _rotationUIModel.CurrentEmployeeTextBlock;
 
             PopulateControls();
         }
@@ -172,9 +172,9 @@ namespace RotationTracker
             _listBox.RefreshContents(_rotation.RotationOfEmployees);
 
             _rotation.BasicInfo.RotationName = rotationNameTextBox.Text;
-            _label.Content = $"{_rotation.BasicInfo.RotationName}:";
+            _rotationNameLabel.Content = $"{_rotation.BasicInfo.RotationName}:";
 
-            _textBlock.Text = $"Currently Up: {_rotation.CurrentEmployee}";
+            _currentEmployeeTextBlock.Text = $"Currently Up: {_rotation.CurrentEmployee}";
 
             _rotation.BasicInfo.Notes = notesTextBox.Text;
             _rotationUIModel.RotationNotesTextBox.Text = _rotation.BasicInfo.Notes;
@@ -186,6 +186,7 @@ namespace RotationTracker
             {
                 _parentWindow.UpdateRotationBasicInfoInDB(_rotation.BasicInfo);
                 _parentWindow.RecreateRotationInDB(_rotation);
+                _rotationUIModel.DateTimeTextBlock.Text = $"{_rotation.BasicInfo.NextDateTimeRotationAdvances:g}";
                 Close();
             }
         }

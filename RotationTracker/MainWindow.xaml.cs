@@ -121,16 +121,16 @@ namespace RotationTracker
 
             StackPanel stackPanel = new StackPanel();
             stackPanel.Orientation = Orientation.Vertical;
-            ListBox listBox = new ListBox();
+            ListBox listBox = new ();
             listBox.Margin = new Thickness(5, 0, 5, 0);
             listBox.ItemsSource = rotation.RotationOfEmployees;
             listBox.DisplayMemberPath = "FullName";
             rotationUIModel.RotationListBox = listBox;
 
-            StackPanel stackPanel2 = new StackPanel();
+            StackPanel stackPanel2 = new ();
             stackPanel2.Orientation = Orientation.Vertical;
             stackPanel2.Margin = new Thickness(5);
-            TextBlock currentlyUpTextBlock = new TextBlock();
+            TextBlock currentlyUpTextBlock = new ();
             currentlyUpTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
             currentlyUpTextBlock.Margin = new Thickness(0, 4, 0, 4);
             currentlyUpTextBlock.Text = $"Currently Up: {rotation.CurrentEmployee}";
@@ -138,11 +138,12 @@ namespace RotationTracker
             TextBlock rotationAdvancesTextBlock = new ();
             rotationAdvancesTextBlock.Margin = new Thickness(0, 4, 0, 0);
             rotationAdvancesTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
-            rotationAdvancesTextBlock.Text = $"Rotation Advances:";
+            rotationAdvancesTextBlock.Text = "Rotation Advances:";
             TextBlock dateTimeTextBlock = new ();
             dateTimeTextBlock.Margin = new Thickness(0, 0, 0, 4);
             dateTimeTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
             dateTimeTextBlock.Text = $"{rotation.BasicInfo.NextDateTimeRotationAdvances:g}";
+            rotationUIModel.DateTimeTextBlock = dateTimeTextBlock;
             stackPanel2.Children.Add(currentlyUpTextBlock);
             stackPanel2.Children.Add(rotationAdvancesTextBlock);
             stackPanel2.Children.Add(dateTimeTextBlock);
