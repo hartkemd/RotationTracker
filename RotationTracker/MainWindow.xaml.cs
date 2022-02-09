@@ -229,7 +229,7 @@ namespace RotationTracker
         {
             foreach (string user in admins)
             {
-                if (currentUser == user)
+                if (currentUser.ToLower() == user.ToLower())
                 {
                     currentUserIsAdmin = true;
                 }
