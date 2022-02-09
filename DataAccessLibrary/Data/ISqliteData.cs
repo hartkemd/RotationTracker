@@ -10,6 +10,7 @@ namespace DataAccessLibrary.Data
         void CreateRotation(FullRotationModel rotation);
         void RecreateRotationOfEmployees(FullRotationModel fullRotation);
         List<FullRotationModel> GetAllRotations();
+        int GetHighestIdFromRotations();
         void UpdateRotationBasicInfo(BasicRotationModel basicRotation);
         void AdvanceRotation(FullRotationModel fullRotation);
         void DeleteRotation(int id);

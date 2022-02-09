@@ -95,6 +95,11 @@ namespace RotationTracker
             _db.RecreateRotationOfEmployees(fullRotation);
         }
 
+        private int GetHighestIdFromRotations()
+        {
+            return _db.GetHighestIdFromRotations();
+        }
+
         public void UpdateRotationBasicInfoInDB(BasicRotationModel basicRotation)
         {
             _db.UpdateRotationBasicInfo(basicRotation);
@@ -347,19 +352,18 @@ namespace RotationTracker
         {
             RotationUIModel rotationUIModel = new ();
 
-            FullRotationModel rotation = new ();
-            rotation.BasicInfo.RotationName = $"Rotation {rotations.Count + 1}";
-            rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
-            rotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7);
-            rotation.RotationOfEmployees = employees;
+            FullRotationModel fullRotation = new ();
+            fullRotation.BasicInfo.RotationName = $"Rotation {rotations.Count + 1}";
+            fullRotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
+            fullRotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7);
+            fullRotation.RotationOfEmployees = employees;
 
-            rotationUIModel.FullRotationModel = rotation;
-            rotations.Add(rotation);
+            rotationUIModel.FullRotationModel = fullRotation;
+            rotations.Add(fullRotation);
 
-            CreateRotationInDB(rotation);
-            ReadRotationsFromDB(); // re-read the rotations to fill in the RotationId of the rotation that was just created
-
-            CreateRotationInUI(rotationUIModel, rotation);
+            CreateRotationInDB(fullRotation);
+            fullRotation.BasicInfo.Id = GetHighestIdFromRotations(); // set the id of the rotation; we need it next
+            CreateRotationInUI(rotationUIModel, fullRotation);
         }
 
         private void RemoveRotationButton_Click(object sender, RoutedEventArgs e)

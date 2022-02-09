@@ -108,6 +108,17 @@ namespace DataAccessLibrary.Data
             return output;
         }
 
+        public int GetHighestIdFromRotations()
+        {
+            int output;
+            
+            string sql = "SELECT Id FROM Rotations ORDER BY Id DESC LIMIT 1;";
+
+            output = _db.LoadData<int, dynamic>(sql, new { }, connectionStringName).First();
+
+            return output;
+        }
+
         public void UpdateRotationBasicInfo(BasicRotationModel basicRotation)
         {
             string sql = "UPDATE Rotations SET RotationName = @RotationName, RotationRecurrence = @RotationRecurrence, " +
