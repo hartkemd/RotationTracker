@@ -140,8 +140,8 @@ namespace DataAccessLibrary.Data
                                                                 new { RotationId = fullRotation.BasicInfo.Id },
                                                                 connectionStringName).First();
 
-            sql = "DELETE FROM RotationEmployees WHERE Id = @Id; " +
-                            "INSERT INTO RotationEmployees(RotationId, EmployeeId) VALUES(@RotationId, @EmployeeId);";
+            sql = "INSERT INTO RotationEmployees(RotationId, EmployeeId) VALUES(@RotationId, @EmployeeId); " +
+                            "DELETE FROM RotationEmployees WHERE Id = @Id;";
 
             _db.SaveData(sql, new { rotationEmployee.Id,
                                     rotationEmployee.RotationId,
