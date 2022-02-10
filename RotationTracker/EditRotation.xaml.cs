@@ -190,5 +190,11 @@ namespace RotationTracker
                 Close();
             }
         }
+
+        private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
+        {
+            _rotation.RotationOfEmployees = _parentWindow.employees;
+            employeeListBox.RefreshContents(_rotation.RotationOfEmployees);
+        }
     }
 }

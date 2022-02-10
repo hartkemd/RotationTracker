@@ -23,7 +23,7 @@
             <GroupBox.Header>
                 <Label x:Name="rotationNameLabel"></Label>
             </GroupBox.Header>
-            <StackPanel>
+            <StackPanel Orientation="Vertical">
                 <ListBox x:Name="employeeListBox" Margin="5 0 5 0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -35,6 +35,8 @@
                     <Button x:Name="moveUpButton" Margin="5" Click="MoveUpButton_Click">Move Up</Button>
                     <Button x:Name="moveDownButton" Margin="5" Click="MoveDownButton_Click">Move Down</Button>
                 </StackPanel>
+                <Button x:Name="copyEmployeesToRotation" Margin="5" Click="CopyEmployeesToRotation_Click"
+                        Width="225">Copy Employees To Rotation</Button>
                 <Button x:Name="removeEmployeeButton" Margin="5" Click="RemoveEmployeeButton_Click"
                         Width="150">Remove Employee</Button>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
