@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RotationTracker"
         mc:Ignorable="d" FontSize="16"
-        Title="RotationTracker - Edit Employees" Height="500" Width="500">
+        Title="RotationTracker - Edit Employees" Height="700" Width="500">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
