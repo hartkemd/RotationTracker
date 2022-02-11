@@ -35,6 +35,17 @@ namespace DataAccessLibrary.Models
             }
         }
 
+        public void ReverseRotation()
+        {
+            if (RotationOfEmployees.Count > 0)
+            {
+                int index = RotationOfEmployees.Count - 1;
+                EmployeeModel employeeToPutFirst = RotationOfEmployees[index];
+                RotationOfEmployees.RemoveAt(index);
+                RotationOfEmployees.Insert(0, employeeToPutFirst);
+            }
+        }
+
         public void SetNextDateTimeRotationAdvances()
         {
             if (BasicInfo.RotationRecurrence == RecurrenceInterval.Weekly)

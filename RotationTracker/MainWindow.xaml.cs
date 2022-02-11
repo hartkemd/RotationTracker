@@ -110,6 +110,11 @@ namespace RotationTracker
             _db.AdvanceRotation(fullRotation);
         }
 
+        private void ReverseRotationInDB(FullRotationModel fullRotation)
+        {
+            _db.ReverseRotation(fullRotation);
+        }
+
         public void DeleteRotationFromDB(int id)
         {
             _db.DeleteRotation(id);
@@ -153,18 +158,26 @@ namespace RotationTracker
             stackPanel2.Children.Add(rotationAdvancesTextBlock);
             stackPanel2.Children.Add(dateTimeTextBlock);
 
-            StackPanel stackPanel3 = new StackPanel();
+            StackPanel stackPanel3 = new ();
             stackPanel3.Orientation = Orientation.Horizontal;
             stackPanel3.HorizontalAlignment = HorizontalAlignment.Center;
-            Button advanceButton = new Button();
+            Button advanceButton = new ();
             advanceButton.DataContext = rotationUIModel;
-            advanceButton.Margin = new Thickness(0, 5, 0, 5);
+            advanceButton.Margin = new Thickness(5);
             advanceButton.Width = 80;
             advanceButton.Content = "Advance";
             ShowButtonIfUserIsAdmin(advanceButton);
             advanceButton.Click += AdvanceRotationButton_Click;
             rotationUIModel.AdvanceButton = advanceButton;
-            Button editButton = new Button();
+            Button reverseButton = new ();
+            reverseButton.DataContext = rotationUIModel;
+            reverseButton.Margin = new Thickness(0, 5, 0, 5);
+            reverseButton.Width = 80;
+            reverseButton.Content = "Reverse";
+            ShowButtonIfUserIsAdmin(reverseButton);
+            reverseButton.Click += ReverseRotationButton_Click;
+            rotationUIModel.ReverseButton = reverseButton;
+            Button editButton = new ();
             editButton.DataContext = rotationUIModel;
             editButton.Margin = new Thickness(5);
             editButton.Width = 45;
@@ -173,6 +186,7 @@ namespace RotationTracker
             editButton.Click += EditRotationButton_Click;
             rotationUIModel.EditButton = editButton;
             stackPanel3.Children.Add(advanceButton);
+            stackPanel3.Children.Add(reverseButton);
             stackPanel3.Children.Add(editButton);
 
             Label notesLabel = new Label();
@@ -197,6 +211,8 @@ namespace RotationTracker
             rotationUIModels.Add(rotationUIModel);
             rotationsWrapPanel.Children.Add(groupBox);
         }
+
+        
 
         private void ShowButtonIfUserIsAdmin(Button button)
         {
@@ -247,6 +263,7 @@ namespace RotationTracker
                 foreach (var uiModel in rotationUIModels)
                 {
                     uiModel.AdvanceButton.Visibility = Visibility.Visible;
+                    uiModel.ReverseButton.Visibility = Visibility.Visible;
                     uiModel.EditButton.Visibility = Visibility.Visible;
                 }
             }
@@ -342,6 +359,15 @@ namespace RotationTracker
             AdvanceRotationInDB(rotationUIModel.FullRotationModel);
         }
 
+        private void ReverseRotation(RotationUIModel rotationUIModel)
+        {
+            rotationUIModel.FullRotationModel.ReverseRotation();
+            rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
+
+            rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
+            ReverseRotationInDB(rotationUIModel.FullRotationModel);
+        }
+
         private void EditEmployeesButton_Click(object sender, RoutedEventArgs e)
         {
             EditEmployees editEmployees = new(this);
@@ -377,6 +403,13 @@ namespace RotationTracker
             Button button = (Button)sender;
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
             AdvanceRotation(rotationUIModel);
+        }
+
+        private void ReverseRotationButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
+            ReverseRotation(rotationUIModel);
         }
 
         private void EditRotationButton_Click(object sender, RoutedEventArgs e)

@@ -54,12 +54,15 @@ namespace DataAccessLibrary.Data
 
             int rotationId = _db.LoadData<int, dynamic>(sql, new { }, connectionStringName).First();
 
-            foreach (var employee in rotation.RotationOfEmployees)
+            for (int i = 0; i < rotation.RotationOfEmployees.Count; i++)
             {
-                sql = "INSERT INTO RotationEmployees (RotationId, EmployeeId) " +
-                        "VALUES(@RotationId, @EmployeeId);";
+                sql = "INSERT INTO RotationEmployees (RotationId, EmployeeId, Position) " +
+                        "VALUES(@RotationId, @EmployeeId, @Position);";
 
-                _db.SaveData(sql, new { RotationId = rotationId, EmployeeId = employee.Id }, connectionStringName);
+                _db.SaveData(sql, new { RotationId = rotationId,
+                                        EmployeeId = rotation.RotationOfEmployees[i].Id,
+                                        Position = i },
+                                        connectionStringName);
             }
         }
 
@@ -71,11 +74,17 @@ namespace DataAccessLibrary.Data
 
             _db.SaveData(sql, new { RotationId = rotationId }, connectionStringName);
 
+            int position = 0;
             foreach (var employee in fullRotation.RotationOfEmployees)
             {
-                sql = "INSERT INTO RotationEmployees(RotationId, EmployeeId) VALUES(@RotationId, @EmployeeId);";
+                sql = "INSERT INTO RotationEmployees(RotationId, EmployeeId, Position) VALUES(@RotationId, @EmployeeId, @Position);";
 
-                _db.SaveData(sql, new { RotationId = rotationId, EmployeeId = employee.Id }, connectionStringName);
+                _db.SaveData(sql, new { RotationId = rotationId,
+                                        EmployeeId = employee.Id,
+                                        Position = position },
+                                        connectionStringName);
+
+                position++;
             }
         }
 
@@ -98,7 +107,8 @@ namespace DataAccessLibrary.Data
                 sql = "SELECT e.* FROM Employees e " +
                         "INNER JOIN RotationEmployees re ON e.Id = re.EmployeeId " +
                         "INNER JOIN Rotations r ON re.RotationId = r.Id " +
-                        "WHERE r.Id = @Id;";
+                        "WHERE r.Id = @Id " +
+                        "ORDER BY re.Position;";
 
                 fullRotation.RotationOfEmployees = _db.LoadData<EmployeeModel, dynamic>(sql, new { Id = id }, connectionStringName);
 
@@ -134,19 +144,34 @@ namespace DataAccessLibrary.Data
 
         public void AdvanceRotation(FullRotationModel fullRotation)
         {
-            string sql = "SELECT * FROM RotationEmployees WHERE RotationId = @RotationId LIMIT 1;";
+            int rotationId = fullRotation.BasicInfo.Id;
 
-            RotationEmployeeModel rotationEmployee = _db.LoadData<RotationEmployeeModel, dynamic>(sql,
-                                                                new { RotationId = fullRotation.BasicInfo.Id },
-                                                                connectionStringName).First();
+            string sql = "SELECT EmployeeId FROM RotationEmployees WHERE RotationId = @RotationId AND Position = 0;";
 
-            sql = "INSERT INTO RotationEmployees(RotationId, EmployeeId) VALUES(@RotationId, @EmployeeId); " +
-                            "DELETE FROM RotationEmployees WHERE Id = @Id;";
+            int employeeId = _db.LoadData<int, dynamic>(sql, new { RotationId = rotationId }, connectionStringName).First();
 
-            _db.SaveData(sql, new { rotationEmployee.Id,
-                                    rotationEmployee.RotationId,
-                                    rotationEmployee.EmployeeId },
-                                    connectionStringName);
+            sql = "UPDATE RotationEmployees SET Position = " +
+                    "(SELECT count(*) FROM RotationEmployees WHERE RotationId = @RotationId) " +
+                    "WHERE EmployeeId = @EmployeeId AND RotationId = @RotationId; " +
+                    "UPDATE RotationEmployees SET Position = Position - 1 WHERE RotationId = @RotationId;";
+
+            _db.SaveData(sql, new { RotationId = rotationId, EmployeeId = employeeId }, connectionStringName);
+        }
+
+        public void ReverseRotation(FullRotationModel fullRotation) // moves the rotation back one position in the list
+        {
+            int rotationId = fullRotation.BasicInfo.Id;
+            
+            // select the id of the last employee in the rotation
+            string sql = "SELECT EmployeeId FROM RotationEmployees WHERE RotationId = @RotationId AND Position = " +
+                            "(SELECT Position FROM RotationEmployees WHERE RotationId = @RotationId ORDER BY Position DESC LIMIT 1);";
+
+            int employeeId = _db.LoadData<int, dynamic>(sql, new { RotationId = rotationId }, connectionStringName).First();
+
+            sql = "UPDATE RotationEmployees SET Position = -1 WHERE RotationId = @RotationId AND EmployeeId = @EmployeeId; " +
+                    "UPDATE RotationEmployees SET Position = Position + 1 WHERE RotationId = @RotationId;";
+
+            _db.SaveData(sql, new { EmployeeId = employeeId, RotationId = rotationId }, connectionStringName);
         }
 
         public void DeleteRotation(int id)

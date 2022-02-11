@@ -13,6 +13,7 @@ namespace DataAccessLibrary.Data
         int GetHighestIdFromRotations();
         void UpdateRotationBasicInfo(BasicRotationModel basicRotation);
         void AdvanceRotation(FullRotationModel fullRotation);
+        void ReverseRotation(FullRotationModel fullRotation);
         void DeleteRotation(int id);
         List<string> ReadAllAdmins();
     }
