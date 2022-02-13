@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RotationTracker"
         mc:Ignorable="d" FontSize="16"
-        Title="RotationTracker - Edit Rotation" Height="700" Width="900">
+        Title="RotationTracker - Edit Rotation" Height="700" Width="1000">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
@@ -51,8 +51,16 @@
             <GroupBox.Header>
                 <Label>Notes:</Label>
             </GroupBox.Header>
-            <TextBox x:Name="notesTextBox" Margin="5 0 5 0" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True"
-                     VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" Height="200" Width="200"></TextBox>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox x:Name="notesTextBox" Margin="5 0 5 0" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True"
+                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" />
+            </Grid>
         </GroupBox>
 
         <!-- Column 2 -->
@@ -62,6 +70,7 @@
             </GroupBox.Header>
             <StackPanel Orientation="Vertical" Margin="10 0 5 0">
                 <RadioButton x:Name="weeklyRadioButton" VerticalContentAlignment="Center" IsChecked="True" Content="Weekly" Checked="WeeklyRadioButton_Checked" />
+                <RadioButton x:Name="weeklyWorkWeekRadioButton" VerticalContentAlignment="Center" Content="Weekly for work week (Mon-Fri)" Checked="WeeklyWorkWeekRadioButton_Checked" />
                 <RadioButton x:Name="biweeklyRadioButton" VerticalContentAlignment="Center" Content="Biweekly on day" Checked="BiweeklyRadioButton_Checked" />
                 <RadioButton x:Name="monthlyRadioButton" VerticalContentAlignment="Center" Content="Monthly on day" Checked="MonthlyRadioButton_Checked" />
                 <RadioButton x:Name="bimonthlyRadioButton" VerticalContentAlignment="Center" Content="Bimonthly on day" Checked="BimonthlyRadioButton_Checked" />

@@ -13,12 +13,6 @@ namespace DataAccessLibrary.Models
         public List<EmployeeModel> RotationOfEmployees { get; set; } = new List<EmployeeModel>();
         public string CurrentEmployeeName => GetCurrentEmployeesName();
 
-        public FullRotationModel()
-        {
-            PopulateNextStartDateTimesOfEmployees();
-            PopulateNextEndDateTimesOfEmployees();
-        }
-
         private string GetCurrentEmployeesName()
         {
             if (RotationOfEmployees.Count > 0)
@@ -50,6 +44,20 @@ namespace DataAccessLibrary.Models
                     }
 
                     RotationOfEmployees[0].NextStartDateTime = BasicInfo.NextDateTimeRotationAdvances.AddDays(-7);
+                }
+                else if (BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek)
+                {
+                    for (int i = 0; i < RotationOfEmployees.Count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            RotationOfEmployees[i].NextStartDateTime = BasicInfo.NextDateTimeRotationAdvances.AddDays(-4);
+                        }
+                        else
+                        {
+                            RotationOfEmployees[i].NextStartDateTime = RotationOfEmployees[i - 1].NextStartDateTime.AddDays(7);
+                        }
+                    }
                 }
                 else
                 {
@@ -87,13 +95,23 @@ namespace DataAccessLibrary.Models
                 {
                     if (i == 0)
                     {
-                        RotationOfEmployees[i].NextEndDateTime = BasicInfo.NextDateTimeRotationAdvances.AddMinutes(-1);
+                        if (BasicInfo.RotationRecurrence == RecurrenceInterval.Weekly)
+                        {
+                            RotationOfEmployees[i].NextEndDateTime = BasicInfo.NextDateTimeRotationAdvances.AddMinutes(-1);
+                        }
+                        else if (BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek)
+                        {
+                            RotationOfEmployees[i].NextEndDateTime = RotationOfEmployees[i].NextStartDateTime.AddDays(4);
+                        }
                     }
                     else
                     {
                         switch (BasicInfo.RotationRecurrence)
                         {
                             case RecurrenceInterval.Weekly:
+                                RotationOfEmployees[i].NextEndDateTime = RotationOfEmployees[i - 1].NextEndDateTime.AddDays(7);
+                                break;
+                            case RecurrenceInterval.WeeklyWorkWeek:
                                 RotationOfEmployees[i].NextEndDateTime = RotationOfEmployees[i - 1].NextEndDateTime.AddDays(7);
                                 break;
                             case RecurrenceInterval.BiweeklyOnDay:

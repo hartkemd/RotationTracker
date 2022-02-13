@@ -225,6 +225,7 @@ namespace RotationTracker
             rotation.PopulateNextEndDateTimesOfEmployees();
 
             if (rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.Weekly ||
+                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek ||
                 rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
             {
                 dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">

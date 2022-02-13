@@ -70,6 +70,9 @@ namespace RotationTracker
                 case RecurrenceInterval.Weekly:
                     weeklyRadioButton.IsChecked = true;
                     break;
+                case RecurrenceInterval.WeeklyWorkWeek:
+                    weeklyWorkWeekRadioButton.IsChecked = true;
+                    break;
                 case RecurrenceInterval.BiweeklyOnDay:
                     biweeklyRadioButton.IsChecked = true;
                     break;
@@ -93,6 +96,10 @@ namespace RotationTracker
             if (weeklyRadioButton.IsChecked == true)
             {
                 _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
+            }
+            else if (weeklyWorkWeekRadioButton.IsChecked == true)
+            {
+                _rotation.BasicInfo.RotationRecurrence = RecurrenceInterval.WeeklyWorkWeek;
             }
             else if (biweeklyRadioButton.IsChecked == true)
             {
@@ -254,6 +261,11 @@ namespace RotationTracker
         }
 
         private void BiweeklyRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            EnableAdvanceAutomaticallyCheckBox();
+        }
+
+        private void WeeklyWorkWeekRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             EnableAdvanceAutomaticallyCheckBox();
         }
