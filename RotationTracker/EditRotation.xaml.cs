@@ -174,7 +174,7 @@ namespace RotationTracker
             _rotation.BasicInfo.RotationName = rotationNameTextBox.Text;
             _rotationNameLabel.Content = $"{_rotation.BasicInfo.RotationName}:";
 
-            _currentEmployeeTextBlock.Text = $"Currently Up: {_rotation.CurrentEmployee}";
+            _currentEmployeeTextBlock.Text = $"Currently Up: {_rotation.CurrentEmployeeName}";
 
             _rotation.BasicInfo.Notes = notesTextBox.Text;
             _rotationUIModel.RotationNotesTextBox.Text = _rotation.BasicInfo.Notes;
@@ -186,6 +186,7 @@ namespace RotationTracker
             {
                 _parentWindow.UpdateRotationBasicInfoInDB(_rotation.BasicInfo);
                 _parentWindow.RecreateRotationInDB(_rotation);
+                _parentWindow.PopulateRotationListBox(_rotation, _listBox);
                 _rotationUIModel.DateTimeTextBlock.Text = $"{_rotation.BasicInfo.NextDateTimeRotationAdvances:g}";
                 Close();
             }

@@ -62,9 +62,9 @@
             </GroupBox.Header>
             <StackPanel Orientation="Vertical" Margin="10 0 5 0">
                 <RadioButton x:Name="weeklyRadioButton" VerticalContentAlignment="Center" IsChecked="True">Weekly</RadioButton>
-                <RadioButton x:Name="biweeklyRadioButton" VerticalContentAlignment="Center">Biweekly</RadioButton>
-                <RadioButton x:Name="monthlyRadioButton" VerticalContentAlignment="Center">Monthly</RadioButton>
-                <RadioButton x:Name="bimonthlyRadioButton" VerticalContentAlignment="Center">Bimonthly</RadioButton>
+                <RadioButton x:Name="biweeklyRadioButton" VerticalContentAlignment="Center">Biweekly on day</RadioButton>
+                <RadioButton x:Name="monthlyRadioButton" VerticalContentAlignment="Center">Monthly on day</RadioButton>
+                <RadioButton x:Name="bimonthlyRadioButton" VerticalContentAlignment="Center">Bimonthly on day</RadioButton>
                 <Label Margin="0 10 0 0">Next Date Rotation Advances:</Label>
                 <DatePicker x:Name="nextDateRotationAdvancesDatePicker" SelectedDateFormat="Short"
                         FirstDayOfWeek="Sunday" Width="175" HorizontalAlignment="Left" Margin="15 0 0 0"></DatePicker>

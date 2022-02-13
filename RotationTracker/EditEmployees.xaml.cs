@@ -27,7 +27,7 @@ namespace RotationTracker
             {
                 rotationUIModel.FullRotationModel.RotationOfEmployees.Remove(_employeeToRemove);
                 rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
-                rotationUIModel.CurrentEmployeeTextBlock.Text = rotationUIModel.FullRotationModel.CurrentEmployee;
+                rotationUIModel.CurrentEmployeeTextBlock.Text = rotationUIModel.FullRotationModel.CurrentEmployeeName;
             }
             
             //_parent.rotation1.SaveToJSON(_parent.rotation1.FilePath, _parent.rotation1.FileName);

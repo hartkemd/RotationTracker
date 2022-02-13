@@ -10,5 +10,7 @@ namespace DataAccessLibrary.Models
     {
         public int Id { get; set; }
         public string FullName { get; set; }
+        public DateTime NextStartDateTime { get; set; }
+        public DateTime NextEndDateTime { get; set; }
     }
 }

@@ -4,11 +4,15 @@ using RotationLibrary;
 using RotationTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Markup;
 using WPFHelperLibrary;
 
 namespace RotationTracker
@@ -134,7 +138,9 @@ namespace RotationTracker
             ListBox listBox = new ();
             listBox.Margin = new Thickness(5, 0, 5, 0);
             listBox.ItemsSource = rotation.RotationOfEmployees;
-            listBox.DisplayMemberPath = "FullName";
+
+            PopulateRotationListBox(rotation, listBox);
+
             rotationUIModel.RotationListBox = listBox;
 
             StackPanel stackPanel2 = new ();
@@ -143,7 +149,7 @@ namespace RotationTracker
             TextBlock currentlyUpTextBlock = new ();
             currentlyUpTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
             currentlyUpTextBlock.Margin = new Thickness(0, 4, 0, 4);
-            currentlyUpTextBlock.Text = $"Currently Up: {rotation.CurrentEmployee}";
+            currentlyUpTextBlock.Text = $"Currently Up: {rotation.CurrentEmployeeName}";
             rotationUIModel.CurrentEmployeeTextBlock = currentlyUpTextBlock;
             TextBlock rotationAdvancesTextBlock = new ();
             rotationAdvancesTextBlock.Margin = new Thickness(0, 4, 0, 0);
@@ -212,7 +218,24 @@ namespace RotationTracker
             rotationsWrapPanel.Children.Add(groupBox);
         }
 
-        
+        public void PopulateRotationListBox(FullRotationModel rotation, ListBox listBox)
+        {
+            rotation.PopulateNextStartDateTimesOfEmployees();
+            rotation.PopulateNextEndDateTimesOfEmployees();
+
+            string dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
+                                                                    <StackPanel Orientation=""Horizontal"">
+                                                                        <TextBlock Text=""{Binding Path=FullName}"" />
+                                                                        <TextBlock Text="" "" />
+                                                                        <TextBlock Text=""{Binding Path=NextStartDateTime, StringFormat=d}"" />
+                                                                        <TextBlock Text="" - "" />
+                                                                        <TextBlock Text=""{Binding Path=NextEndDateTime, StringFormat=d}"" />
+                                                                    </StackPanel>
+                                                                </DataTemplate>";
+            var ms = new MemoryStream(Encoding.UTF8.GetBytes(dataTemplateString));
+            var dataTemplate = (DataTemplate)XamlReader.Load(ms);
+            listBox.ItemTemplate = dataTemplate;
+        }
 
         private void ShowButtonIfUserIsAdmin(Button button)
         {
@@ -327,7 +350,7 @@ namespace RotationTracker
                                 $"{Environment.NewLine}";
                         }
 
-                        rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
+                        rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
                         rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
                         UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
 
@@ -353,7 +376,7 @@ namespace RotationTracker
         private void AdvanceRotation(RotationUIModel rotationUIModel)
         {
             rotationUIModel.FullRotationModel.AdvanceRotation();
-            rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
+            rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
 
             rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
             AdvanceRotationInDB(rotationUIModel.FullRotationModel);
@@ -362,7 +385,7 @@ namespace RotationTracker
         private void ReverseRotation(RotationUIModel rotationUIModel)
         {
             rotationUIModel.FullRotationModel.ReverseRotation();
-            rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployee}";
+            rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
 
             rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
             ReverseRotationInDB(rotationUIModel.FullRotationModel);
