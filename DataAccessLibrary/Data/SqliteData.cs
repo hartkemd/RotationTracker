@@ -57,8 +57,8 @@ namespace DataAccessLibrary.Data
 
             for (int i = 0; i < rotation.RotationOfEmployees.Count; i++)
             {
-                sql = "INSERT INTO RotationEmployees (RotationId, EmployeeId, Position) " +
-                        "VALUES(@RotationId, @EmployeeId, @Position);";
+                sql = "INSERT INTO RotationEmployees (RotationId, EmployeeId, Position, OnCalendar) " +
+                        "VALUES(@RotationId, @EmployeeId, @Position, 0);";
 
                 _db.SaveData(sql, new { RotationId = rotationId,
                                         EmployeeId = rotation.RotationOfEmployees[i].Id,
@@ -78,11 +78,13 @@ namespace DataAccessLibrary.Data
             int position = 0;
             foreach (var employee in fullRotation.RotationOfEmployees)
             {
-                sql = "INSERT INTO RotationEmployees(RotationId, EmployeeId, Position) VALUES(@RotationId, @EmployeeId, @Position);";
+                sql = "INSERT INTO RotationEmployees(RotationId, EmployeeId, Position, OnCalendar) " +
+                        "VALUES(@RotationId, @EmployeeId, @Position, @OnCalendar);";
 
                 _db.SaveData(sql, new { RotationId = rotationId,
                                         EmployeeId = employee.Id,
-                                        Position = position },
+                                        Position = position,
+                                        OnCalendar = employee.OnCalendar },
                                         connectionStringName);
 
                 position++;
