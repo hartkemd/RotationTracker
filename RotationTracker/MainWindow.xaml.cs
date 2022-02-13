@@ -220,18 +220,38 @@ namespace RotationTracker
 
         public void PopulateRotationListBox(FullRotationModel rotation, ListBox listBox)
         {
+            string dataTemplateString;
+
             rotation.PopulateNextStartDateTimesOfEmployees();
             rotation.PopulateNextEndDateTimesOfEmployees();
 
-            string dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
+            if (rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.Weekly ||
+                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+            {
+                dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
                                                                     <StackPanel Orientation=""Horizontal"">
                                                                         <TextBlock Text=""{Binding Path=FullName}"" />
-                                                                        <TextBlock Text="" "" />
+                                                                        <TextBlock Text="" ("" />
                                                                         <TextBlock Text=""{Binding Path=NextStartDateTime, StringFormat=d}"" />
                                                                         <TextBlock Text="" - "" />
                                                                         <TextBlock Text=""{Binding Path=NextEndDateTime, StringFormat=d}"" />
+                                                                        <TextBlock Text="")"" />
                                                                     </StackPanel>
                                                                 </DataTemplate>";
+                
+            }
+            else
+            {
+                dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
+                                                                    <StackPanel Orientation=""Horizontal"">
+                                                                        <TextBlock Text=""{Binding Path=FullName}"" />
+                                                                        <TextBlock Text="" ("" />
+                                                                        <TextBlock Text=""{Binding Path=NextStartDateTime, StringFormat=MMMM}"" />
+                                                                        <TextBlock Text="")"" />
+                                                                    </StackPanel>
+                                                                </DataTemplate>";
+            }
+
             var ms = new MemoryStream(Encoding.UTF8.GetBytes(dataTemplateString));
             var dataTemplate = (DataTemplate)XamlReader.Load(ms);
             listBox.ItemTemplate = dataTemplate;
@@ -378,7 +398,7 @@ namespace RotationTracker
             rotationUIModel.FullRotationModel.AdvanceRotation();
             rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
 
-            rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
+            PopulateRotationListBox(rotationUIModel.FullRotationModel, rotationUIModel.RotationListBox);
             AdvanceRotationInDB(rotationUIModel.FullRotationModel);
         }
 
@@ -387,7 +407,7 @@ namespace RotationTracker
             rotationUIModel.FullRotationModel.ReverseRotation();
             rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
 
-            rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
+            PopulateRotationListBox(rotationUIModel.FullRotationModel, rotationUIModel.RotationListBox);
             ReverseRotationInDB(rotationUIModel.FullRotationModel);
         }
 
