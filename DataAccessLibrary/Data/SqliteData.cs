@@ -41,12 +41,13 @@ namespace DataAccessLibrary.Data
 
         public void CreateRotation(FullRotationModel rotation)
         {
-            string sql = "INSERT INTO Rotations (RotationName, RotationRecurrence, NextDateTimeRotationAdvances, Notes) " +
-                            "VALUES(@RotationName, @RecurrenceInterval, @NextDateTimeRotationAdvances, @Notes);";
+            string sql = "INSERT INTO Rotations (RotationName, RotationRecurrence, NextDateTimeRotationAdvances, AdvanceAutomatically, Notes) " +
+                            "VALUES(@RotationName, @RecurrenceInterval, @NextDateTimeRotationAdvances, @AdvanceAutomatically, @Notes);";
 
             _db.SaveData(sql, new { RotationName = rotation.BasicInfo.RotationName,
                                     RecurrenceInterval = rotation.BasicInfo.RotationRecurrence,
                                     NextDateTimeRotationAdvances = rotation.BasicInfo.NextDateTimeRotationAdvances,
+                                    AdvanceAutomatically = rotation.BasicInfo.AdvanceAutomatically,
                                     Notes = rotation.BasicInfo.Notes},
                                     connectionStringName);
 
@@ -132,11 +133,13 @@ namespace DataAccessLibrary.Data
         public void UpdateRotationBasicInfo(BasicRotationModel basicRotation)
         {
             string sql = "UPDATE Rotations SET RotationName = @RotationName, RotationRecurrence = @RotationRecurrence, " +
-                            "NextDateTimeRotationAdvances = @NextDateTimeRotationAdvances, Notes = @Notes WHERE Id = @Id;";
+                            "NextDateTimeRotationAdvances = @NextDateTimeRotationAdvances, " +
+                            "AdvanceAutomatically = @AdvanceAutomatically, Notes = @Notes WHERE Id = @Id;";
 
             _db.SaveData(sql, new { basicRotation.RotationName,
                                     basicRotation.RotationRecurrence,
                                     basicRotation.NextDateTimeRotationAdvances,
+                                    basicRotation.AdvanceAutomatically,
                                     basicRotation.Notes,
                                     basicRotation.Id },
                                     connectionStringName);

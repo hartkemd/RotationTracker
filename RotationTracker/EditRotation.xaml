@@ -10,7 +10,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="350" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -61,15 +61,19 @@
                 <Label>Recurrence:</Label>
             </GroupBox.Header>
             <StackPanel Orientation="Vertical" Margin="10 0 5 0">
-                <RadioButton x:Name="weeklyRadioButton" VerticalContentAlignment="Center" IsChecked="True">Weekly</RadioButton>
-                <RadioButton x:Name="biweeklyRadioButton" VerticalContentAlignment="Center">Biweekly on day</RadioButton>
-                <RadioButton x:Name="monthlyRadioButton" VerticalContentAlignment="Center">Monthly on day</RadioButton>
-                <RadioButton x:Name="bimonthlyRadioButton" VerticalContentAlignment="Center">Bimonthly on day</RadioButton>
+                <RadioButton x:Name="weeklyRadioButton" VerticalContentAlignment="Center" IsChecked="True" Content="Weekly" Checked="WeeklyRadioButton_Checked" />
+                <RadioButton x:Name="biweeklyRadioButton" VerticalContentAlignment="Center" Content="Biweekly on day" Checked="BiweeklyRadioButton_Checked" />
+                <RadioButton x:Name="monthlyRadioButton" VerticalContentAlignment="Center" Content="Monthly on day" Checked="MonthlyRadioButton_Checked" />
+                <RadioButton x:Name="bimonthlyRadioButton" VerticalContentAlignment="Center" Content="Bimonthly on day" Checked="BimonthlyRadioButton_Checked" />
                 <Label Margin="0 10 0 0">Next Date Rotation Advances:</Label>
                 <DatePicker x:Name="nextDateRotationAdvancesDatePicker" SelectedDateFormat="Short"
                         FirstDayOfWeek="Sunday" Width="175" HorizontalAlignment="Left" Margin="15 0 0 0"></DatePicker>
                 <Label>Hour Rotation Advances (0-23):</Label>
-                <TextBox x:Name="hourRotationAdvancesTextBox" Width="50" Margin="15 0 0 0" HorizontalAlignment="Left"></TextBox>
+                <TextBox x:Name="hourRotationAdvancesTextBox" Width="50" Margin="15 0 0 5" HorizontalAlignment="Left" />
+                <CheckBox x:Name="advanceAutomaticallyCheckBox" VerticalContentAlignment="Center"
+                          Margin="5" Content="Advance Automatically" />
+                <TextBlock Margin="25 0 0 0" TextWrapping="Wrap"
+                           Text="Note: Only weekly or biweekly rotations can advance automatically." />
             </StackPanel>
         </GroupBox>
 

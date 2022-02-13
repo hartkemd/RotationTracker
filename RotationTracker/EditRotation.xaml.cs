@@ -52,6 +52,15 @@ namespace RotationTracker
             }
 
             hourRotationAdvancesTextBox.Text = _rotation.BasicInfo.NextDateTimeRotationAdvances.Hour.ToString();
+
+            if (_rotation.BasicInfo.AdvanceAutomatically == true)
+            {
+                advanceAutomaticallyCheckBox.IsChecked = true;
+            }
+            else
+            {
+                advanceAutomaticallyCheckBox.IsChecked = false;
+            }
         }
 
         private void GetRotationRecurrence()
@@ -180,6 +189,7 @@ namespace RotationTracker
             _rotationUIModel.RotationNotesTextBox.Text = _rotation.BasicInfo.Notes;
 
             SetRotationRecurrence();
+            SetRotationAdvanceAutomatically();
 
             bool keepGoing = SetNextDateTimeRotationAdvances();
             if (keepGoing == true)
@@ -192,10 +202,60 @@ namespace RotationTracker
             }
         }
 
+        private void SetRotationAdvanceAutomatically()
+        {
+            if (advanceAutomaticallyCheckBox.IsChecked == true)
+            {
+                _rotation.BasicInfo.AdvanceAutomatically = true;
+            }
+            else
+            {
+                _rotation.BasicInfo.AdvanceAutomatically = false;
+            }
+        }
+
         private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
         {
             _rotation.RotationOfEmployees = _parentWindow.employees;
             employeeListBox.RefreshContents(_rotation.RotationOfEmployees);
+        }
+
+        private void DisableAdvanceAutomaticallyCheckBox()
+        {
+            if (advanceAutomaticallyCheckBox != null)
+            {
+                advanceAutomaticallyCheckBox.IsChecked = false;
+                advanceAutomaticallyCheckBox.IsEnabled = false;
+            }
+        }
+
+        private void EnableAdvanceAutomaticallyCheckBox()
+        {
+            if (advanceAutomaticallyCheckBox != null)
+            {
+                advanceAutomaticallyCheckBox.IsChecked = true;
+                advanceAutomaticallyCheckBox.IsEnabled = true;
+            }
+        }
+
+        private void MonthlyRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            DisableAdvanceAutomaticallyCheckBox();
+        }
+
+        private void BimonthlyRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            DisableAdvanceAutomaticallyCheckBox();
+        }
+
+        private void WeeklyRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            EnableAdvanceAutomaticallyCheckBox();
+        }
+
+        private void BiweeklyRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            EnableAdvanceAutomaticallyCheckBox();
         }
     }
 }

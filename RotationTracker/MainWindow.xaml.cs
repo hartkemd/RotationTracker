@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Markup;
 using WPFHelperLibrary;
 
@@ -126,14 +125,14 @@ namespace RotationTracker
 
         private void CreateRotationInUI(RotationUIModel rotationUIModel, FullRotationModel rotation)
         {
-            GroupBox groupBox = new GroupBox();
+            GroupBox groupBox = new ();
             groupBox.Margin = new Thickness(5);
-            Label label = new Label();
+            Label label = new ();
             label.Content = $"{rotation.BasicInfo.RotationName}:";
             rotationUIModel.RotationNameLabel = label;
             groupBox.Header = label;
 
-            StackPanel stackPanel = new StackPanel();
+            StackPanel stackPanel = new ();
             stackPanel.Orientation = Orientation.Vertical;
             ListBox listBox = new ();
             listBox.Margin = new Thickness(5, 0, 5, 0);
@@ -195,9 +194,9 @@ namespace RotationTracker
             stackPanel3.Children.Add(reverseButton);
             stackPanel3.Children.Add(editButton);
 
-            Label notesLabel = new Label();
+            Label notesLabel = new ();
             notesLabel.Content = "Notes:";
-            TextBox notesTextBox = new TextBox();
+            TextBox notesTextBox = new ();
             rotationUIModel.RotationNotesTextBox = notesTextBox;
             notesTextBox.IsReadOnly = true;
             notesTextBox.TextWrapping = TextWrapping.Wrap;
@@ -340,7 +339,10 @@ namespace RotationTracker
         {
             foreach (var model in rotationUIModels)
             {
-                AdvanceRotationIfDateTimeHasPassed(model);
+                if (model.FullRotationModel.BasicInfo.AdvanceAutomatically == true)
+                {
+                    AdvanceRotationIfDateTimeHasPassed(model);
+                }
             }
         }
 
@@ -425,6 +427,7 @@ namespace RotationTracker
             fullRotation.BasicInfo.RotationName = $"Rotation {rotations.Count + 1}";
             fullRotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
             fullRotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7);
+            fullRotation.BasicInfo.AdvanceAutomatically = true;
             fullRotation.RotationOfEmployees = employees;
 
             rotationUIModel.FullRotationModel = fullRotation;
