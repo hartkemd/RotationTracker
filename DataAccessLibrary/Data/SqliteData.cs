@@ -39,30 +39,42 @@ namespace DataAccessLibrary.Data
             _db.SaveData(sql, new { Id = id }, connectionStringName);
         }
 
-        public void CreateRotation(FullRotationModel rotation)
+        public void CreateRotation(FullRotationModel fullRotation)
         {
             string sql = "INSERT INTO Rotations (RotationName, RotationRecurrence, NextDateTimeRotationAdvances, AdvanceAutomatically, Notes) " +
                             "VALUES(@RotationName, @RecurrenceInterval, @NextDateTimeRotationAdvances, @AdvanceAutomatically, @Notes);";
 
-            _db.SaveData(sql, new { RotationName = rotation.BasicInfo.RotationName,
-                                    RecurrenceInterval = rotation.BasicInfo.RotationRecurrence,
-                                    NextDateTimeRotationAdvances = rotation.BasicInfo.NextDateTimeRotationAdvances,
-                                    AdvanceAutomatically = rotation.BasicInfo.AdvanceAutomatically,
-                                    Notes = rotation.BasicInfo.Notes},
+            _db.SaveData(sql, new { RotationName = fullRotation.BasicInfo.RotationName,
+                                    RecurrenceInterval = fullRotation.BasicInfo.RotationRecurrence,
+                                    NextDateTimeRotationAdvances = fullRotation.BasicInfo.NextDateTimeRotationAdvances,
+                                    AdvanceAutomatically = fullRotation.BasicInfo.AdvanceAutomatically,
+                                    Notes = fullRotation.BasicInfo.Notes},
                                     connectionStringName);
 
             sql = "SELECT Id FROM Rotations ORDER BY Id DESC LIMIT 1;"; // select the id of the row just inserted
 
             int rotationId = _db.LoadData<int, dynamic>(sql, new { }, connectionStringName).First();
 
-            for (int i = 0; i < rotation.RotationOfEmployees.Count; i++)
+            for (int i = 0; i < fullRotation.RotationOfEmployees.Count; i++)
             {
-                sql = "INSERT INTO RotationEmployees (RotationId, EmployeeId, Position, OnCalendar) " +
-                        "VALUES(@RotationId, @EmployeeId, @Position, 0);";
+                sql = "INSERT INTO RotationEmployees (RotationId, EmployeeId, Position) " +
+                        "VALUES(@RotationId, @EmployeeId, @Position);";
 
                 _db.SaveData(sql, new { RotationId = rotationId,
-                                        EmployeeId = rotation.RotationOfEmployees[i].Id,
+                                        EmployeeId = fullRotation.RotationOfEmployees[i].Id,
                                         Position = i },
+                                        connectionStringName);
+            }
+
+            sql = "INSERT INTO CalendarEvents (RotationId, EmployeeId, NextStartDateTime, NextEndDateTime, OnCalendar) " +
+                    "VALUES (@RotationId, @EmployeeId, @StartDateTime, @EndDateTime, 0);";
+
+            foreach (var employee in fullRotation.RotationOfEmployees)
+            {
+                _db.SaveData(sql, new { RotationId = rotationId,
+                                        EmployeeId = employee.Id,
+                                        StartDateTime = employee.NextStartDateTime,
+                                        EndDateTime = employee.NextEndDateTime },
                                         connectionStringName);
             }
         }
@@ -78,13 +90,12 @@ namespace DataAccessLibrary.Data
             int position = 0;
             foreach (var employee in fullRotation.RotationOfEmployees)
             {
-                sql = "INSERT INTO RotationEmployees(RotationId, EmployeeId, Position, OnCalendar) " +
-                        "VALUES(@RotationId, @EmployeeId, @Position, @OnCalendar);";
+                sql = "INSERT INTO RotationEmployees(RotationId, EmployeeId, Position) " +
+                        "VALUES(@RotationId, @EmployeeId, @Position);";
 
                 _db.SaveData(sql, new { RotationId = rotationId,
                                         EmployeeId = employee.Id,
-                                        Position = position,
-                                        OnCalendar = employee.OnCalendar },
+                                        Position = position },
                                         connectionStringName);
 
                 position++;
