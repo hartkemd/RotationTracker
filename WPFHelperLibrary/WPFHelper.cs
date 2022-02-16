@@ -12,6 +12,12 @@ namespace WPFHelperLibrary
             listBox.ItemsSource = list;
         }
 
+        public static void RefreshContents<T>(this ListView listView, List<T> list)
+        {
+            listView.ItemsSource = null;
+            listView.ItemsSource = list;
+        }
+
         public static MessageBoxResult ShowYesNoExclamationMessageBox(string message, string caption)
         {
             MessageBoxResult output;

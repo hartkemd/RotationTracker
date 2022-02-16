@@ -123,6 +123,11 @@ namespace RotationTracker
             _db.DeleteRotation(id);
         }
 
+        public void UpdateOnCalendar(BasicRotationModel basicRotation, EmployeeModel employee, bool onCalendar)
+        {
+            _db.UpdateOnCalendar(basicRotation, employee, onCalendar);
+        }
+
         private void CreateRotationInUI(RotationUIModel rotationUIModel, FullRotationModel rotation)
         {
             GroupBox groupBox = new ();

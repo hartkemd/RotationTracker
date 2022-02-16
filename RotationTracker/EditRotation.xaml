@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RotationTracker"
         mc:Ignorable="d" FontSize="16"
-        Title="RotationTracker - Edit Rotation" Height="700" Width="1000">
+        Title="RotationTracker - Edit Rotation" Height="800" Width="1200">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
@@ -24,13 +24,41 @@
                 <Label x:Name="rotationNameLabel"></Label>
             </GroupBox.Header>
             <StackPanel Orientation="Vertical">
-                <ListBox x:Name="employeeListBox" Margin="5 0 5 0">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=FullName}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <ListView x:Name="employeeListView" SelectionMode="Single">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="False">
+                            <GridViewColumn Header="Employee Name">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=FullName}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Next Start Date">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=NextStartDateTime, StringFormat=d}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Next End Date">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=NextEndDateTime, StringFormat=d}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="On Calendar">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox x:Name="onCalendarCheckBox" IsChecked="{Binding Mode=TwoWay, Path=OnCalendar}"
+                                                  Checked="OnCalendarCheckBox_Checked" Unchecked="OnCalendarCheckBox_Unchecked" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="moveUpButton" Margin="5" Click="MoveUpButton_Click">Move Up</Button>
                     <Button x:Name="moveDownButton" Margin="5" Click="MoveDownButton_Click">Move Down</Button>
@@ -43,6 +71,7 @@
                     <TextBlock Margin="0 5" Padding="5">Rotation Name:</TextBlock>
                     <TextBox x:Name="rotationNameTextBox" MinWidth="125" Margin="5" Padding="5"></TextBox>
                 </StackPanel>
+                <Button x:Name="createCalendarEvents" Content="Create Calendar Events In Outlook" Click="CreateCalendarEvents_Click" />
             </StackPanel>
         </GroupBox>
         
@@ -89,6 +118,8 @@
         <!-- Save button -->
         <Button x:Name="saveButton" Grid.Row="1" Grid.Column="1" Width="150" Margin="5"
                     Click="SaveButton_Click">Save and Close</Button>
+
+        <TextBlock x:Name="messageTextBlock" Grid.Column="0" Grid.Row="2" Foreground="Red" />
 
     </Grid>
 </Window>

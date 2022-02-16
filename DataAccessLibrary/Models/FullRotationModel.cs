@@ -9,8 +9,8 @@ namespace DataAccessLibrary.Models
 {
     public class FullRotationModel
     {
-        public BasicRotationModel BasicInfo { get; set; } = new BasicRotationModel();
-        public List<EmployeeModel> RotationOfEmployees { get; set; } = new List<EmployeeModel>();
+        public BasicRotationModel BasicInfo { get; set; } = new ();
+        public List<EmployeeModel> RotationOfEmployees { get; set; }
         public string CurrentEmployeeName => GetCurrentEmployeesName();
 
         private string GetCurrentEmployeesName()

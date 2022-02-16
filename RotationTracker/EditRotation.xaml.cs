@@ -19,6 +19,7 @@ namespace RotationTracker
         private ListBox _listBox;
         private Label _rotationNameLabel;
         private TextBlock _currentEmployeeTextBlock;
+        private RotationChangedUIModel _rotationChangedUIModel = new ();
 
         public EditRotation(MainWindow parentWindow, RotationUIModel rotationUIModel)
         {
@@ -32,12 +33,29 @@ namespace RotationTracker
             _currentEmployeeTextBlock = _rotationUIModel.CurrentEmployeeTextBlock;
 
             PopulateControls();
+            _rotationChangedUIModel.RotationChanged += RotationChangedUIModel_RotationChanged;
+        }
+
+        private void RotationChangedUIModel_RotationChanged(object sender, string e)
+        {
+            UncheckAllOnCalendarInListView();
+            messageTextBlock.Text = e;
+        }
+
+        private void UncheckAllOnCalendarInListView()
+        {
+            foreach (var item in employeeListView.Items)
+            {
+                EmployeeModel employee = (EmployeeModel)item;
+                employee.OnCalendar = false;
+                _parentWindow.UpdateOnCalendar(_rotation.BasicInfo, employee, false);
+            }
         }
 
         private void PopulateControls()
         {
             rotationNameLabel.Content = $"{_rotation.BasicInfo.RotationName}:";
-            employeeListBox.ItemsSource = _rotation.RotationOfEmployees;
+            employeeListView.ItemsSource = _rotation.RotationOfEmployees;
             rotationNameTextBox.Text = _rotation.BasicInfo.RotationName;
             notesTextBox.Text = _rotation.BasicInfo.Notes;
             GetRotationRecurrence();
@@ -87,7 +105,9 @@ namespace RotationTracker
 
         private void RefreshListBoxes()
         {
-            employeeListBox.RefreshContents(_rotation.RotationOfEmployees);
+            _rotation.PopulateNextStartDateTimesOfEmployees();
+            _rotation.PopulateNextEndDateTimesOfEmployees();
+            employeeListView.RefreshContents(_rotation.RotationOfEmployees);
             _listBox.RefreshContents(_rotation.RotationOfEmployees);
         }
 
@@ -148,38 +168,48 @@ namespace RotationTracker
 
         private void MoveUpButton_Click(object sender, RoutedEventArgs e)
         {
-            int selectedIndex = employeeListBox.SelectedIndex;
+            int selectedIndex = employeeListView.SelectedIndex;
 
             if (selectedIndex > 0)
             {
-                _rotation.RotationOfEmployees.Insert(selectedIndex - 1, (EmployeeModel)employeeListBox.Items[selectedIndex]);
+                _rotation.RotationOfEmployees.Insert(selectedIndex - 1, (EmployeeModel)employeeListView.Items[selectedIndex]);
                 _rotation.RotationOfEmployees.RemoveAt(selectedIndex + 1);
 
                 RefreshListBoxes();
-                employeeListBox.SelectedIndex = selectedIndex - 1;
+                employeeListView.SelectedIndex = selectedIndex - 1;
+                _rotationChangedUIModel.RotationHasChanged = true;
             }
         }
 
         private void MoveDownButton_Click(object sender, RoutedEventArgs e)
         {
-            int selectedIndex = employeeListBox.SelectedIndex;
+            int selectedIndex = employeeListView.SelectedIndex;
 
-            if (selectedIndex < employeeListBox.Items.Count - 1 && selectedIndex != -1)
+            if (selectedIndex < employeeListView.Items.Count - 1 && selectedIndex != -1)
             {
-                _rotation.RotationOfEmployees.Insert(selectedIndex + 2, (EmployeeModel)employeeListBox.Items[selectedIndex]);
+                _rotation.RotationOfEmployees.Insert(selectedIndex + 2, (EmployeeModel)employeeListView.Items[selectedIndex]);
                 _rotation.RotationOfEmployees.RemoveAt(selectedIndex);
 
                 RefreshListBoxes();
-                employeeListBox.SelectedIndex = selectedIndex + 1;
+                employeeListView.SelectedIndex = selectedIndex + 1;
+                _rotationChangedUIModel.RotationHasChanged = true;
             }
+        }
+
+        private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
+        {
+            _rotation.RotationOfEmployees = _parentWindow.employees;
+            employeeListView.RefreshContents(_rotation.RotationOfEmployees);
+            _rotationChangedUIModel.RotationHasChanged = true;
         }
 
         private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (employeeListBox.SelectedIndex != -1)
+            if (employeeListView.SelectedIndex != -1)
             {
-                _rotation.RotationOfEmployees.Remove((EmployeeModel)employeeListBox.SelectedItem);
-                employeeListBox.RefreshContents(_rotation.RotationOfEmployees);
+                _rotation.RotationOfEmployees.Remove((EmployeeModel)employeeListView.SelectedItem);
+                employeeListView.RefreshContents(_rotation.RotationOfEmployees);
+                _rotationChangedUIModel.RotationHasChanged = true;
             }
         }
 
@@ -219,12 +249,6 @@ namespace RotationTracker
             {
                 _rotation.BasicInfo.AdvanceAutomatically = false;
             }
-        }
-
-        private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
-        {
-            _rotation.RotationOfEmployees = _parentWindow.employees;
-            employeeListBox.RefreshContents(_rotation.RotationOfEmployees);
         }
 
         private void DisableAdvanceAutomaticallyCheckBox()
@@ -268,6 +292,37 @@ namespace RotationTracker
         private void WeeklyWorkWeekRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             EnableAdvanceAutomaticallyCheckBox();
+        }
+
+        private void UpdateOnCalendar(object sender)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            EmployeeModel employee = (EmployeeModel)checkBox.DataContext;
+            _parentWindow.UpdateOnCalendar(_rotation.BasicInfo, employee, (bool)checkBox.IsChecked);
+        }
+
+        private void OnCalendarCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateOnCalendar(sender);
+        }
+
+        private void OnCalendarCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            UpdateOnCalendar(sender);
+        }
+
+        private void CreateCalendarEvents_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in employeeListView.Items)
+            {
+                EmployeeModel employee = (EmployeeModel)item;
+                CreateCalendarEvent(employee);
+            }
+        }
+
+        private void CreateCalendarEvent(EmployeeModel employee)
+        {
+            throw new NotImplementedException();
         }
     }
 }
