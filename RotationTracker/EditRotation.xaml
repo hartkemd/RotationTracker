@@ -71,7 +71,8 @@
                     <TextBlock Margin="0 5" Padding="5">Rotation Name:</TextBlock>
                     <TextBox x:Name="rotationNameTextBox" MinWidth="125" Margin="5" Padding="5"></TextBox>
                 </StackPanel>
-                <Button x:Name="createCalendarEvents" Content="Create Calendar Events In Outlook" Click="CreateCalendarEvents_Click" />
+                <Button x:Name="createCalendarEvents" Content="Create Calendar Events In Outlook"
+                        Click="CreateCalendarEvents_Click" Width="275" Margin="5" />
             </StackPanel>
         </GroupBox>
         
