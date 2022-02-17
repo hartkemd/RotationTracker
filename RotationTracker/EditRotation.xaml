@@ -120,7 +120,7 @@
         <Button x:Name="saveButton" Grid.Row="1" Grid.Column="1" Width="150" Margin="5"
                     Click="SaveButton_Click">Save and Close</Button>
 
-        <TextBlock x:Name="messageTextBlock" Grid.Column="0" Grid.Row="2" Foreground="Red" />
+        <TextBlock x:Name="messageTextBlock" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Foreground="Red" />
 
     </Grid>
 </Window>

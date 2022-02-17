@@ -1,5 +1,6 @@
 ﻿using DataAccessLibrary.Data;
 using DataAccessLibrary.Models;
+using Microsoft.Extensions.Configuration;
 using RotationLibrary;
 using RotationTracker.Models;
 using System;
@@ -22,6 +23,7 @@ namespace RotationTracker
     public partial class MainWindow : Window
     {
         private readonly ISqliteData _db;
+        private string _outlookStoreName;
         public List<EmployeeModel> employees = new ();
         public List<FullRotationModel> rotations = new ();
         public List<RotationUIModel> rotationUIModels = new ();
@@ -30,10 +32,11 @@ namespace RotationTracker
         private bool currentUserIsAdmin = false;
         private string notificationMessage;
 
-        public MainWindow(ISqliteData db)
+        public MainWindow(ISqliteData db, IConfiguration config)
         {
             InitializeComponent();
             _db = db;
+            _outlookStoreName = config.GetValue<string>("OutlookStoreName");
 
             ReadEmployeesFromDB();
             employeeListBox.ItemsSource = employees;
@@ -123,7 +126,7 @@ namespace RotationTracker
             _db.DeleteRotation(id);
         }
 
-        public void UpdateOnCalendar(BasicRotationModel basicRotation, EmployeeModel employee, bool onCalendar)
+        public void UpdateOnCalendarInDB(BasicRotationModel basicRotation, EmployeeModel employee, bool onCalendar)
         {
             _db.UpdateOnCalendar(basicRotation, employee, onCalendar);
         }
@@ -230,8 +233,7 @@ namespace RotationTracker
             rotation.PopulateNextEndDateTimesOfEmployees();
 
             if (rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.Weekly ||
-                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek ||
-                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek)
             {
                 dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
                                                                     <StackPanel Orientation=""Horizontal"">
@@ -244,6 +246,17 @@ namespace RotationTracker
                                                                     </StackPanel>
                                                                 </DataTemplate>";
                 
+            }
+            else if (rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+            {
+                dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
+                                                                    <StackPanel Orientation=""Horizontal"">
+                                                                        <TextBlock Text=""{Binding Path=FullName}"" />
+                                                                        <TextBlock Text="" ("" />
+                                                                        <TextBlock Text=""{Binding Path=NextStartDateTime, StringFormat=d}"" />
+                                                                        <TextBlock Text="")"" />
+                                                                    </StackPanel>
+                                                                </DataTemplate>";
             }
             else
             {
@@ -468,7 +481,7 @@ namespace RotationTracker
         {
             Button button = (Button)sender;
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            EditRotation editRotation = new(this, rotationUIModel);
+            EditRotation editRotation = new(this, rotationUIModel, _outlookStoreName);
             editRotation.ShowDialog();
         }
     }

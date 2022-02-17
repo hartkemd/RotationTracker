@@ -4,6 +4,7 @@ using RotationTracker.Models;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using OutlookCalendarLibrary;
 using WPFHelperLibrary;
 
 namespace RotationTracker
@@ -20,8 +21,9 @@ namespace RotationTracker
         private Label _rotationNameLabel;
         private TextBlock _currentEmployeeTextBlock;
         private RotationChangedUIModel _rotationChangedUIModel = new ();
+        private string _outlookStoreName;
 
-        public EditRotation(MainWindow parentWindow, RotationUIModel rotationUIModel)
+        public EditRotation(MainWindow parentWindow, RotationUIModel rotationUIModel, string outlookStoreName)
         {
             InitializeComponent();
 
@@ -31,6 +33,7 @@ namespace RotationTracker
             _listBox = _rotationUIModel.RotationListBox;
             _rotationNameLabel = _rotationUIModel.RotationNameLabel;
             _currentEmployeeTextBlock = _rotationUIModel.CurrentEmployeeTextBlock;
+            _outlookStoreName = outlookStoreName;
 
             PopulateControls();
             _rotationChangedUIModel.RotationChanged += RotationChangedUIModel_RotationChanged;
@@ -48,7 +51,7 @@ namespace RotationTracker
             {
                 EmployeeModel employee = (EmployeeModel)item;
                 employee.OnCalendar = false;
-                _parentWindow.UpdateOnCalendar(_rotation.BasicInfo, employee, false);
+                _parentWindow.UpdateOnCalendarInDB(_rotation.BasicInfo, employee, false);
             }
         }
 
@@ -298,7 +301,7 @@ namespace RotationTracker
         {
             CheckBox checkBox = (CheckBox)sender;
             EmployeeModel employee = (EmployeeModel)checkBox.DataContext;
-            _parentWindow.UpdateOnCalendar(_rotation.BasicInfo, employee, (bool)checkBox.IsChecked);
+            _parentWindow.UpdateOnCalendarInDB(_rotation.BasicInfo, employee, (bool)checkBox.IsChecked);
         }
 
         private void OnCalendarCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -313,16 +316,36 @@ namespace RotationTracker
 
         private void CreateCalendarEvents_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var item in employeeListView.Items)
-            {
-                EmployeeModel employee = (EmployeeModel)item;
-                CreateCalendarEvent(employee);
-            }
-        }
+            bool outlookIsRunning = OutlookCalendar.OutlookIsRunning();
 
-        private void CreateCalendarEvent(EmployeeModel employee)
-        {
-            throw new NotImplementedException();
+            if (outlookIsRunning == false)
+            {
+                MessageBox.Show("Outlook must be running for calendar appointments to be created.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                OutlookCalendar outlookCalendar = new (_outlookStoreName);
+
+                bool calendarIsAccessible = outlookCalendar.CalendarFolderIsAccessible();
+                if (calendarIsAccessible == true)
+                {
+                    foreach (var item in employeeListView.Items)
+                    {
+                        EmployeeModel employee = (EmployeeModel)item;
+                        if (employee.OnCalendar == false)
+                        {
+                            outlookCalendar.CreateAppointmentItem(_rotation.BasicInfo, employee);
+                        }
+                    }
+
+                    messageTextBlock.Text = $"Calendar appointments have been created.{Environment.NewLine}" +
+                                            "Please place a check next to each employee after you have saved the calendar appointment item for that employee.";
+                }
+                else
+                {
+                    MessageBox.Show("The calendar folder was not accessible.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

@@ -30,12 +30,12 @@ namespace WPFUI
 
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json")
+                .AddUserSecrets<MainWindow>();
 
             IConfiguration config = builder.Build();
 
             services.AddSingleton(config);
-
             services.AddTransient<ISqliteData, SqliteData>();
             
             serviceProvider = services.BuildServiceProvider();

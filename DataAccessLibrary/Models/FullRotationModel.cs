@@ -103,6 +103,10 @@ namespace DataAccessLibrary.Models
                         {
                             RotationOfEmployees[i].NextEndDateTime = RotationOfEmployees[i].NextStartDateTime.AddDays(4);
                         }
+                        else if (BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+                        {
+                            RotationOfEmployees[i].NextEndDateTime = BasicInfo.NextDateTimeRotationAdvances;
+                        }
                     }
                     else
                     {
