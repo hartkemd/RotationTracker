@@ -2,6 +2,7 @@
 using DataAccessLibrary.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -111,7 +112,7 @@ namespace DataAccessLibrary.Data
                         "INNER JOIN Rotations r ON re.RotationId = r.Id " +
                         "WHERE r.Id = @Id ORDER BY re.Position;";
 
-                fullRotation.RotationOfEmployees = _db.LoadData<EmployeeModel, dynamic>(sql, new { Id = id }, connectionStringName);
+                fullRotation.RotationOfEmployees = new ObservableCollection<EmployeeModel>(_db.LoadData<EmployeeModel, dynamic>(sql, new { Id = id }, connectionStringName));
 
                 output.Add(fullRotation);
             }

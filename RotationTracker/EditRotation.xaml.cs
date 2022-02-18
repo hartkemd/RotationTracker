@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using OutlookCalendarLibrary;
 using WPFHelperLibrary;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace RotationTracker
 {
@@ -20,7 +22,6 @@ namespace RotationTracker
         private ListBox _listBox;
         private Label _rotationNameLabel;
         private TextBlock _currentEmployeeTextBlock;
-        private RotationChangedUIModel _rotationChangedUIModel = new ();
         private string _outlookStoreName;
 
         public EditRotation(MainWindow parentWindow, RotationUIModel rotationUIModel, string outlookStoreName)
@@ -36,20 +37,24 @@ namespace RotationTracker
             _outlookStoreName = outlookStoreName;
 
             PopulateControls();
-            _rotationChangedUIModel.RotationChanged += RotationChangedUIModel_RotationChanged;
+            _rotation.RotationOfEmployees.CollectionChanged += RotationOfEmployees_CollectionChanged;
         }
 
-        private void RotationChangedUIModel_RotationChanged(object sender, string e)
+        private void RotationOfEmployees_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            UncheckAllOnCalendarInListView();
-            messageTextBlock.Text = e;
+            if (_rotation.AnEmployeeIsOnCalendar() == true)
+            {
+                UncheckAllOnCalendarInListView();
+                messageTextBlock.Text = $"The rotation has changed.{Environment.NewLine}" +
+                                        $"On Calendar has been cleared for all employees in rotation.{Environment.NewLine}" +
+                                        "Calendar will need to be checked and On Calendar re-marked.";
+            }
         }
 
         private void UncheckAllOnCalendarInListView()
         {
-            foreach (var item in employeeListView.Items)
+            foreach (var employee in _rotation.RotationOfEmployees)
             {
-                EmployeeModel employee = (EmployeeModel)item;
                 employee.OnCalendar = false;
                 _parentWindow.UpdateOnCalendarInDB(_rotation.BasicInfo, employee, false);
             }
@@ -110,8 +115,6 @@ namespace RotationTracker
         {
             _rotation.PopulateNextStartDateTimesOfEmployees();
             _rotation.PopulateNextEndDateTimesOfEmployees();
-            employeeListView.RefreshContents(_rotation.RotationOfEmployees);
-            _listBox.RefreshContents(_rotation.RotationOfEmployees);
         }
 
         private void SetRotationRecurrence()
@@ -180,7 +183,6 @@ namespace RotationTracker
 
                 RefreshListBoxes();
                 employeeListView.SelectedIndex = selectedIndex - 1;
-                _rotationChangedUIModel.RotationHasChanged = true;
             }
         }
 
@@ -195,15 +197,12 @@ namespace RotationTracker
 
                 RefreshListBoxes();
                 employeeListView.SelectedIndex = selectedIndex + 1;
-                _rotationChangedUIModel.RotationHasChanged = true;
             }
         }
 
         private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
         {
-            _rotation.RotationOfEmployees = _parentWindow.employees;
-            employeeListView.RefreshContents(_rotation.RotationOfEmployees);
-            _rotationChangedUIModel.RotationHasChanged = true;
+            _rotation.RotationOfEmployees = new ObservableCollection<EmployeeModel>(_parentWindow.employees);
         }
 
         private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
@@ -211,15 +210,11 @@ namespace RotationTracker
             if (employeeListView.SelectedIndex != -1)
             {
                 _rotation.RotationOfEmployees.Remove((EmployeeModel)employeeListView.SelectedItem);
-                employeeListView.RefreshContents(_rotation.RotationOfEmployees);
-                _rotationChangedUIModel.RotationHasChanged = true;
             }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            _listBox.RefreshContents(_rotation.RotationOfEmployees);
-
             _rotation.BasicInfo.RotationName = rotationNameTextBox.Text;
             _rotationNameLabel.Content = $"{_rotation.BasicInfo.RotationName}:";
 
@@ -316,35 +311,40 @@ namespace RotationTracker
 
         private void CreateCalendarEvents_Click(object sender, RoutedEventArgs e)
         {
-            bool outlookIsRunning = OutlookCalendar.OutlookIsRunning();
-
-            if (outlookIsRunning == false)
+            if (_rotation.AllEmployeesAreOnCalendar() == false)
             {
-                MessageBox.Show("Outlook must be running for calendar appointments to be created.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            else
-            {
-                OutlookCalendar outlookCalendar = new (_outlookStoreName);
-
-                bool calendarIsAccessible = outlookCalendar.CalendarFolderIsAccessible();
-                if (calendarIsAccessible == true)
+                if (OutlookCalendar.OutlookIsRunning() == false)
                 {
-                    foreach (var item in employeeListView.Items)
-                    {
-                        EmployeeModel employee = (EmployeeModel)item;
-                        if (employee.OnCalendar == false)
-                        {
-                            outlookCalendar.CreateAppointmentItem(_rotation.BasicInfo, employee);
-                        }
-                    }
-
-                    messageTextBlock.Text = $"Calendar appointments have been created.{Environment.NewLine}" +
-                                            "Please place a check next to each employee after you have saved the calendar appointment item for that employee.";
+                    MessageBox.Show("Outlook must be running for calendar appointments to be created.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
-                    MessageBox.Show("The calendar folder was not accessible.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    OutlookCalendar outlookCalendar = new(_outlookStoreName);
+
+                    bool calendarIsAccessible = outlookCalendar.CalendarFolderIsAccessible();
+                    if (calendarIsAccessible == true)
+                    {
+                        foreach (var item in employeeListView.Items)
+                        {
+                            EmployeeModel employee = (EmployeeModel)item;
+                            if (employee.OnCalendar == false)
+                            {
+                                outlookCalendar.CreateAppointmentItem(_rotation.BasicInfo, employee);
+                            }
+                        }
+
+                        messageTextBlock.Text = $"Calendar appointments have been created.{Environment.NewLine}" +
+                                                "Please place a check next to each employee after you have saved the calendar appointment item for that employee.";
+                    }
+                    else
+                    {
+                        MessageBox.Show("The calendar folder was not accessible.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
+            }
+            else
+            {
+                messageTextBlock.Text = "All employees are already on the calendar.";
             }
         }
     }

@@ -5,6 +5,7 @@ using RotationLibrary;
 using RotationTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -392,7 +393,7 @@ namespace RotationTracker
                         }
 
                         rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
-                        rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
+                        //rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
                         UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
 
                         nextDateTimeRotationAdvances = rotationUIModel.FullRotationModel.BasicInfo.NextDateTimeRotationAdvances;
@@ -447,7 +448,7 @@ namespace RotationTracker
             fullRotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
             fullRotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7);
             fullRotation.BasicInfo.AdvanceAutomatically = true;
-            fullRotation.RotationOfEmployees = employees;
+            fullRotation.RotationOfEmployees = new ObservableCollection<EmployeeModel>(employees);
 
             rotationUIModel.FullRotationModel = fullRotation;
             rotations.Add(fullRotation);

@@ -1,6 +1,8 @@
 ﻿using RotationLibrary;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +12,41 @@ namespace DataAccessLibrary.Models
     public class FullRotationModel
     {
         public BasicRotationModel BasicInfo { get; set; } = new ();
-        public List<EmployeeModel> RotationOfEmployees { get; set; }
+        public ObservableCollection<EmployeeModel> RotationOfEmployees { get; set; } = new ();
+
         public string CurrentEmployeeName => GetCurrentEmployeesName();
+
+        public bool AnEmployeeIsOnCalendar()
+        {
+            bool output = false;
+
+            foreach (EmployeeModel employee in RotationOfEmployees)
+            {
+                if (employee.OnCalendar == true)
+                {
+                    output = true;
+                    break;
+                }
+            }
+
+            return output;
+        }
+
+        public bool AllEmployeesAreOnCalendar()
+        {
+            bool output = false;
+
+            foreach (EmployeeModel employee in RotationOfEmployees)
+            {
+                if (employee.OnCalendar == false)
+                {
+                    return output;
+                }
+            }
+
+            output = true;
+            return output;
+        }
 
         private string GetCurrentEmployeesName()
         {

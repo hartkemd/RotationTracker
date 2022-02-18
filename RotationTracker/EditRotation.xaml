@@ -51,7 +51,7 @@
                             <GridViewColumn Header="On Calendar">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox x:Name="onCalendarCheckBox" IsChecked="{Binding Mode=TwoWay, Path=OnCalendar}"
+                                        <CheckBox x:Name="onCalendarCheckBox" IsChecked="{Binding OnCalendar}"
                                                   Checked="OnCalendarCheckBox_Checked" Unchecked="OnCalendarCheckBox_Unchecked" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
