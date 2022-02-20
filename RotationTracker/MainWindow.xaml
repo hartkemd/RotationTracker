@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RotationTracker"
         mc:Ignorable="d" FontSize="16"
-        Title="RotationTracker" Height="725" Width="825"
+        Title="RotationTracker" Height="800" Width="1600"
         WindowState="Maximized">
     
     <Grid>

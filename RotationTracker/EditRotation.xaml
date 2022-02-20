@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RotationTracker"
         mc:Ignorable="d" FontSize="16"
-        Title="RotationTracker - Edit Rotation" Height="800" Width="1200">
+        Title="RotationTracker - Edit Rotation" Height="900" Width="1700">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="350" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -75,26 +76,9 @@
                         Click="CreateCalendarEvents_Click" Width="275" Margin="5" />
             </StackPanel>
         </GroupBox>
-        
+
         <!-- Column 1 -->
         <GroupBox Grid.Row="0" Grid.Column="1" Margin="5">
-            <GroupBox.Header>
-                <Label>Notes:</Label>
-            </GroupBox.Header>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="250" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <TextBox x:Name="notesTextBox" Margin="5 0 5 0" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True"
-                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" />
-            </Grid>
-        </GroupBox>
-
-        <!-- Column 2 -->
-        <GroupBox Grid.Row="0" Grid.Column="2" Margin="5">
             <GroupBox.Header>
                 <Label>Recurrence:</Label>
             </GroupBox.Header>
@@ -113,6 +97,62 @@
                           Margin="5" Content="Advance Automatically" />
                 <TextBlock Margin="25 0 0 0" TextWrapping="Wrap"
                            Text="Note: Only weekly or biweekly rotations can advance automatically." />
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Column 2 -->
+        <GroupBox Grid.Row="0" Grid.Column="2" Margin="5">
+            <GroupBox.Header>
+                <Label>Notes:</Label>
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox x:Name="notesTextBox" Margin="5 0 5 0" TextWrapping="Wrap" AcceptsReturn="True" SpellCheck.IsEnabled="True"
+                     VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Auto" />
+            </Grid>
+        </GroupBox>
+        
+        <!-- Column 3 -->
+        <GroupBox Grid.Row="0" Grid.Column="3" Margin="5">
+            <GroupBox.Header>
+                <Label>Coverage History:</Label>
+            </GroupBox.Header>
+            <StackPanel Orientation="Vertical">
+                <StackPanel.Resources>
+                    <Style TargetType="ComboBox">
+                        <Setter Property="Margin" Value="5" />
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Margin" Value="5" />
+                    </Style>
+                    <Style TargetType="DatePicker">
+                        <Setter Property="Margin" Value="5" />
+                    </Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="5" />
+                    </Style>
+                </StackPanel.Resources>
+            <ListBox x:Name="coverageHistoryListBox" Height="400" />
+            <StackPanel Orientation="Horizontal">
+                    <ComboBox x:Name="employeeName1ComboBox" ItemsSource="{Binding}" DisplayMemberPath="FullName" MinWidth="100" />
+                    <TextBlock Text="covered for" VerticalAlignment="Center" />
+                    <ComboBox x:Name="employeeName2ComboBox" ItemsSource="{Binding}" DisplayMemberPath="FullName" MinWidth="100" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="on" VerticalAlignment="Center" />
+                    <DatePicker x:Name="coverageFromDatePicker" />
+                    <TextBlock Text="-" VerticalAlignment="Center" />
+                    <DatePicker x:Name="coverageToDatePicker" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="addCoverageButton" Click="AddCoverageButton_Click">Add</Button>
+                    <Button x:Name="removeCoverageButton" Click="RemoveCoverageButton_Click">Remove</Button>
+                </StackPanel>
             </StackPanel>
         </GroupBox>
 

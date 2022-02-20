@@ -85,6 +85,9 @@ namespace RotationTracker
             {
                 advanceAutomaticallyCheckBox.IsChecked = false;
             }
+
+            employeeName1ComboBox.ItemsSource = _parentWindow.employees;
+            employeeName2ComboBox.ItemsSource = _parentWindow.employees;
         }
 
         private void GetRotationRecurrence()
@@ -345,6 +348,42 @@ namespace RotationTracker
             else
             {
                 messageTextBlock.Text = "All employees are already on the calendar.";
+            }
+        }
+
+        private bool CoverageInputIsValid()
+        {
+            bool isValid = true;
+
+            if (employeeName1ComboBox.SelectedIndex == -1 || employeeName2ComboBox.SelectedIndex == -1)
+            {
+                isValid = false;
+            }
+
+            if (coverageFromDatePicker.SelectedDate == null || coverageToDatePicker.SelectedDate == null)
+            {
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        private void AddCoverageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CoverageInputIsValid() == true)
+            {
+                string coverageItem = $"{employeeName1ComboBox.Text} covered for {employeeName2ComboBox.Text} " +
+                                      $"on {coverageFromDatePicker.Text} - {coverageToDatePicker.Text}";
+
+                coverageHistoryListBox.Items.Add(coverageItem);
+            }
+        }
+
+        private void RemoveCoverageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (coverageHistoryListBox.SelectedIndex != -1)
+            {
+                coverageHistoryListBox.Items.Remove(coverageHistoryListBox.SelectedItem);
             }
         }
     }
