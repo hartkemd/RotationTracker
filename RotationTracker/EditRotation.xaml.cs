@@ -42,13 +42,11 @@ namespace RotationTracker
 
         private void RotationOfEmployees_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_rotation.AnEmployeeIsOnCalendar() == true)
-            {
-                UncheckAllOnCalendarInListView();
-                messageTextBlock.Text = $"The rotation has changed.{Environment.NewLine}" +
-                                        $"On Calendar has been cleared for all employees in rotation.{Environment.NewLine}" +
-                                        "Calendar will need to be checked and On Calendar re-marked.";
-            }
+            UncheckAllOnCalendarInListView();
+            messageTextBlock.Text = $"The rotation has changed.{Environment.NewLine}" +
+                                    $"On Calendar has been cleared for all employees in rotation.{Environment.NewLine}" +
+                                    $"Calendar will need to be reviewed and On Calendar re-marked.{Environment.NewLine}" +
+                                    "Please close and reopen this window to update the check boxes.";
         }
 
         private void UncheckAllOnCalendarInListView()
@@ -111,10 +109,12 @@ namespace RotationTracker
             }
         }
 
-        private void RefreshListBoxes()
+        private void RefreshListControls()
         {
             _rotation.PopulateNextStartDateTimesOfEmployees();
             _rotation.PopulateNextEndDateTimesOfEmployees();
+            employeeListView.RefreshContents(_rotation.RotationOfEmployees);
+            _listBox.RefreshContents(_rotation.RotationOfEmployees);
         }
 
         private void SetRotationRecurrence()
@@ -181,7 +181,7 @@ namespace RotationTracker
                 _rotation.RotationOfEmployees.Insert(selectedIndex - 1, (EmployeeModel)employeeListView.Items[selectedIndex]);
                 _rotation.RotationOfEmployees.RemoveAt(selectedIndex + 1);
 
-                RefreshListBoxes();
+                RefreshListControls();
                 employeeListView.SelectedIndex = selectedIndex - 1;
             }
         }
@@ -195,7 +195,7 @@ namespace RotationTracker
                 _rotation.RotationOfEmployees.Insert(selectedIndex + 2, (EmployeeModel)employeeListView.Items[selectedIndex]);
                 _rotation.RotationOfEmployees.RemoveAt(selectedIndex);
 
-                RefreshListBoxes();
+                RefreshListControls();
                 employeeListView.SelectedIndex = selectedIndex + 1;
             }
         }
