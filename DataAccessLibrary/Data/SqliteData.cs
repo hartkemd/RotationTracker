@@ -203,5 +203,15 @@ namespace DataAccessLibrary.Data
                                     RotationId = basicRotation.Id,
                                     EmployeeId = employee.Id }, connectionStringName);
         }
+
+        public List<CoverageModel> ReadAllCoverages()
+        {
+            string sql = "SELECT r.RotationName, a.FullName AS EmployeeCovering, b.FullName AS EmployeeCovered, c.StartDate, c.EndDate FROM Coverages c " +
+                            "INNER JOIN Rotations r ON r.Id = c.RotationId " +
+                            "LEFT JOIN Employees a ON a.Id = c.EmployeeIdOfCovering " +
+                            "LEFT JOIN Employees b ON b.Id = c.EmployeeIdOfCovered;";
+
+            return _db.LoadDataAsync<CoverageModel, dynamic>(sql, new { }, connectionStringName).Result;
+        }
     }
 }

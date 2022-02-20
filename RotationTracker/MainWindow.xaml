@@ -48,6 +48,7 @@
         <!-- Add and remove rotations buttons -->
             <Button x:Name="addRotationButton" Click="AddRotationButton_Click" Margin="5">Add Rotation</Button>
             <Button x:Name="removeRotationButton" Click="RemoveRotationButton_Click" Margin="5">Remove Rotation</Button>
+            <Button x:Name="showCoveragesButton" Click="ShowCoveragesButton_Click" Margin="5">Show Coverages</Button>
         </StackPanel>
 
         <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">

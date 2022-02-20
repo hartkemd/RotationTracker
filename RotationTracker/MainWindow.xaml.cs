@@ -28,6 +28,7 @@ namespace RotationTracker
         public List<EmployeeModel> employees = new ();
         public List<FullRotationModel> rotations = new ();
         public List<RotationUIModel> rotationUIModels = new ();
+        public List<CoverageModel> coverages = new ();
         private List<string> admins = new();
         private string currentUser;
         private bool currentUserIsAdmin = false;
@@ -54,6 +55,11 @@ namespace RotationTracker
 
             DisplayNotificationsAsync();
             CreateTimer();
+        }
+
+        public void ReadCoveragesFromDB()
+        {
+            coverages = _db.ReadAllCoverages();
         }
 
         public void ReadEmployeesFromDB()
@@ -482,6 +488,11 @@ namespace RotationTracker
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
             EditRotation editRotation = new(this, rotationUIModel, _outlookStoreName);
             editRotation.ShowDialog();
+        }
+
+        private void ShowCoveragesButton_Click(object sender, RoutedEventArgs e)
+        {
+            ReadCoveragesFromDB();
         }
     }
 }
