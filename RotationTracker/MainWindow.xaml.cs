@@ -318,9 +318,7 @@ namespace RotationTracker
         {
             if (currentUserIsAdmin == true)
             {
-                editEmployeesButton.Visibility = Visibility.Visible;
-                addRotationButton.Visibility = Visibility.Visible;
-                removeRotationButton.Visibility = Visibility.Visible;
+                employeesStackPanel.Visibility = Visibility.Visible;
 
                 foreach (var uiModel in rotationUIModels)
                 {
