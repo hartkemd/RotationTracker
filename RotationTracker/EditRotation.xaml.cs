@@ -63,6 +63,7 @@ namespace RotationTracker
             rotationNameLabel.Content = $"{_rotation.BasicInfo.RotationName}:";
             employeeListView.ItemsSource = _rotation.RotationOfEmployees;
             rotationNameTextBox.Text = _rotation.BasicInfo.RotationName;
+            categoryTextBox.Text = _rotation.BasicInfo.RotationName;
             notesTextBox.Text = _rotation.BasicInfo.Notes;
             GetRotationRecurrence();
 
@@ -225,6 +226,7 @@ namespace RotationTracker
 
             _rotation.BasicInfo.Notes = notesTextBox.Text;
             _rotationUIModel.RotationNotesTextBox.Text = _rotation.BasicInfo.Notes;
+            _rotation.BasicInfo.OutlookCategory = categoryTextBox.Text;
 
             SetRotationRecurrence();
             SetRotationAdvanceAutomatically();

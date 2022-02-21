@@ -69,8 +69,12 @@
                 <Button x:Name="removeEmployeeButton" Margin="5" Click="RemoveEmployeeButton_Click"
                         Width="150">Remove Employee</Button>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Margin="0 5" Padding="5">Rotation Name:</TextBlock>
-                    <TextBox x:Name="rotationNameTextBox" MinWidth="125" Margin="5" Padding="5"></TextBox>
+                    <TextBlock Margin="5" Text="Rotation Name:" />
+                    <TextBox x:Name="rotationNameTextBox" MinWidth="125" Margin="5" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Outlook Calendar Category:" Margin="5" />
+                    <TextBox x:Name="categoryTextBox" Margin="5" MinWidth="125" />
                 </StackPanel>
                 <Button x:Name="createCalendarEvents" Content="Create Calendar Events In Outlook"
                         Click="CreateCalendarEvents_Click" Width="275" Margin="5" />

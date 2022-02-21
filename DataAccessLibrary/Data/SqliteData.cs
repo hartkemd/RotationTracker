@@ -136,13 +136,14 @@ namespace DataAccessLibrary.Data
         {
             string sql = "UPDATE Rotations SET RotationName = @RotationName, RotationRecurrence = @RotationRecurrence, " +
                             "NextDateTimeRotationAdvances = @NextDateTimeRotationAdvances, " +
-                            "AdvanceAutomatically = @AdvanceAutomatically, Notes = @Notes WHERE Id = @Id;";
+                            "AdvanceAutomatically = @AdvanceAutomatically, Notes = @Notes, OutlookCategory = @OutlookCategory WHERE Id = @Id;";
 
             _db.SaveDataAsync(sql, new { basicRotation.RotationName,
                                     basicRotation.RotationRecurrence,
                                     basicRotation.NextDateTimeRotationAdvances,
                                     basicRotation.AdvanceAutomatically,
                                     basicRotation.Notes,
+                                    basicRotation.OutlookCategory,
                                     basicRotation.Id },
                                     connectionStringName);
         }

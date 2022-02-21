@@ -71,7 +71,7 @@ namespace OutlookCalendarLibrary
                 appItem.Subject = $"{basicRotation.RotationName} - {employee.FullName}";
                 appItem.Start = employee.NextStartDateTime;
                 appItem.End = employee.NextEndDateTime;
-                //appItem.Categories = "Moderator";
+                appItem.Categories = basicRotation.OutlookCategory;
                 appItem.ReminderSet = false;
                 appItem.Display(false);
                 appointmentItemDisplayed = true;
