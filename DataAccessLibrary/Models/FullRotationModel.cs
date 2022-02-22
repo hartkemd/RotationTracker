@@ -13,6 +13,8 @@ namespace DataAccessLibrary.Models
     {
         public BasicRotationModel BasicInfo { get; set; } = new ();
         public ObservableCollection<EmployeeModel> RotationOfEmployees { get; set; } = new ();
+        public ObservableCollection<CoverageModel> Coverages { get; set; } = new ();
+        public ObservableCollection<CoverageReadModel> CoveragesDisplay { get; set; } = new();
 
         public string CurrentEmployeeName => GetCurrentEmployeesName();
 

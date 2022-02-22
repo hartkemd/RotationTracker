@@ -36,6 +36,7 @@ namespace RotationTracker
             _currentEmployeeTextBlock = _rotationUIModel.CurrentEmployeeTextBlock;
             _outlookStoreName = outlookStoreName;
 
+            _rotation.CoveragesDisplay = _parentWindow.ReadCoveragesForRotation(_rotation.BasicInfo.Id);
             PopulateControls();
             _rotation.RotationOfEmployees.CollectionChanged += RotationOfEmployees_CollectionChanged;
         }
@@ -87,8 +88,9 @@ namespace RotationTracker
                 advanceAutomaticallyCheckBox.IsChecked = false;
             }
 
-            employeeName1ComboBox.ItemsSource = _parentWindow.employees;
-            employeeName2ComboBox.ItemsSource = _parentWindow.employees;
+            employeeCoveringComboBox.ItemsSource = _parentWindow.employees;
+            employeeCoveredComboBox.ItemsSource = _parentWindow.employees;
+            coverageHistoryListBox.ItemsSource = _rotation.CoveragesDisplay;
         }
 
         private void GetRotationRecurrence()
@@ -357,7 +359,7 @@ namespace RotationTracker
         {
             bool isValid = true;
 
-            if (employeeName1ComboBox.SelectedIndex == -1 || employeeName2ComboBox.SelectedIndex == -1)
+            if (employeeCoveringComboBox.SelectedIndex == -1 || employeeCoveredComboBox.SelectedIndex == -1)
             {
                 isValid = false;
             }
@@ -374,10 +376,15 @@ namespace RotationTracker
         {
             if (CoverageInputIsValid() == true)
             {
-                string coverageItem = $"{employeeName1ComboBox.Text} covered for {employeeName2ComboBox.Text} " +
-                                      $"on {coverageFromDatePicker.Text} - {coverageToDatePicker.Text}";
+                CoverageModel coverage = new ();
+                coverage.RotationId = _rotation.BasicInfo.Id;
+                coverage.EmployeeIdOfCovering = ((EmployeeModel)employeeCoveringComboBox.SelectedItem).Id;
+                coverage.EmployeeIdOfCovered = ((EmployeeModel)employeeCoveredComboBox.SelectedItem).Id;
+                coverage.StartDate = (DateTime)coverageFromDatePicker.SelectedDate;
+                coverage.EndDate = (DateTime)coverageToDatePicker.SelectedDate;
 
-                coverageHistoryListBox.Items.Add(coverageItem);
+                _rotation.Coverages.Add(coverage);
+                _parentWindow.CreateCoverageInDB(coverage);
             }
         }
 
@@ -385,7 +392,9 @@ namespace RotationTracker
         {
             if (coverageHistoryListBox.SelectedIndex != -1)
             {
-                coverageHistoryListBox.Items.Remove(coverageHistoryListBox.SelectedItem);
+                CoverageModel coverage = (CoverageModel)coverageHistoryListBox.SelectedItem;
+                _rotation.Coverages.Remove(coverage);
+                _parentWindow.DeleteCoverageFromDB(coverage.Id);
             }
         }
     }

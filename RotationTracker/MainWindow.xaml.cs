@@ -28,7 +28,7 @@ namespace RotationTracker
         public List<EmployeeModel> employees = new ();
         public List<FullRotationModel> rotations = new ();
         public List<RotationUIModel> rotationUIModels = new ();
-        public List<CoverageModel> coverages = new ();
+        public List<CoverageReadModel> coverages = new ();
         private List<string> admins = new();
         private string currentUser;
         private bool currentUserIsAdmin = false;
@@ -60,6 +60,27 @@ namespace RotationTracker
         public void ReadCoveragesFromDB()
         {
             coverages = _db.ReadAllCoverages();
+        }
+
+        public ObservableCollection<CoverageReadModel> ReadCoveragesForRotation(int rotationId)
+        {
+            ObservableCollection<CoverageReadModel> output = new (_db.ReadCoveragesForRotation(rotationId));
+            return output;
+        }
+
+        public void CreateCoverageInDB(CoverageModel coverage)
+        {
+            _db.CreateCoverage(coverage);
+        }
+
+        public void SetCoverageInactiveInDB(CoverageModel coverage)
+        {
+            _db.SetCoverageInactive(coverage);
+        }
+
+        public void DeleteCoverageFromDB(int coverageId)
+        {
+            _db.DeleteCoverage(coverageId);
         }
 
         public void ReadEmployeesFromDB()
@@ -493,6 +514,8 @@ namespace RotationTracker
         private void ShowCoveragesButton_Click(object sender, RoutedEventArgs e)
         {
             ReadCoveragesFromDB();
+            Coverages coverages = new(this);
+            coverages.ShowDialog();
         }
     }
 }

@@ -8,10 +8,12 @@ namespace DataAccessLibrary.Models
 {
     public class CoverageModel
     {
-        public string RotationName { get; set; }
-        public string EmployeeCovering { get; set; }
-        public string EmployeeCovered { get; set; }
+        public int Id { get; set; }
+        public int RotationId { get; set; }
+        public int EmployeeIdOfCovering { get; set; }
+        public int EmployeeIdOfCovered { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public bool IsActive { get; set; } = true;
     }
 }

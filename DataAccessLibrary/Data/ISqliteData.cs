@@ -17,6 +17,10 @@ namespace DataAccessLibrary.Data
         void DeleteRotation(int id);
         List<string> ReadAllAdmins();
         void UpdateOnCalendar(BasicRotationModel basicRotation, EmployeeModel employee, bool onCalendar);
-        List<CoverageModel> ReadAllCoverages();
+        List<CoverageReadModel> ReadAllCoverages();
+        List<CoverageReadModel> ReadCoveragesForRotation(int rotationId);
+        void CreateCoverage(CoverageModel coverage);
+        void SetCoverageInactive(CoverageModel coverage);
+        void DeleteCoverage(int coverageId);
     }
 }

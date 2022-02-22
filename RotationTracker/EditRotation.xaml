@@ -141,11 +141,11 @@
                         <Setter Property="Margin" Value="5" />
                     </Style>
                 </StackPanel.Resources>
-            <ListBox x:Name="coverageHistoryListBox" Height="400" />
+            <ListBox x:Name="coverageHistoryListBox" Height="400" DisplayMemberPath="CoverageItem" />
             <StackPanel Orientation="Horizontal">
-                    <ComboBox x:Name="employeeName1ComboBox" ItemsSource="{Binding}" DisplayMemberPath="FullName" MinWidth="100" />
+                    <ComboBox x:Name="employeeCoveringComboBox" ItemsSource="{Binding}" DisplayMemberPath="FullName" MinWidth="100" />
                     <TextBlock Text="covered for" VerticalAlignment="Center" />
-                    <ComboBox x:Name="employeeName2ComboBox" ItemsSource="{Binding}" DisplayMemberPath="FullName" MinWidth="100" />
+                    <ComboBox x:Name="employeeCoveredComboBox" ItemsSource="{Binding}" DisplayMemberPath="FullName" MinWidth="100" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="on" VerticalAlignment="Center" />

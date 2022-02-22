@@ -205,14 +205,54 @@ namespace DataAccessLibrary.Data
                                     EmployeeId = employee.Id }, connectionStringName);
         }
 
-        public List<CoverageModel> ReadAllCoverages()
+        public List<CoverageReadModel> ReadAllCoverages()
         {
-            string sql = "SELECT r.RotationName, a.FullName AS EmployeeCovering, b.FullName AS EmployeeCovered, c.StartDate, c.EndDate FROM Coverages c " +
-                            "INNER JOIN Rotations r ON r.Id = c.RotationId " +
-                            "LEFT JOIN Employees a ON a.Id = c.EmployeeIdOfCovering " +
-                            "LEFT JOIN Employees b ON b.Id = c.EmployeeIdOfCovered;";
+            string sql = "SELECT r.RotationName, a.FullName AS EmployeeCovering, b.FullName AS EmployeeCovered, c.StartDate, c.EndDate " +
+                            "FROM Coverages c " +
+                            "INNER JOIN Rotations r ON c.RotationId = r.Id " +
+                            "INNER JOIN Employees a ON c.EmployeeIdOfCovering = a.Id " +
+                            "INNER JOIN Employees b ON c.EmployeeIdOfCovered = b.Id " +
+                            "WHERE IsActive = 1;";
 
-            return _db.LoadDataAsync<CoverageModel, dynamic>(sql, new { }, connectionStringName).Result;
+            return _db.LoadDataAsync<CoverageReadModel, dynamic>(sql, new { }, connectionStringName).Result;
+        }
+
+        public List<CoverageReadModel> ReadCoveragesForRotation(int rotationId)
+        {
+            string sql = "SELECT r.RotationName, a.FullName AS EmployeeCovering, b.FullName AS EmployeeCovered, c.StartDate, c.EndDate " +
+                            "FROM Coverages c " +
+                            "INNER JOIN Rotations r ON c.RotationId = r.Id " +
+                            "INNER JOIN Employees a ON c.EmployeeIdOfCovering = a.Id " +
+                            "INNER JOIN Employees b ON c.EmployeeIdOfCovered = b.Id " +
+                            "WHERE c.RotationId = @RotationId AND IsActive = 1;";
+
+            return _db.LoadDataAsync<CoverageReadModel, dynamic>(sql, new { RotationId = rotationId }, connectionStringName).Result;
+        }
+
+        public void CreateCoverage(CoverageModel coverage)
+        {
+            string sql = "INSERT INTO Coverages (RotationId, EmployeeIdOfCovering, EmployeeIdOfCovered, StartDate, EndDate) " +
+                            "VALUES (@RotationId, @EmployeeIdOfCovering, @EmployeeIdOfCovered, @StartDate, @EndDate)";
+
+            _db.SaveDataAsync(sql, new { coverage.RotationId,
+                                         coverage.EmployeeIdOfCovering,
+                                         coverage.EmployeeIdOfCovered,
+                                         coverage.StartDate,
+                                         coverage.EndDate}, connectionStringName);
+        }
+
+        public void SetCoverageInactive(CoverageModel coverage)
+        {
+            string sql = "UPDATE Coverages SET IsActive = 0 WHERE Id = @Id;";
+
+            _db.SaveDataAsync(sql, new { coverage.Id }, connectionStringName);
+        }
+
+        public void DeleteCoverage(int coverageId)
+        {
+            string sql = "DELETE FROM Coverages WHERE Id = @Id;";
+
+            _db.SaveDataAsync(sql, new { Id = coverageId }, connectionStringName);
         }
     }
 }
