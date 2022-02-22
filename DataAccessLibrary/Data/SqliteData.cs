@@ -219,7 +219,7 @@ namespace DataAccessLibrary.Data
 
         public List<CoverageReadModel> ReadCoveragesForRotation(int rotationId)
         {
-            string sql = "SELECT r.RotationName, a.FullName AS EmployeeCovering, b.FullName AS EmployeeCovered, c.StartDate, c.EndDate " +
+            string sql = "SELECT c.Id, r.RotationName, a.FullName AS EmployeeCovering, b.FullName AS EmployeeCovered, c.StartDate, c.EndDate " +
                             "FROM Coverages c " +
                             "INNER JOIN Rotations r ON c.RotationId = r.Id " +
                             "INNER JOIN Employees a ON c.EmployeeIdOfCovering = a.Id " +

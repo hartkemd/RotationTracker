@@ -385,6 +385,8 @@ namespace RotationTracker
 
                 _rotation.Coverages.Add(coverage);
                 _parentWindow.CreateCoverageInDB(coverage);
+                _rotation.CoveragesDisplay = _parentWindow.ReadCoveragesForRotation(_rotation.BasicInfo.Id);
+                coverageHistoryListBox.RefreshContents(_rotation.CoveragesDisplay);
             }
         }
 
@@ -392,9 +394,9 @@ namespace RotationTracker
         {
             if (coverageHistoryListBox.SelectedIndex != -1)
             {
-                CoverageModel coverage = (CoverageModel)coverageHistoryListBox.SelectedItem;
-                _rotation.Coverages.Remove(coverage);
-                _parentWindow.DeleteCoverageFromDB(coverage.Id);
+                CoverageReadModel coverageRead = (CoverageReadModel)coverageHistoryListBox.SelectedItem;
+                _rotation.CoveragesDisplay.Remove(coverageRead);
+                _parentWindow.DeleteCoverageFromDB(coverageRead.Id);
             }
         }
     }

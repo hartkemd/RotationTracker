@@ -8,6 +8,7 @@ namespace DataAccessLibrary.Models
 {
     public class CoverageReadModel
     {
+        public int Id { get; set; }
         public string RotationName { get; set; }
         public string EmployeeCovering { get; set; }
         public string EmployeeCovered { get; set; }
