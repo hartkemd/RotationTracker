@@ -72,7 +72,7 @@
                     <TextBlock Margin="5" Text="Rotation Name:" />
                     <TextBox x:Name="rotationNameTextBox" MinWidth="125" Margin="5" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBlock Text="Outlook Calendar Category:" Margin="5" />
                     <TextBox x:Name="categoryTextBox" Margin="5" MinWidth="125" />
                 </StackPanel>

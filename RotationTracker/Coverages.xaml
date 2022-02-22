@@ -12,11 +12,18 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <ListBox x:Name="coveragesListBox" Margin="5" Grid.Row="0" Grid.Column="0"
                  ItemsSource="{Binding Path=CoverageItemFull}" DisplayMemberPath="CoverageItemFull"
                  Height="500" />
-        
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0">
+            <TextBlock Text="Employee Covering:" Margin="5" />
+            <ComboBox x:Name="coveringEmployeeComboBox" Margin="5" MinWidth="100" DisplayMemberPath="FullName" />
+            <Button x:Name="filterCoveragesButton" Margin="5" Content="Filter" Click="FilterCoveragesButton_Click" />
+            <Button x:Name="clearFilterButton" Margin="5" Content="Clear" Click="ClearFilterButton_Click" />
+        </StackPanel>
+
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccessLibrary.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,21 @@ namespace RotationTracker
             InitializeComponent();
 
             _parentWindow = parentWindow;
+            coveragesListBox.ItemsSource = _parentWindow.coverages;
+            coveringEmployeeComboBox.ItemsSource = _parentWindow.employees;
+        }
+
+        private void FilterCoveragesButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<CoverageReadModel> coverageReads = new List<CoverageReadModel>();
+            string coveringEmployee = coveringEmployeeComboBox.Text;
+
+            coverageReads = _parentWindow.coverages.Where(x => x.EmployeeCovering == coveringEmployee).ToList();
+            coveragesListBox.ItemsSource = coverageReads;
+        }
+
+        private void ClearFilterButton_Click(object sender, RoutedEventArgs e)
+        {
             coveragesListBox.ItemsSource = _parentWindow.coverages;
         }
     }
