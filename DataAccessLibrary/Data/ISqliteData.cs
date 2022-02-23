@@ -20,7 +20,7 @@ namespace DataAccessLibrary.Data
         List<CoverageReadModel> ReadAllCoverages();
         List<CoverageReadModel> ReadCoveragesForRotation(int rotationId);
         void CreateCoverage(CoverageModel coverage);
-        void SetCoverageInactive(CoverageModel coverage);
+        void SetCoverageInactive(int coverageId);
         void DeleteCoverage(int coverageId);
     }
 }

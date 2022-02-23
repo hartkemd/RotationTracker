@@ -53,7 +53,9 @@
 
         <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
             <!-- Rotations -->
-            <WrapPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" />
+            <ScrollViewer x:Name="rotationsScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" />
+            </ScrollViewer>
         </Grid>
 
         <!-- Notification area -->

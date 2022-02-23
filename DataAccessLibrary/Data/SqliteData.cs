@@ -207,7 +207,7 @@ namespace DataAccessLibrary.Data
 
         public List<CoverageReadModel> ReadAllCoverages()
         {
-            string sql = "SELECT r.RotationName, a.FullName AS EmployeeCovering, b.FullName AS EmployeeCovered, c.StartDate, c.EndDate " +
+            string sql = "SELECT c.Id, r.RotationName, a.FullName AS EmployeeCovering, b.FullName AS EmployeeCovered, c.StartDate, c.EndDate " +
                             "FROM Coverages c " +
                             "INNER JOIN Rotations r ON c.RotationId = r.Id " +
                             "INNER JOIN Employees a ON c.EmployeeIdOfCovering = a.Id " +
@@ -241,11 +241,11 @@ namespace DataAccessLibrary.Data
                                          coverage.EndDate}, connectionStringName);
         }
 
-        public void SetCoverageInactive(CoverageModel coverage)
+        public void SetCoverageInactive(int coverageId)
         {
             string sql = "UPDATE Coverages SET IsActive = 0 WHERE Id = @Id;";
 
-            _db.SaveDataAsync(sql, new { coverage.Id }, connectionStringName);
+            _db.SaveDataAsync(sql, new { Id = coverageId }, connectionStringName);
         }
 
         public void DeleteCoverage(int coverageId)

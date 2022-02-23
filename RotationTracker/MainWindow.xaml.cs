@@ -44,6 +44,8 @@ namespace RotationTracker
             employeeListBox.ItemsSource = employees;
             ReadRotationsFromDB();
             LoadRotationsIntoUI();
+            ReadCoveragesFromDB();
+            SetCoveragesInactiveIfOlderThanOneYear();
 
             GetCurrentUser();
             DisplayCurrentUser();
@@ -55,6 +57,18 @@ namespace RotationTracker
 
             DisplayNotificationsAsync();
             CreateTimer();
+        }
+
+        private void SetCoveragesInactiveIfOlderThanOneYear()
+        {
+            foreach (var coverage in coverages)
+            {
+                DateTime endDate = coverage.EndDate.AddYears(1);
+                if (endDate.Date < DateTime.Now.Date)
+                {
+                    SetCoverageInactiveInDB(coverage.Id);
+                }
+            }
         }
 
         public void ReadCoveragesFromDB()
@@ -73,9 +87,9 @@ namespace RotationTracker
             _db.CreateCoverage(coverage);
         }
 
-        public void SetCoverageInactiveInDB(CoverageModel coverage)
+        public void SetCoverageInactiveInDB(int coverageId)
         {
-            _db.SetCoverageInactive(coverage);
+            _db.SetCoverageInactive(coverageId);
         }
 
         public void DeleteCoverageFromDB(int coverageId)
