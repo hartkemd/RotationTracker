@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace DataAccessLibrary.Models
 {
     public class EmployeeModel
@@ -12,5 +7,6 @@ namespace DataAccessLibrary.Models
         public string FullName { get; set; }
         public DateTime NextStartDateTime { get; set; }
         public DateTime NextEndDateTime { get; set; }
+        public bool OnCalendar { get; set; }
     }
 }

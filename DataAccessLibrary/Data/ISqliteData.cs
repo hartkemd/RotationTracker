@@ -7,7 +7,7 @@ namespace DataAccessLibrary.Data
         List<EmployeeModel> GetAllEmployees();
         void CreateEmployee(string employeeName);
         void DeleteEmployee(int id);
-        void CreateRotation(FullRotationModel rotation);
+        void CreateRotation(FullRotationModel fullRotation);
         void RecreateRotationOfEmployees(FullRotationModel fullRotation);
         List<FullRotationModel> GetAllRotations();
         int GetHighestIdFromRotations();
@@ -16,5 +16,11 @@ namespace DataAccessLibrary.Data
         void ReverseRotation(FullRotationModel fullRotation);
         void DeleteRotation(int id);
         List<string> ReadAllAdmins();
+        void UpdateOnCalendar(BasicRotationModel basicRotation, EmployeeModel employee, bool onCalendar);
+        List<CoverageReadModel> ReadAllCoverages();
+        List<CoverageReadModel> ReadCoveragesForRotation(int rotationId);
+        void CreateCoverage(CoverageModel coverage);
+        void SetCoverageInactive(int coverageId);
+        void DeleteCoverage(int coverageId);
     }
 }

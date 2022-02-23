@@ -1,6 +1,8 @@
 ﻿using RotationLibrary;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,9 +11,44 @@ namespace DataAccessLibrary.Models
 {
     public class FullRotationModel
     {
-        public BasicRotationModel BasicInfo { get; set; } = new BasicRotationModel();
-        public List<EmployeeModel> RotationOfEmployees { get; set; } = new List<EmployeeModel>();
+        public BasicRotationModel BasicInfo { get; set; } = new ();
+        public ObservableCollection<EmployeeModel> RotationOfEmployees { get; set; } = new ();
+        public ObservableCollection<CoverageModel> Coverages { get; set; } = new ();
+        public ObservableCollection<CoverageReadModel> CoveragesDisplay { get; set; } = new();
+
         public string CurrentEmployeeName => GetCurrentEmployeesName();
+
+        public bool AnEmployeeIsOnCalendar()
+        {
+            bool output = false;
+
+            foreach (EmployeeModel employee in RotationOfEmployees)
+            {
+                if (employee.OnCalendar == true)
+                {
+                    output = true;
+                    break;
+                }
+            }
+
+            return output;
+        }
+
+        public bool AllEmployeesAreOnCalendar()
+        {
+            bool output = false;
+
+            foreach (EmployeeModel employee in RotationOfEmployees)
+            {
+                if (employee.OnCalendar == false)
+                {
+                    return output;
+                }
+            }
+
+            output = true;
+            return output;
+        }
 
         private string GetCurrentEmployeesName()
         {
@@ -51,7 +88,7 @@ namespace DataAccessLibrary.Models
                     {
                         if (i == 0)
                         {
-                            RotationOfEmployees[i].NextStartDateTime = BasicInfo.NextDateTimeRotationAdvances.AddDays(-4);
+                            RotationOfEmployees[i].NextStartDateTime = BasicInfo.NextDateTimeRotationAdvances;
                         }
                         else
                         {
@@ -102,6 +139,10 @@ namespace DataAccessLibrary.Models
                         else if (BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek)
                         {
                             RotationOfEmployees[i].NextEndDateTime = RotationOfEmployees[i].NextStartDateTime.AddDays(4);
+                        }
+                        else if (BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+                        {
+                            RotationOfEmployees[i].NextEndDateTime = BasicInfo.NextDateTimeRotationAdvances;
                         }
                     }
                     else

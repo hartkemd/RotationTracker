@@ -1,9 +1,11 @@
 ﻿using DataAccessLibrary.Data;
 using DataAccessLibrary.Models;
+using Microsoft.Extensions.Configuration;
 using RotationLibrary;
 using RotationTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,23 +24,28 @@ namespace RotationTracker
     public partial class MainWindow : Window
     {
         private readonly ISqliteData _db;
+        private string _outlookStoreName;
         public List<EmployeeModel> employees = new ();
         public List<FullRotationModel> rotations = new ();
         public List<RotationUIModel> rotationUIModels = new ();
+        public List<CoverageReadModel> coverages = new ();
         private List<string> admins = new();
         private string currentUser;
         private bool currentUserIsAdmin = false;
         private string notificationMessage;
 
-        public MainWindow(ISqliteData db)
+        public MainWindow(ISqliteData db, IConfiguration config)
         {
             InitializeComponent();
             _db = db;
+            _outlookStoreName = config.GetValue<string>("OutlookStoreName");
 
             ReadEmployeesFromDB();
             employeeListBox.ItemsSource = employees;
             ReadRotationsFromDB();
             LoadRotationsIntoUI();
+            ReadCoveragesFromDB();
+            SetCoveragesInactiveIfOlderThanOneYear();
 
             GetCurrentUser();
             DisplayCurrentUser();
@@ -50,6 +57,44 @@ namespace RotationTracker
 
             DisplayNotificationsAsync();
             CreateTimer();
+        }
+
+        private void SetCoveragesInactiveIfOlderThanOneYear()
+        {
+            foreach (var coverage in coverages)
+            {
+                DateTime endDate = coverage.EndDate.AddYears(1);
+                if (endDate.Date < DateTime.Now.Date)
+                {
+                    SetCoverageInactiveInDB(coverage.Id);
+                }
+            }
+        }
+
+        public void ReadCoveragesFromDB()
+        {
+            coverages = _db.ReadAllCoverages();
+        }
+
+        public ObservableCollection<CoverageReadModel> ReadCoveragesForRotation(int rotationId)
+        {
+            ObservableCollection<CoverageReadModel> output = new (_db.ReadCoveragesForRotation(rotationId));
+            return output;
+        }
+
+        public void CreateCoverageInDB(CoverageModel coverage)
+        {
+            _db.CreateCoverage(coverage);
+        }
+
+        public void SetCoverageInactiveInDB(int coverageId)
+        {
+            _db.SetCoverageInactive(coverageId);
+        }
+
+        public void DeleteCoverageFromDB(int coverageId)
+        {
+            _db.DeleteCoverage(coverageId);
         }
 
         public void ReadEmployeesFromDB()
@@ -121,6 +166,11 @@ namespace RotationTracker
         public void DeleteRotationFromDB(int id)
         {
             _db.DeleteRotation(id);
+        }
+
+        public void UpdateOnCalendarInDB(BasicRotationModel basicRotation, EmployeeModel employee, bool onCalendar)
+        {
+            _db.UpdateOnCalendar(basicRotation, employee, onCalendar);
         }
 
         private void CreateRotationInUI(RotationUIModel rotationUIModel, FullRotationModel rotation)
@@ -225,8 +275,7 @@ namespace RotationTracker
             rotation.PopulateNextEndDateTimesOfEmployees();
 
             if (rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.Weekly ||
-                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek ||
-                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek)
             {
                 dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
                                                                     <StackPanel Orientation=""Horizontal"">
@@ -239,6 +288,17 @@ namespace RotationTracker
                                                                     </StackPanel>
                                                                 </DataTemplate>";
                 
+            }
+            else if (rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+            {
+                dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
+                                                                    <StackPanel Orientation=""Horizontal"">
+                                                                        <TextBlock Text=""{Binding Path=FullName}"" />
+                                                                        <TextBlock Text="" ("" />
+                                                                        <TextBlock Text=""{Binding Path=NextStartDateTime, StringFormat=d}"" />
+                                                                        <TextBlock Text="")"" />
+                                                                    </StackPanel>
+                                                                </DataTemplate>";
             }
             else
             {
@@ -299,9 +359,7 @@ namespace RotationTracker
         {
             if (currentUserIsAdmin == true)
             {
-                editEmployeesButton.Visibility = Visibility.Visible;
-                addRotationButton.Visibility = Visibility.Visible;
-                removeRotationButton.Visibility = Visibility.Visible;
+                employeesStackPanel.Visibility = Visibility.Visible;
 
                 foreach (var uiModel in rotationUIModels)
                 {
@@ -374,7 +432,7 @@ namespace RotationTracker
                         }
 
                         rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
-                        rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
+                        //rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
                         UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
 
                         nextDateTimeRotationAdvances = rotationUIModel.FullRotationModel.BasicInfo.NextDateTimeRotationAdvances;
@@ -429,7 +487,7 @@ namespace RotationTracker
             fullRotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
             fullRotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7);
             fullRotation.BasicInfo.AdvanceAutomatically = true;
-            fullRotation.RotationOfEmployees = employees;
+            fullRotation.RotationOfEmployees = new ObservableCollection<EmployeeModel>(employees);
 
             rotationUIModel.FullRotationModel = fullRotation;
             rotations.Add(fullRotation);
@@ -463,8 +521,15 @@ namespace RotationTracker
         {
             Button button = (Button)sender;
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            EditRotation editRotation = new(this, rotationUIModel);
+            EditRotation editRotation = new(this, rotationUIModel, _outlookStoreName);
             editRotation.ShowDialog();
+        }
+
+        private void ShowCoveragesButton_Click(object sender, RoutedEventArgs e)
+        {
+            ReadCoveragesFromDB();
+            Coverages coverages = new(this);
+            coverages.ShowDialog();
         }
     }
 }
