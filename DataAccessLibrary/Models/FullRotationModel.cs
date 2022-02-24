@@ -88,7 +88,7 @@ namespace DataAccessLibrary.Models
                     {
                         if (i == 0)
                         {
-                            RotationOfEmployees[i].NextStartDateTime = BasicInfo.NextDateTimeRotationAdvances;
+                            RotationOfEmployees[i].NextStartDateTime = BasicInfo.NextDateTimeRotationAdvances.AddDays(-4);
                         }
                         else
                         {
