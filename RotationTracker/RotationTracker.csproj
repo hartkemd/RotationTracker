@@ -3,9 +3,11 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <UserSecretsId>43bcc57a-33d9-4ac4-a9b9-b97e2c3d851c</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLibrary\DataAccessLibrary.csproj" />
+    <ProjectReference Include="..\OutlookCalendarLibrary\OutlookCalendarLibrary.csproj" />
     <ProjectReference Include="..\RotationLibrary\RotationLibrary.csproj" />
     <ProjectReference Include="..\WPFHelperLibrary\WPFHelperLibrary.csproj" />
   </ItemGroup>
@@ -15,6 +17,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>

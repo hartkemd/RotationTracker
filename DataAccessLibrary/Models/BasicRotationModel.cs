@@ -10,5 +10,6 @@ namespace DataAccessLibrary.Models
         public DateTime NextDateTimeRotationAdvances { get; set; }
         public bool AdvanceAutomatically { get; set; }
         public string Notes { get; set; }
+        public string OutlookCategory { get; set; }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using DataAccessLibrary.Data;
 using DataAccessLibrary.Models;
+using Microsoft.Extensions.Configuration;
 using RotationLibrary;
 using RotationTracker.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,27 +24,32 @@ namespace RotationTracker
     public partial class MainWindow : Window
     {
         private readonly ISqliteData _db;
+        private string _outlookStoreName;
         public List<EmployeeModel> employees = new ();
         public List<FullRotationModel> rotations = new ();
         public List<RotationUIModel> rotationUIModels = new ();
+        public List<CoverageReadModel> coverages = new ();
         private List<string> admins = new();
         private string currentUser;
         private bool currentUserIsAdmin = false;
         private string notificationMessage;
 
-        public MainWindow(ISqliteData db)
+        public MainWindow(ISqliteData db, IConfiguration config)
         {
             InitializeComponent();
             _db = db;
+            _outlookStoreName = config.GetValue<string>("OutlookStoreName");
 
-            ReadEmployeesFromDB();
+            ReadEmployeesFromDBAsync();
             employeeListBox.ItemsSource = employees;
-            ReadRotationsFromDB();
+            ReadRotationsFromDBAsync();
             LoadRotationsIntoUI();
+            ReadCoveragesFromDBAsync();
+            SetCoveragesInactiveIfOlderThanOneYear();
 
             GetCurrentUser();
             DisplayCurrentUser();
-            ReadAdminsFromDB();
+            ReadAdminsFromDBAsync();
             CheckIfCurrentUserIsAdmin();
             ShowControlsIfCurrentUserIsAdmin();
 
@@ -52,14 +59,52 @@ namespace RotationTracker
             CreateTimer();
         }
 
-        public void ReadEmployeesFromDB()
+        private void SetCoveragesInactiveIfOlderThanOneYear()
         {
-            employees = _db.GetAllEmployees();
+            foreach (var coverage in coverages)
+            {
+                DateTime endDate = coverage.EndDate.AddYears(1);
+                if (endDate.Date < DateTime.Now.Date)
+                {
+                    SetCoverageInactiveInDBAsync(coverage.Id);
+                }
+            }
         }
 
-        public void ReadRotationsFromDB()
+        public async void ReadCoveragesFromDBAsync()
         {
-            rotations = _db.GetAllRotations();
+            coverages = await _db.ReadAllCoveragesAsync();
+        }
+
+        public async Task<ObservableCollection<CoverageReadModel>> ReadCoveragesForRotationAsync(int rotationId)
+        {
+            ObservableCollection<CoverageReadModel> output = new (await _db.ReadCoveragesForRotationAsync(rotationId));
+            return output;
+        }
+
+        public async void CreateCoverageInDBAsync(CoverageModel coverage)
+        {
+            await _db.CreateCoverageAsync(coverage);
+        }
+
+        public async void SetCoverageInactiveInDBAsync(int coverageId)
+        {
+            await _db.SetCoverageInactiveAsync(coverageId);
+        }
+
+        public async void DeleteCoverageFromDBAsync(int coverageId)
+        {
+            await _db.DeleteCoverageAsync(coverageId);
+        }
+
+        public async void ReadEmployeesFromDBAsync()
+        {
+            employees = await _db.GetAllEmployeesAsync();
+        }
+
+        public async void ReadRotationsFromDBAsync()
+        {
+            rotations = await _db.GetAllRotationsAsync();
         }
 
         private void LoadRotationsIntoUI()
@@ -78,49 +123,54 @@ namespace RotationTracker
             CreateRotationInUI(rotationUIModel, rotation);
         }
 
-        public void CreateEmployeeInDB(string employeeName)
+        public async void CreateEmployeeInDBAsync(string employeeName)
         {
-            _db.CreateEmployee(employeeName);
+            await _db.CreateEmployeeAsync(employeeName);
         }
 
-        public void DeleteEmployeeFromDB(int id)
+        public async void DeleteEmployeeFromDBAsync(int id)
         {
-            _db.DeleteEmployee(id);
+            await _db.DeleteEmployeeAsync(id);
         }
 
-        private void CreateRotationInDB(FullRotationModel fullRotation)
+        private async void CreateRotationInDBAsync(FullRotationModel fullRotation)
         {
-            _db.CreateRotation(fullRotation);
+            await _db.CreateRotationAsync(fullRotation);
         }
 
-        public void RecreateRotationInDB(FullRotationModel fullRotation)
+        public async void RecreateRotationInDBAsync(FullRotationModel fullRotation)
         {
-            _db.RecreateRotationOfEmployees(fullRotation);
+            await _db.RecreateRotationOfEmployeesAsync(fullRotation);
         }
 
-        private int GetHighestIdFromRotations()
+        private async Task<int> GetHighestIdFromRotations()
         {
-            return _db.GetHighestIdFromRotations();
+            return await _db.GetHighestIdFromRotationsAsync();
         }
 
-        public void UpdateRotationBasicInfoInDB(BasicRotationModel basicRotation)
+        public async void UpdateRotationBasicInfoInDBAsync(BasicRotationModel basicRotation)
         {
-            _db.UpdateRotationBasicInfo(basicRotation);
+            await _db.UpdateRotationBasicInfoAsync(basicRotation);
         }
 
-        private void AdvanceRotationInDB(FullRotationModel fullRotation)
+        private async void AdvanceRotationInDBAsync(FullRotationModel fullRotation)
         {
-            _db.AdvanceRotation(fullRotation);
+            await _db.AdvanceRotationAsync(fullRotation);
         }
 
-        private void ReverseRotationInDB(FullRotationModel fullRotation)
+        private async void ReverseRotationInDBAsync(FullRotationModel fullRotation)
         {
-            _db.ReverseRotation(fullRotation);
+            await _db.ReverseRotationAsync(fullRotation);
         }
 
-        public void DeleteRotationFromDB(int id)
+        public async void DeleteRotationFromDBAsync(int id)
         {
-            _db.DeleteRotation(id);
+            await _db.DeleteRotationAsync(id);
+        }
+
+        public async void UpdateOnCalendarInDBAsync(BasicRotationModel basicRotation, EmployeeModel employee, bool onCalendar)
+        {
+            await _db.UpdateOnCalendarAsync(basicRotation, employee, onCalendar);
         }
 
         private void CreateRotationInUI(RotationUIModel rotationUIModel, FullRotationModel rotation)
@@ -225,8 +275,7 @@ namespace RotationTracker
             rotation.PopulateNextEndDateTimesOfEmployees();
 
             if (rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.Weekly ||
-                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek ||
-                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+                rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek)
             {
                 dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
                                                                     <StackPanel Orientation=""Horizontal"">
@@ -239,6 +288,17 @@ namespace RotationTracker
                                                                     </StackPanel>
                                                                 </DataTemplate>";
                 
+            }
+            else if (rotation.BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
+            {
+                dataTemplateString = @"<DataTemplate xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation"">
+                                                                    <StackPanel Orientation=""Horizontal"">
+                                                                        <TextBlock Text=""{Binding Path=FullName}"" />
+                                                                        <TextBlock Text="" ("" />
+                                                                        <TextBlock Text=""{Binding Path=NextStartDateTime, StringFormat=d}"" />
+                                                                        <TextBlock Text="")"" />
+                                                                    </StackPanel>
+                                                                </DataTemplate>";
             }
             else
             {
@@ -279,9 +339,9 @@ namespace RotationTracker
             userNameTextBlock.Text = currentUser;
         }
 
-        private void ReadAdminsFromDB()
+        private async void ReadAdminsFromDBAsync()
         {
-            admins = _db.ReadAllAdmins();
+            admins = await _db.ReadAllAdminsAsync();
         }
 
         private void CheckIfCurrentUserIsAdmin()
@@ -299,9 +359,7 @@ namespace RotationTracker
         {
             if (currentUserIsAdmin == true)
             {
-                editEmployeesButton.Visibility = Visibility.Visible;
-                addRotationButton.Visibility = Visibility.Visible;
-                removeRotationButton.Visibility = Visibility.Visible;
+                employeesStackPanel.Visibility = Visibility.Visible;
 
                 foreach (var uiModel in rotationUIModels)
                 {
@@ -363,7 +421,7 @@ namespace RotationTracker
                     if (now > nextDateTimeRotationAdvances)
                     {
                         rotationUIModel.FullRotationModel.AdvanceRotation();
-                        AdvanceRotationInDB(rotationUIModel.FullRotationModel);
+                        AdvanceRotationInDBAsync(rotationUIModel.FullRotationModel);
                         rotationUIModel.FullRotationModel.SetNextDateTimeRotationAdvances();
 
                         if (rotationUIModel.FullRotationModel.RotationOfEmployees.Count > 0)
@@ -374,8 +432,8 @@ namespace RotationTracker
                         }
 
                         rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
-                        rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
-                        UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
+                        //rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
+                        UpdateRotationBasicInfoInDBAsync(rotationUIModel.FullRotationModel.BasicInfo);
 
                         nextDateTimeRotationAdvances = rotationUIModel.FullRotationModel.BasicInfo.NextDateTimeRotationAdvances;
 
@@ -402,7 +460,7 @@ namespace RotationTracker
             rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
 
             PopulateRotationListBox(rotationUIModel.FullRotationModel, rotationUIModel.RotationListBox);
-            AdvanceRotationInDB(rotationUIModel.FullRotationModel);
+            AdvanceRotationInDBAsync(rotationUIModel.FullRotationModel);
         }
 
         private void ReverseRotation(RotationUIModel rotationUIModel)
@@ -411,7 +469,7 @@ namespace RotationTracker
             rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
 
             PopulateRotationListBox(rotationUIModel.FullRotationModel, rotationUIModel.RotationListBox);
-            ReverseRotationInDB(rotationUIModel.FullRotationModel);
+            ReverseRotationInDBAsync(rotationUIModel.FullRotationModel);
         }
 
         private void EditEmployeesButton_Click(object sender, RoutedEventArgs e)
@@ -420,7 +478,7 @@ namespace RotationTracker
             editEmployees.ShowDialog();
         }
 
-        private void AddRotationButton_Click(object sender, RoutedEventArgs e)
+        private async void AddRotationButton_Click(object sender, RoutedEventArgs e)
         {
             RotationUIModel rotationUIModel = new ();
 
@@ -429,13 +487,13 @@ namespace RotationTracker
             fullRotation.BasicInfo.RotationRecurrence = RecurrenceInterval.Weekly;
             fullRotation.BasicInfo.NextDateTimeRotationAdvances = DateTime.Now.AddDays(7);
             fullRotation.BasicInfo.AdvanceAutomatically = true;
-            fullRotation.RotationOfEmployees = employees;
+            fullRotation.RotationOfEmployees = new ObservableCollection<EmployeeModel>(employees);
 
             rotationUIModel.FullRotationModel = fullRotation;
             rotations.Add(fullRotation);
 
-            CreateRotationInDB(fullRotation);
-            fullRotation.BasicInfo.Id = GetHighestIdFromRotations(); // set the id of the rotation; we need it next
+            CreateRotationInDBAsync(fullRotation);
+            fullRotation.BasicInfo.Id = await GetHighestIdFromRotations(); // set the id of the rotation; we need it next
             CreateRotationInUI(rotationUIModel, fullRotation);
         }
 
@@ -463,8 +521,15 @@ namespace RotationTracker
         {
             Button button = (Button)sender;
             RotationUIModel rotationUIModel = (RotationUIModel)button.DataContext;
-            EditRotation editRotation = new(this, rotationUIModel);
+            EditRotation editRotation = new(this, rotationUIModel, _outlookStoreName);
             editRotation.ShowDialog();
+        }
+
+        private void ShowCoveragesButton_Click(object sender, RoutedEventArgs e)
+        {
+            ReadCoveragesFromDBAsync();
+            Coverages coverages = new(this);
+            coverages.ShowDialog();
         }
     }
 }

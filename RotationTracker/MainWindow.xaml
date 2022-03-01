@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RotationTracker"
         mc:Ignorable="d" FontSize="16"
-        Title="RotationTracker" Height="725" Width="825"
+        Title="RotationTracker" Height="800" Width="1600"
         WindowState="Maximized">
     
     <Grid>
@@ -27,7 +27,7 @@
             <TextBlock x:Name="userNameTextBlock" />
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0">
+        <StackPanel x:Name="employeesStackPanel" Orientation="Vertical" Grid.Row="1" Grid.Column="0" Visibility="Collapsed">
             <!-- Employees -->
             <GroupBox Margin="5">
                 <GroupBox.Header>
@@ -41,18 +41,21 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <Button Name="editEmployeesButton" Width="45" Margin="0 5 0 0" Click="EditEmployeesButton_Click" Visibility="Collapsed">Edit</Button>
+                    <Button Name="editEmployeesButton" Width="45" Margin="0 5 0 0" Click="EditEmployeesButton_Click">Edit</Button>
                 </StackPanel>
             </GroupBox>
 
         <!-- Add and remove rotations buttons -->
-            <Button x:Name="addRotationButton" Click="AddRotationButton_Click" Margin="5" Visibility="Collapsed">Add Rotation</Button>
-            <Button x:Name="removeRotationButton" Click="RemoveRotationButton_Click" Margin="5" Visibility="Collapsed">Remove Rotation</Button>
+            <Button x:Name="addRotationButton" Click="AddRotationButton_Click" Margin="5">Add Rotation</Button>
+            <Button x:Name="removeRotationButton" Click="RemoveRotationButton_Click" Margin="5">Remove Rotation</Button>
+            <Button x:Name="showCoveragesButton" Click="ShowCoveragesButton_Click" Margin="5">Show Coverages</Button>
         </StackPanel>
 
         <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
             <!-- Rotations -->
-            <WrapPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" />
+            <ScrollViewer x:Name="rotationsScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="rotationsWrapPanel" Orientation="Horizontal" />
+            </ScrollViewer>
         </Grid>
 
         <!-- Notification area -->

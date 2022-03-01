@@ -19,7 +19,7 @@ namespace DataAccessLibrary.Databases
             _config = config;
         }
 
-        public List<T> LoadData<T, U>(string sqlStatement,
+        public async Task<List<T>> LoadDataAsync<T, U>(string sqlStatement,
                                       U parameters,
                                       string connectionStringName)
         {
@@ -27,12 +27,13 @@ namespace DataAccessLibrary.Databases
 
             using (IDbConnection connection = new SQLiteConnection(connectionString))
             {
-                List<T> rows = connection.Query<T>(sqlStatement, parameters).ToList();
+                var results = await connection.QueryAsync<T>(sqlStatement, parameters);
+                List<T> rows = results.ToList();
                 return rows;
             }
         }
 
-        public void SaveData<T>(string sqlStatement,
+        public async Task SaveDataAsync<T>(string sqlStatement,
                                 T parameters,
                                 string connectionStringName)
         {
@@ -40,7 +41,7 @@ namespace DataAccessLibrary.Databases
 
             using (IDbConnection connection = new SQLiteConnection(connectionString))
             {
-                connection.Execute(sqlStatement, parameters);
+                await connection.ExecuteAsync(sqlStatement, parameters);
             }
         }
     }

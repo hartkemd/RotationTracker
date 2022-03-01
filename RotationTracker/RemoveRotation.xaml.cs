@@ -38,7 +38,7 @@ namespace RotationTracker
                 _parentWindow.rotations.Remove(fullRotationModel);
                 _parentWindow.rotationsWrapPanel.Children.RemoveAt(selectedIndex);
                 rotationComboBox.Items.Refresh();
-                _parentWindow.DeleteRotationFromDB(fullRotationModel.BasicInfo.Id);
+                _parentWindow.DeleteRotationFromDBAsync(fullRotationModel.BasicInfo.Id);
             }
         }
     }

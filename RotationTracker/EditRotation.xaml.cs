@@ -4,7 +4,10 @@ using RotationTracker.Models;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using OutlookCalendarLibrary;
 using WPFHelperLibrary;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace RotationTracker
 {
@@ -19,8 +22,9 @@ namespace RotationTracker
         private ListBox _listBox;
         private Label _rotationNameLabel;
         private TextBlock _currentEmployeeTextBlock;
+        private string _outlookStoreName;
 
-        public EditRotation(MainWindow parentWindow, RotationUIModel rotationUIModel)
+        public EditRotation(MainWindow parentWindow, RotationUIModel rotationUIModel, string outlookStoreName)
         {
             InitializeComponent();
 
@@ -30,15 +34,42 @@ namespace RotationTracker
             _listBox = _rotationUIModel.RotationListBox;
             _rotationNameLabel = _rotationUIModel.RotationNameLabel;
             _currentEmployeeTextBlock = _rotationUIModel.CurrentEmployeeTextBlock;
+            _outlookStoreName = outlookStoreName;
 
+            PopulateCoveragesDisplayAsync();
             PopulateControls();
+            _rotation.RotationOfEmployees.CollectionChanged += RotationOfEmployees_CollectionChanged;
+        }
+
+        private async void PopulateCoveragesDisplayAsync()
+        {
+            _rotation.CoveragesDisplay = await _parentWindow.ReadCoveragesForRotationAsync(_rotation.BasicInfo.Id);
+        }
+
+        private void RotationOfEmployees_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UncheckAllOnCalendarInListView();
+            messageTextBlock.Text = $"The rotation has changed.{Environment.NewLine}" +
+                                    $"On Calendar has been cleared for all employees in rotation.{Environment.NewLine}" +
+                                    $"Calendar will need to be reviewed and On Calendar re-marked.{Environment.NewLine}" +
+                                    "Please close and reopen this window to update the check boxes.";
+        }
+
+        private void UncheckAllOnCalendarInListView()
+        {
+            foreach (var employee in _rotation.RotationOfEmployees)
+            {
+                employee.OnCalendar = false;
+                _parentWindow.UpdateOnCalendarInDBAsync(_rotation.BasicInfo, employee, false);
+            }
         }
 
         private void PopulateControls()
         {
             rotationNameLabel.Content = $"{_rotation.BasicInfo.RotationName}:";
-            employeeListBox.ItemsSource = _rotation.RotationOfEmployees;
+            employeeListView.ItemsSource = _rotation.RotationOfEmployees;
             rotationNameTextBox.Text = _rotation.BasicInfo.RotationName;
+            categoryTextBox.Text = _rotation.BasicInfo.RotationName;
             notesTextBox.Text = _rotation.BasicInfo.Notes;
             GetRotationRecurrence();
 
@@ -61,6 +92,10 @@ namespace RotationTracker
             {
                 advanceAutomaticallyCheckBox.IsChecked = false;
             }
+
+            employeeCoveringComboBox.ItemsSource = _parentWindow.employees;
+            employeeCoveredComboBox.ItemsSource = _parentWindow.employees;
+            coverageHistoryListBox.ItemsSource = _rotation.CoveragesDisplay;
         }
 
         private void GetRotationRecurrence()
@@ -85,9 +120,11 @@ namespace RotationTracker
             }
         }
 
-        private void RefreshListBoxes()
+        private void RefreshListControls()
         {
-            employeeListBox.RefreshContents(_rotation.RotationOfEmployees);
+            _rotation.PopulateNextStartDateTimesOfEmployees();
+            _rotation.PopulateNextEndDateTimesOfEmployees();
+            employeeListView.RefreshContents(_rotation.RotationOfEmployees);
             _listBox.RefreshContents(_rotation.RotationOfEmployees);
         }
 
@@ -148,45 +185,47 @@ namespace RotationTracker
 
         private void MoveUpButton_Click(object sender, RoutedEventArgs e)
         {
-            int selectedIndex = employeeListBox.SelectedIndex;
+            int selectedIndex = employeeListView.SelectedIndex;
 
             if (selectedIndex > 0)
             {
-                _rotation.RotationOfEmployees.Insert(selectedIndex - 1, (EmployeeModel)employeeListBox.Items[selectedIndex]);
+                _rotation.RotationOfEmployees.Insert(selectedIndex - 1, (EmployeeModel)employeeListView.Items[selectedIndex]);
                 _rotation.RotationOfEmployees.RemoveAt(selectedIndex + 1);
 
-                RefreshListBoxes();
-                employeeListBox.SelectedIndex = selectedIndex - 1;
+                RefreshListControls();
+                employeeListView.SelectedIndex = selectedIndex - 1;
             }
         }
 
         private void MoveDownButton_Click(object sender, RoutedEventArgs e)
         {
-            int selectedIndex = employeeListBox.SelectedIndex;
+            int selectedIndex = employeeListView.SelectedIndex;
 
-            if (selectedIndex < employeeListBox.Items.Count - 1 && selectedIndex != -1)
+            if (selectedIndex < employeeListView.Items.Count - 1 && selectedIndex != -1)
             {
-                _rotation.RotationOfEmployees.Insert(selectedIndex + 2, (EmployeeModel)employeeListBox.Items[selectedIndex]);
+                _rotation.RotationOfEmployees.Insert(selectedIndex + 2, (EmployeeModel)employeeListView.Items[selectedIndex]);
                 _rotation.RotationOfEmployees.RemoveAt(selectedIndex);
 
-                RefreshListBoxes();
-                employeeListBox.SelectedIndex = selectedIndex + 1;
+                RefreshListControls();
+                employeeListView.SelectedIndex = selectedIndex + 1;
             }
+        }
+
+        private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
+        {
+            _rotation.RotationOfEmployees = new ObservableCollection<EmployeeModel>(_parentWindow.employees);
         }
 
         private void RemoveEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (employeeListBox.SelectedIndex != -1)
+            if (employeeListView.SelectedIndex != -1)
             {
-                _rotation.RotationOfEmployees.Remove((EmployeeModel)employeeListBox.SelectedItem);
-                employeeListBox.RefreshContents(_rotation.RotationOfEmployees);
+                _rotation.RotationOfEmployees.Remove((EmployeeModel)employeeListView.SelectedItem);
             }
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            _listBox.RefreshContents(_rotation.RotationOfEmployees);
-
             _rotation.BasicInfo.RotationName = rotationNameTextBox.Text;
             _rotationNameLabel.Content = $"{_rotation.BasicInfo.RotationName}:";
 
@@ -194,6 +233,7 @@ namespace RotationTracker
 
             _rotation.BasicInfo.Notes = notesTextBox.Text;
             _rotationUIModel.RotationNotesTextBox.Text = _rotation.BasicInfo.Notes;
+            _rotation.BasicInfo.OutlookCategory = categoryTextBox.Text;
 
             SetRotationRecurrence();
             SetRotationAdvanceAutomatically();
@@ -201,8 +241,8 @@ namespace RotationTracker
             bool keepGoing = SetNextDateTimeRotationAdvances();
             if (keepGoing == true)
             {
-                _parentWindow.UpdateRotationBasicInfoInDB(_rotation.BasicInfo);
-                _parentWindow.RecreateRotationInDB(_rotation);
+                _parentWindow.UpdateRotationBasicInfoInDBAsync(_rotation.BasicInfo);
+                _parentWindow.RecreateRotationInDBAsync(_rotation);
                 _parentWindow.PopulateRotationListBox(_rotation, _listBox);
                 _rotationUIModel.DateTimeTextBlock.Text = $"{_rotation.BasicInfo.NextDateTimeRotationAdvances:g}";
                 Close();
@@ -219,12 +259,6 @@ namespace RotationTracker
             {
                 _rotation.BasicInfo.AdvanceAutomatically = false;
             }
-        }
-
-        private void CopyEmployeesToRotation_Click(object sender, RoutedEventArgs e)
-        {
-            _rotation.RotationOfEmployees = _parentWindow.employees;
-            employeeListBox.RefreshContents(_rotation.RotationOfEmployees);
         }
 
         private void DisableAdvanceAutomaticallyCheckBox()
@@ -268,6 +302,107 @@ namespace RotationTracker
         private void WeeklyWorkWeekRadioButton_Checked(object sender, RoutedEventArgs e)
         {
             EnableAdvanceAutomaticallyCheckBox();
+        }
+
+        private void UpdateOnCalendar(object sender)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            EmployeeModel employee = (EmployeeModel)checkBox.DataContext;
+            _parentWindow.UpdateOnCalendarInDBAsync(_rotation.BasicInfo, employee, (bool)checkBox.IsChecked);
+        }
+
+        private void OnCalendarCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateOnCalendar(sender);
+        }
+
+        private void OnCalendarCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            UpdateOnCalendar(sender);
+        }
+
+        private void CreateCalendarEvents_Click(object sender, RoutedEventArgs e)
+        {
+            if (_rotation.AllEmployeesAreOnCalendar() == false)
+            {
+                if (OutlookCalendar.OutlookIsRunning() == false)
+                {
+                    MessageBox.Show("Outlook must be running for calendar appointments to be created.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    OutlookCalendar outlookCalendar = new(_outlookStoreName);
+
+                    bool calendarIsAccessible = outlookCalendar.CalendarFolderIsAccessible();
+                    if (calendarIsAccessible == true)
+                    {
+                        foreach (var item in employeeListView.Items)
+                        {
+                            EmployeeModel employee = (EmployeeModel)item;
+                            if (employee.OnCalendar == false)
+                            {
+                                outlookCalendar.CreateAppointmentItem(_rotation.BasicInfo, employee);
+                            }
+                        }
+
+                        messageTextBlock.Text = $"Calendar appointments have been created.{Environment.NewLine}" +
+                                                "Please place a check next to each employee after you have saved the calendar appointment item for that employee.";
+                    }
+                    else
+                    {
+                        MessageBox.Show("The calendar folder was not accessible.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                messageTextBlock.Text = "All employees are already on the calendar.";
+            }
+        }
+
+        private bool CoverageInputIsValid()
+        {
+            bool isValid = true;
+
+            if (employeeCoveringComboBox.SelectedIndex == -1 || employeeCoveredComboBox.SelectedIndex == -1)
+            {
+                isValid = false;
+            }
+
+            if (coverageFromDatePicker.SelectedDate == null || coverageToDatePicker.SelectedDate == null)
+            {
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        private void AddCoverageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CoverageInputIsValid() == true)
+            {
+                CoverageModel coverage = new ();
+                coverage.RotationId = _rotation.BasicInfo.Id;
+                coverage.EmployeeIdOfCovering = ((EmployeeModel)employeeCoveringComboBox.SelectedItem).Id;
+                coverage.EmployeeIdOfCovered = ((EmployeeModel)employeeCoveredComboBox.SelectedItem).Id;
+                coverage.StartDate = (DateTime)coverageFromDatePicker.SelectedDate;
+                coverage.EndDate = (DateTime)coverageToDatePicker.SelectedDate;
+
+                _rotation.Coverages.Add(coverage);
+                _parentWindow.CreateCoverageInDBAsync(coverage);
+                PopulateCoveragesDisplayAsync();
+                coverageHistoryListBox.RefreshContents(_rotation.CoveragesDisplay);
+            }
+        }
+
+        private void RemoveCoverageButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (coverageHistoryListBox.SelectedIndex != -1)
+            {
+                CoverageReadModel coverageRead = (CoverageReadModel)coverageHistoryListBox.SelectedItem;
+                _rotation.CoveragesDisplay.Remove(coverageRead);
+                _parentWindow.DeleteCoverageFromDBAsync(coverageRead.Id);
+            }
         }
     }
 }
