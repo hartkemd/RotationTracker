@@ -36,9 +36,14 @@ namespace RotationTracker
             _currentEmployeeTextBlock = _rotationUIModel.CurrentEmployeeTextBlock;
             _outlookStoreName = outlookStoreName;
 
-            _rotation.CoveragesDisplay = _parentWindow.ReadCoveragesForRotation(_rotation.BasicInfo.Id);
+            PopulateCoveragesDisplayAsync();
             PopulateControls();
             _rotation.RotationOfEmployees.CollectionChanged += RotationOfEmployees_CollectionChanged;
+        }
+
+        private async void PopulateCoveragesDisplayAsync()
+        {
+            _rotation.CoveragesDisplay = await _parentWindow.ReadCoveragesForRotationAsync(_rotation.BasicInfo.Id);
         }
 
         private void RotationOfEmployees_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -55,7 +60,7 @@ namespace RotationTracker
             foreach (var employee in _rotation.RotationOfEmployees)
             {
                 employee.OnCalendar = false;
-                _parentWindow.UpdateOnCalendarInDB(_rotation.BasicInfo, employee, false);
+                _parentWindow.UpdateOnCalendarInDBAsync(_rotation.BasicInfo, employee, false);
             }
         }
 
@@ -236,8 +241,8 @@ namespace RotationTracker
             bool keepGoing = SetNextDateTimeRotationAdvances();
             if (keepGoing == true)
             {
-                _parentWindow.UpdateRotationBasicInfoInDB(_rotation.BasicInfo);
-                _parentWindow.RecreateRotationInDB(_rotation);
+                _parentWindow.UpdateRotationBasicInfoInDBAsync(_rotation.BasicInfo);
+                _parentWindow.RecreateRotationInDBAsync(_rotation);
                 _parentWindow.PopulateRotationListBox(_rotation, _listBox);
                 _rotationUIModel.DateTimeTextBlock.Text = $"{_rotation.BasicInfo.NextDateTimeRotationAdvances:g}";
                 Close();
@@ -303,7 +308,7 @@ namespace RotationTracker
         {
             CheckBox checkBox = (CheckBox)sender;
             EmployeeModel employee = (EmployeeModel)checkBox.DataContext;
-            _parentWindow.UpdateOnCalendarInDB(_rotation.BasicInfo, employee, (bool)checkBox.IsChecked);
+            _parentWindow.UpdateOnCalendarInDBAsync(_rotation.BasicInfo, employee, (bool)checkBox.IsChecked);
         }
 
         private void OnCalendarCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -384,8 +389,8 @@ namespace RotationTracker
                 coverage.EndDate = (DateTime)coverageToDatePicker.SelectedDate;
 
                 _rotation.Coverages.Add(coverage);
-                _parentWindow.CreateCoverageInDB(coverage);
-                _rotation.CoveragesDisplay = _parentWindow.ReadCoveragesForRotation(_rotation.BasicInfo.Id);
+                _parentWindow.CreateCoverageInDBAsync(coverage);
+                PopulateCoveragesDisplayAsync();
                 coverageHistoryListBox.RefreshContents(_rotation.CoveragesDisplay);
             }
         }
@@ -396,7 +401,7 @@ namespace RotationTracker
             {
                 CoverageReadModel coverageRead = (CoverageReadModel)coverageHistoryListBox.SelectedItem;
                 _rotation.CoveragesDisplay.Remove(coverageRead);
-                _parentWindow.DeleteCoverageFromDB(coverageRead.Id);
+                _parentWindow.DeleteCoverageFromDBAsync(coverageRead.Id);
             }
         }
     }

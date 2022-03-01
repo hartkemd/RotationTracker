@@ -37,9 +37,9 @@ namespace RotationTracker
         {
             string employeeName = employeeNameTextBox.Text;
 
-            _parent.CreateEmployeeInDB(employeeName);
+            _parent.CreateEmployeeInDBAsync(employeeName);
 
-            _parent.ReadEmployeesFromDB();
+            _parent.ReadEmployeesFromDBAsync();
 
             employeeNameTextBox.Clear();
 
@@ -60,7 +60,7 @@ namespace RotationTracker
                 if (messageBoxResult == MessageBoxResult.Yes)
                 {
                     EmployeeModel employeeToDelete = (EmployeeModel)employeeListBox.SelectedItem;
-                    _parent.DeleteEmployeeFromDB(employeeToDelete.Id);
+                    _parent.DeleteEmployeeFromDBAsync(employeeToDelete.Id);
                     _parent.employees.RemoveAt(index);
                     employeeListBox.RefreshContents(_parent.employees);
                     _parent.employeeListBox.RefreshContents(_parent.employees);

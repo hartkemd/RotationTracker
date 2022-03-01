@@ -33,7 +33,7 @@ namespace DataAccessLibrary.Databases
             }
         }
 
-        public async void SaveDataAsync<T>(string sqlStatement,
+        public async Task SaveDataAsync<T>(string sqlStatement,
                                 T parameters,
                                 string connectionStringName)
         {

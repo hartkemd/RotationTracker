@@ -40,16 +40,16 @@ namespace RotationTracker
             _db = db;
             _outlookStoreName = config.GetValue<string>("OutlookStoreName");
 
-            ReadEmployeesFromDB();
+            ReadEmployeesFromDBAsync();
             employeeListBox.ItemsSource = employees;
-            ReadRotationsFromDB();
+            ReadRotationsFromDBAsync();
             LoadRotationsIntoUI();
-            ReadCoveragesFromDB();
+            ReadCoveragesFromDBAsync();
             SetCoveragesInactiveIfOlderThanOneYear();
 
             GetCurrentUser();
             DisplayCurrentUser();
-            ReadAdminsFromDB();
+            ReadAdminsFromDBAsync();
             CheckIfCurrentUserIsAdmin();
             ShowControlsIfCurrentUserIsAdmin();
 
@@ -66,45 +66,45 @@ namespace RotationTracker
                 DateTime endDate = coverage.EndDate.AddYears(1);
                 if (endDate.Date < DateTime.Now.Date)
                 {
-                    SetCoverageInactiveInDB(coverage.Id);
+                    SetCoverageInactiveInDBAsync(coverage.Id);
                 }
             }
         }
 
-        public void ReadCoveragesFromDB()
+        public async void ReadCoveragesFromDBAsync()
         {
-            coverages = _db.ReadAllCoverages();
+            coverages = await _db.ReadAllCoveragesAsync();
         }
 
-        public ObservableCollection<CoverageReadModel> ReadCoveragesForRotation(int rotationId)
+        public async Task<ObservableCollection<CoverageReadModel>> ReadCoveragesForRotationAsync(int rotationId)
         {
-            ObservableCollection<CoverageReadModel> output = new (_db.ReadCoveragesForRotation(rotationId));
+            ObservableCollection<CoverageReadModel> output = new (await _db.ReadCoveragesForRotationAsync(rotationId));
             return output;
         }
 
-        public void CreateCoverageInDB(CoverageModel coverage)
+        public async void CreateCoverageInDBAsync(CoverageModel coverage)
         {
-            _db.CreateCoverage(coverage);
+            await _db.CreateCoverageAsync(coverage);
         }
 
-        public void SetCoverageInactiveInDB(int coverageId)
+        public async void SetCoverageInactiveInDBAsync(int coverageId)
         {
-            _db.SetCoverageInactive(coverageId);
+            await _db.SetCoverageInactiveAsync(coverageId);
         }
 
-        public void DeleteCoverageFromDB(int coverageId)
+        public async void DeleteCoverageFromDBAsync(int coverageId)
         {
-            _db.DeleteCoverage(coverageId);
+            await _db.DeleteCoverageAsync(coverageId);
         }
 
-        public void ReadEmployeesFromDB()
+        public async void ReadEmployeesFromDBAsync()
         {
-            employees = _db.GetAllEmployees();
+            employees = await _db.GetAllEmployeesAsync();
         }
 
-        public void ReadRotationsFromDB()
+        public async void ReadRotationsFromDBAsync()
         {
-            rotations = _db.GetAllRotations();
+            rotations = await _db.GetAllRotationsAsync();
         }
 
         private void LoadRotationsIntoUI()
@@ -123,54 +123,54 @@ namespace RotationTracker
             CreateRotationInUI(rotationUIModel, rotation);
         }
 
-        public void CreateEmployeeInDB(string employeeName)
+        public async void CreateEmployeeInDBAsync(string employeeName)
         {
-            _db.CreateEmployee(employeeName);
+            await _db.CreateEmployeeAsync(employeeName);
         }
 
-        public void DeleteEmployeeFromDB(int id)
+        public async void DeleteEmployeeFromDBAsync(int id)
         {
-            _db.DeleteEmployee(id);
+            await _db.DeleteEmployeeAsync(id);
         }
 
-        private void CreateRotationInDB(FullRotationModel fullRotation)
+        private async void CreateRotationInDBAsync(FullRotationModel fullRotation)
         {
-            _db.CreateRotation(fullRotation);
+            await _db.CreateRotationAsync(fullRotation);
         }
 
-        public void RecreateRotationInDB(FullRotationModel fullRotation)
+        public async void RecreateRotationInDBAsync(FullRotationModel fullRotation)
         {
-            _db.RecreateRotationOfEmployees(fullRotation);
+            await _db.RecreateRotationOfEmployeesAsync(fullRotation);
         }
 
-        private int GetHighestIdFromRotations()
+        private async Task<int> GetHighestIdFromRotations()
         {
-            return _db.GetHighestIdFromRotations();
+            return await _db.GetHighestIdFromRotationsAsync();
         }
 
-        public void UpdateRotationBasicInfoInDB(BasicRotationModel basicRotation)
+        public async void UpdateRotationBasicInfoInDBAsync(BasicRotationModel basicRotation)
         {
-            _db.UpdateRotationBasicInfo(basicRotation);
+            await _db.UpdateRotationBasicInfoAsync(basicRotation);
         }
 
-        private void AdvanceRotationInDB(FullRotationModel fullRotation)
+        private async void AdvanceRotationInDBAsync(FullRotationModel fullRotation)
         {
-            _db.AdvanceRotation(fullRotation);
+            await _db.AdvanceRotationAsync(fullRotation);
         }
 
-        private void ReverseRotationInDB(FullRotationModel fullRotation)
+        private async void ReverseRotationInDBAsync(FullRotationModel fullRotation)
         {
-            _db.ReverseRotation(fullRotation);
+            await _db.ReverseRotationAsync(fullRotation);
         }
 
-        public void DeleteRotationFromDB(int id)
+        public async void DeleteRotationFromDBAsync(int id)
         {
-            _db.DeleteRotation(id);
+            await _db.DeleteRotationAsync(id);
         }
 
-        public void UpdateOnCalendarInDB(BasicRotationModel basicRotation, EmployeeModel employee, bool onCalendar)
+        public async void UpdateOnCalendarInDBAsync(BasicRotationModel basicRotation, EmployeeModel employee, bool onCalendar)
         {
-            _db.UpdateOnCalendar(basicRotation, employee, onCalendar);
+            await _db.UpdateOnCalendarAsync(basicRotation, employee, onCalendar);
         }
 
         private void CreateRotationInUI(RotationUIModel rotationUIModel, FullRotationModel rotation)
@@ -339,9 +339,9 @@ namespace RotationTracker
             userNameTextBlock.Text = currentUser;
         }
 
-        private void ReadAdminsFromDB()
+        private async void ReadAdminsFromDBAsync()
         {
-            admins = _db.ReadAllAdmins();
+            admins = await _db.ReadAllAdminsAsync();
         }
 
         private void CheckIfCurrentUserIsAdmin()
@@ -421,7 +421,7 @@ namespace RotationTracker
                     if (now > nextDateTimeRotationAdvances)
                     {
                         rotationUIModel.FullRotationModel.AdvanceRotation();
-                        AdvanceRotationInDB(rotationUIModel.FullRotationModel);
+                        AdvanceRotationInDBAsync(rotationUIModel.FullRotationModel);
                         rotationUIModel.FullRotationModel.SetNextDateTimeRotationAdvances();
 
                         if (rotationUIModel.FullRotationModel.RotationOfEmployees.Count > 0)
@@ -433,7 +433,7 @@ namespace RotationTracker
 
                         rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
                         //rotationUIModel.RotationListBox.RefreshContents(rotationUIModel.FullRotationModel.RotationOfEmployees);
-                        UpdateRotationBasicInfoInDB(rotationUIModel.FullRotationModel.BasicInfo);
+                        UpdateRotationBasicInfoInDBAsync(rotationUIModel.FullRotationModel.BasicInfo);
 
                         nextDateTimeRotationAdvances = rotationUIModel.FullRotationModel.BasicInfo.NextDateTimeRotationAdvances;
 
@@ -460,7 +460,7 @@ namespace RotationTracker
             rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
 
             PopulateRotationListBox(rotationUIModel.FullRotationModel, rotationUIModel.RotationListBox);
-            AdvanceRotationInDB(rotationUIModel.FullRotationModel);
+            AdvanceRotationInDBAsync(rotationUIModel.FullRotationModel);
         }
 
         private void ReverseRotation(RotationUIModel rotationUIModel)
@@ -469,7 +469,7 @@ namespace RotationTracker
             rotationUIModel.CurrentEmployeeTextBlock.Text = $"Currently Up: {rotationUIModel.FullRotationModel.CurrentEmployeeName}";
 
             PopulateRotationListBox(rotationUIModel.FullRotationModel, rotationUIModel.RotationListBox);
-            ReverseRotationInDB(rotationUIModel.FullRotationModel);
+            ReverseRotationInDBAsync(rotationUIModel.FullRotationModel);
         }
 
         private void EditEmployeesButton_Click(object sender, RoutedEventArgs e)
@@ -478,7 +478,7 @@ namespace RotationTracker
             editEmployees.ShowDialog();
         }
 
-        private void AddRotationButton_Click(object sender, RoutedEventArgs e)
+        private async void AddRotationButton_Click(object sender, RoutedEventArgs e)
         {
             RotationUIModel rotationUIModel = new ();
 
@@ -492,8 +492,8 @@ namespace RotationTracker
             rotationUIModel.FullRotationModel = fullRotation;
             rotations.Add(fullRotation);
 
-            CreateRotationInDB(fullRotation);
-            fullRotation.BasicInfo.Id = GetHighestIdFromRotations(); // set the id of the rotation; we need it next
+            CreateRotationInDBAsync(fullRotation);
+            fullRotation.BasicInfo.Id = await GetHighestIdFromRotations(); // set the id of the rotation; we need it next
             CreateRotationInUI(rotationUIModel, fullRotation);
         }
 
@@ -527,7 +527,7 @@ namespace RotationTracker
 
         private void ShowCoveragesButton_Click(object sender, RoutedEventArgs e)
         {
-            ReadCoveragesFromDB();
+            ReadCoveragesFromDBAsync();
             Coverages coverages = new(this);
             coverages.ShowDialog();
         }

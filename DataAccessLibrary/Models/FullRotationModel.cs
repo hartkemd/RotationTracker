@@ -191,6 +191,10 @@ namespace DataAccessLibrary.Models
             {
                 BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddDays(7);
             }
+            else if (BasicInfo.RotationRecurrence == RecurrenceInterval.WeeklyWorkWeek)
+            {
+                BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddDays(7);
+            }
             else if (BasicInfo.RotationRecurrence == RecurrenceInterval.BiweeklyOnDay)
             {
                 BasicInfo.NextDateTimeRotationAdvances = BasicInfo.NextDateTimeRotationAdvances.AddDays(14);
